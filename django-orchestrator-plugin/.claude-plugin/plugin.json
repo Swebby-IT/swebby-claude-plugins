@@ -1,0 +1,18 @@
+{
+  "name": "django-orchestrator",
+  "version": "1.0.0",
+  "description": "Sistema di orchestrazione multi-agente per progetti Django. Opus pianifica, Sonnet esegue.",
+  "author": {
+    "name": "Your Name",
+    "email": "your@email.com"
+  },
+  "keywords": [
+    "django",
+    "orchestration",
+    "multi-agent",
+    "planning",
+    "subagents",
+    "workflow"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "swebby-plugins",
+  "version": "1.0.0",
+  "description": "Plugin per sviluppo Django con orchestrazione multi-agente",
+  "owner": {
+    "name": "Maurizio Stabile",
+    "email": "tua@email.com"
+  },
+  "plugins": [
+    {
+      "name": "django-orchestrator",
+      "description": "Sistema di orchestrazione multi-agente per Django. Opus pianifica, Sonnet esegue.",
+      "source": "./django-orchestrator-plugin",
+      "category": "development",
+      "version": "1.0.0",
+      "author": {
+        "name": "Maurizio Stabile"
+      }
+    }
+  ]
+}
