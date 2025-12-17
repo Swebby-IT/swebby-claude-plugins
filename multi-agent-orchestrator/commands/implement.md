@@ -169,72 +169,46 @@ Chiedi:
 
 ## FASE 4: Esecuzione Multi-Agente
 
-### 4.1 Prepara Task per Ogni Agente
+### 4.1 Delegazione ai Subagenti
 
-Per ogni agente, crea istruzioni complete:
+Per ogni task nel piano approvato, **delega a code-modifier** con istruzioni precise.
 
-```markdown
-## Task Agente #N - [Nome Descrittivo]
+Esempio di delegazione:
+```
+Delego a code-modifier:
 
-**Obiettivo:** [cosa deve fare questo agente]
+**Task:** Aggiungere validazione input nella funzione processOrder
+**File da modificare:** src/orders/processor.py linee 45-60
+**Specifiche:**
+- Aggiungere controllo null per parametro `items`
+- Validare che `total` sia positivo
+- Lanciare ValueError con messaggio descrittivo se invalido
 
-**File da modificare:**
-- `path/file.py` linee X-Y
+**Contesto:**
+[snippet del codice attuale]
 
-**Istruzioni dettagliate:**
-1. [passo specifico 1]
-2. [passo specifico 2]
-3. [passo specifico 3]
-
-**Contesto codice:**
-```[linguaggio]
-[snippet rilevante]
+**NON fare:**
+- Non modificare altre funzioni
+- Non aggiungere import non necessari
 ```
 
-**Output atteso:**
-[descrizione di cosa deve produrre]
+### 4.2 Task Paralleli vs Sequenziali
 
-**Vincoli:**
-- NON modificare [file/sezioni specifiche]
-- Mantieni compatibilità con [X]
-```
+**Task INDIPENDENTI:** Lancia in PARALLELO
+- Delega tutti i task indipendenti contemporaneamente
+- Ogni task va a un'istanza separata di code-modifier
 
-### 4.2 Lancia Agenti Sonnet
-
-**IMPORTANTE:** Usa SEMPRE il Task tool con `subagent_type: "multi-agent-orchestrator:code-modifier"` per delegare l'esecuzione a Sonnet.
-
-**Agenti INDIPENDENTI:** Lancia in PARALLELO
-
-```
-Per ogni gruppo indipendente, in UN SINGOLO messaggio:
-- Task tool con subagent_type="multi-agent-orchestrator:code-modifier"
-- run_in_background=true per tutti
-- Lancia TUTTI contemporaneamente nello stesso messaggio
-```
-
-Esempio per 3 agenti paralleli (UN SOLO messaggio con 3 Task tool):
-```
-Task 1: subagent_type="multi-agent-orchestrator:code-modifier", run_in_background=true
-Task 2: subagent_type="multi-agent-orchestrator:code-modifier", run_in_background=true
-Task 3: subagent_type="multi-agent-orchestrator:code-modifier", run_in_background=true
-```
-
-**Agenti con DIPENDENZE:** Lancia in SEQUENZA
-
-```
-Per gruppi con dipendenze:
-- Lancia con Task tool (subagent_type="multi-agent-orchestrator:code-modifier")
-- Attendi completamento con TaskOutput
+**Task con DIPENDENZE:** Lancia in SEQUENZA
+- Attendi completamento del task precedente
 - Verifica risultato
-- Poi lancia il successivo
-```
+- Poi delega il successivo
 
 ### 4.3 Monitora Esecuzione
 
-Durante l'esecuzione:
-1. Tieni traccia dello stato di ogni agente
-2. Raccogli output man mano che completano
-3. Identifica eventuali errori
+Per ogni task delegato:
+1. Attendi il completamento
+2. Verifica il risultato riportato dall'agente
+3. Se errore, decidi se ri-delegare con istruzioni corrette
 
 ---
 
@@ -301,6 +275,6 @@ Se ci sono conflitti tra modifiche:
 1. **MAI** saltare la fase di discovery MCP
 2. **SEMPRE** verificare con grep anche dopo ricerca semantica
 3. **MAI** procedere senza piano approvato
-4. **SEMPRE** calcolare il numero corretto di agenti
-5. **SEMPRE** lanciare in parallelo quando possibile
-6. **MAI** usare 1 agente per task che richiedono modifiche indipendenti multiple
+4. **SEMPRE** usare i subagenti (code-modifier) per l'esecuzione
+5. **SEMPRE** verificare i risultati di ogni subagent
+6. **SEMPRE** lanciare in parallelo task indipendenti
