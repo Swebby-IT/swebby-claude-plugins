@@ -1,7 +1,7 @@
 {
   "name": "multi-agent-orchestrator",
-  "version": "1.1.0",
-  "description": "Sistema di orchestrazione multi-agente generico con auto-scaling intelligente. Opus analizza e pianifica, Sonnet esegue tramite agenti specializzati.",
+  "version": "1.2.0",
+  "description": "Sistema di orchestrazione con 58 agenti Sonnet specializzati. Opus analizza e pianifica, Sonnet esegue in parallelo.",
   "author": {
     "name": "Maurizio Stabile",
     "email": "maurizio@swebby.it"
