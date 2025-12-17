@@ -5,7 +5,7 @@
   "description": "Plugin per sviluppo Django con orchestrazione multi-agente",
   "owner": {
     "name": "Maurizio Stabile",
-    "email": "tua@email.com"
+    "email": "maurizio@swebby.it"
   },
   "plugins": [
     {
@@ -13,7 +13,7 @@
       "description": "Sistema di orchestrazione multi-agente per Django. Opus pianifica, Sonnet esegue.",
       "source": "./django-orchestrator-plugin",
       "category": "development",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "Maurizio Stabile"
       }
