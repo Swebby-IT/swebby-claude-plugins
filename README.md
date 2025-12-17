@@ -1,171 +1,117 @@
-# Django Orchestrator Plugin
+# Swebby Claude Plugins
 
-Sistema di orchestrazione multi-agente per progetti Django. Opus pianifica, Sonnet esegue.
+Marketplace di plugin per Claude Code, focalizzato su sviluppo Django e workflow orchestrati multi-agente.
 
-## 🎯 Cosa Fa
+## 🚀 Installazione
 
-Questo plugin trasforma il tuo workflow di sviluppo Django in un sistema orchestrato:
+```bash
+# Aggiungi il marketplace
+/plugin marketplace add mauriziostabile/swebby-claude-plugins
 
-1. **Tu fai la richiesta** → "Aggiungi sistema di notifiche email"
-2. **Opus analizza e pianifica** → Crea piano dettagliato con task
-3. **Tu approvi** → Confermi il piano
-4. **Sonnet esegue** → Subagenti specializzati implementano ogni task
-5. **Test automatici** → Verifica che tutto funzioni
-6. **Code review** → Quality assurance finale
+# Visualizza i plugin disponibili
+/plugin
 
-## 📦 Componenti
+# Installa un plugin
+/plugin install django-orchestrator@swebby-plugins
+```
+
+## 📦 Plugin Disponibili
+
+| Plugin | Descrizione | Categoria |
+|--------|-------------|-----------|
+| [django-orchestrator](#django-orchestrator) | Sistema multi-agente: Opus pianifica, Sonnet esegue | Development |
+
+---
+
+## Django Orchestrator
+
+Sistema di orchestrazione multi-agente per progetti Django. Trasforma il tuo workflow in un processo strutturato dove Opus analizza e pianifica, mentre subagenti Sonnet eseguono i task in parallelo.
+
+### Workflow
+
+```
+[Tu] → Richiesta
+      ↓
+[Opus] → Analisi + Piano dettagliato
+      ↓
+[Tu] → Approva il piano
+      ↓
+[Sonnet] → Subagenti eseguono in parallelo
+      ↓
+[Opus] → Verifica + Report finale
+```
 
 ### Comandi
 
 | Comando | Descrizione |
 |---------|-------------|
-| `/implement <desc>` | Workflow completo: pianifica → approva → esegui → testa |
-| `/plan <desc>` | Solo pianificazione senza esecuzione |
-| `/fix <bug>` | Workflow specializzato per bug fix |
-| `/review <target>` | Code review standalone |
+| `/implement <desc>` | Workflow completo: pianifica → approva → esegui → testa → review |
+| `/plan <desc>` | Solo pianificazione, senza esecuzione |
+| `/fix <bug>` | Workflow ottimizzato per bug fix |
+| `/review <target>` | Code review su file o modifiche recenti |
 
-### Agenti
+### Agenti Inclusi
 
-| Agente | Modello | Ruolo |
-|--------|---------|-------|
-| `django-developer` | Sonnet | Implementa codice backend Django |
+| Agente | Modello | Specializzazione |
+|--------|---------|------------------|
+| `django-developer` | Sonnet | Backend Django (models, views, API) |
 | `frontend-developer` | Sonnet | Template, Tailwind CSS, JavaScript |
-| `test-writer` | Sonnet | Scrive ed esegue test pytest/Django |
-| `code-reviewer` | Sonnet | Quality assurance e sicurezza |
+| `test-writer` | Sonnet | Test pytest/Django, coverage |
+| `code-reviewer` | Sonnet | QA, sicurezza, best practices |
 
-### Skill
-
-- **orchestration** - Linee guida per coordinare i subagenti
-
-## 🚀 Installazione
-
-### Opzione 1: Installazione Locale
+### Esempio d'Uso
 
 ```bash
-# Clona o copia la cartella del plugin
-cp -r django-orchestrator-plugin ~/.claude/plugins/
+# Avvia Claude Code con Opus
+claude --model opus
 
-# Riavvia Claude Code
-```
-
-### Opzione 2: Da Marketplace Locale
-
-```bash
-# Crea marketplace di test
-mkdir -p ~/claude-marketplace
-cp -r django-orchestrator-plugin ~/claude-marketplace/
-
-# In Claude Code
-/plugin marketplace add ~/claude-marketplace
-/plugin install django-orchestrator
-```
-
-### Opzione 3: Da GitHub (dopo pubblicazione)
-
-```bash
-/plugin install your-username/django-orchestrator
-```
-
-## 💡 Utilizzo
-
-### Implementare una Feature
-
-```
+# Implementa una feature
 /implement Aggiungi sistema di wishlist per i prodotti
+
+# Claude creerà un piano dettagliato e aspetterà la tua approvazione
+# Dopo l'ok, coordinerà i subagenti per l'implementazione
 ```
-
-Claude (Opus) creerà un piano dettagliato, aspetterà la tua approvazione, poi coordinerà i subagenti per l'implementazione.
-
-### Solo Pianificazione
-
-```
-/plan Refactoring del sistema di autenticazione
-```
-
-Ottieni solo il piano senza eseguire modifiche.
-
-### Fix di un Bug
-
-```
-/fix Gli ordini non calcolano correttamente lo sconto
-```
-
-Workflow ottimizzato per bug fix con root cause analysis.
-
-### Code Review
-
-```
-/review vendite/views.py
-/review recent
-```
-
-Review di file specifici o delle modifiche recenti.
-
-## ⚙️ Configurazione
-
-### Personalizzare gli Agenti
-
-Modifica i file in `agents/` per adattarli al tuo progetto:
-
-```markdown
-# agents/django-developer.md
 
 ---
-name: django-developer
-model: sonnet  # Cambia in opus per task complessi
-tools: Read, Write, Edit, Bash, Glob, Grep
----
 
-[Istruzioni personalizzate...]
-```
+## 🛠️ Per Sviluppatori
 
-### Aggiungere MCP Server
-
-Crea `.mcp.json` nella root del plugin:
-
-```json
-{
-  "mcpServers": {
-    "code-search": {
-      "command": "your-mcp-server",
-      "args": ["--path", "/srv/app"]
-    }
-  }
-}
-```
-
-## 📁 Struttura
+### Struttura del Marketplace
 
 ```
-django-orchestrator-plugin/
+swebby-claude-plugins/
 ├── .claude-plugin/
-│   └── plugin.json          # Manifest
-├── agents/
-│   ├── django-developer.md  # Backend Django
-│   ├── frontend-developer.md # Frontend
-│   ├── test-writer.md       # Testing
-│   └── code-reviewer.md     # QA
-├── commands/
-│   ├── implement.md         # /implement
-│   ├── plan.md              # /plan
-│   ├── fix.md               # /fix
-│   └── review.md            # /review
-├── skills/
-│   └── orchestration/
-│       └── SKILL.md         # Linee guida orchestrazione
+│   └── marketplace.json      # Manifest del marketplace
+├── django-orchestrator-plugin/
+│   ├── .claude-plugin/
+│   │   └── plugin.json       # Manifest del plugin
+│   ├── agents/               # Subagenti specializzati
+│   ├── commands/             # Comandi slash
+│   └── skills/               # Skill di orchestrazione
 └── README.md
 ```
 
-## 🔧 Requisiti
+### Contribuire
 
-- Claude Code v1.0+
-- Progetto Django configurato
-- (Opzionale) MCP server per ricerca codice
+1. Fork del repository
+2. Crea un branch (`git checkout -b feature/nuovo-plugin`)
+3. Commit (`git commit -m 'Aggiunge nuovo plugin'`)
+4. Push (`git push origin feature/nuovo-plugin`)
+5. Apri una Pull Request
 
-## 📝 Licenza
+---
+
+## 📄 Licenza
 
 MIT
 
-## 🤝 Contribuire
+## 👤 Autore
 
-Pull request benvenute! Per modifiche importanti, apri prima una issue.
+**Maurizio Stabile**
+
+---
+
+## 🔗 Link Utili
+
+- [Documentazione Plugin Claude Code](https://code.claude.com/docs/en/plugins)
+- [Documentazione Marketplace](https://code.claude.com/docs/en/plugin-marketplaces)
