@@ -1,0 +1,13 @@
+{
+  "UserPromptSubmit": [
+    {
+      "matcher": ".*",
+      "hooks": [
+        {
+          "type": "prompt",
+          "prompt": "IMPORTANTE - Multi-Agent Orchestrator attivo:\n\n1. DISCOVERY: Prima verifica quali MCP semantici sono disponibili (code-search, sourcegraph, ecc.)\n2. RICERCA: Usa MCP semantico se disponibile, poi VERIFICA con grep\n3. PIANIFICA: Crea piano dettagliato con calcolo automatico agenti\n4. CONFERMA: Aspetta approvazione utente prima di procedere\n5. SCALA: Lancia N agenti in base alla complessità (1-20 agenti)\n\nComandi: /implement, /plan, /analyze\n\nRegole scaling:\n- 1 agente = modifiche collegate nella stessa sezione\n- N agenti = modifiche indipendenti (file diversi o sezioni scollegate >50 linee)"
+        }
+      ]
+    }
+  ]
+}

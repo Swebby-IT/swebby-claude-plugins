@@ -1,0 +1,20 @@
+{
+  "name": "multi-agent-orchestrator",
+  "version": "1.0.0",
+  "description": "Sistema di orchestrazione multi-agente generico con auto-scaling intelligente. Rileva MCP semantici, pianifica e scala automaticamente il numero di agenti in base alla complessità.",
+  "author": {
+    "name": "Maurizio Stabile",
+    "email": "maurizio@swebby.it"
+  },
+  "keywords": [
+    "orchestration",
+    "multi-agent",
+    "auto-scaling",
+    "semantic-search",
+    "mcp",
+    "planning",
+    "subagents",
+    "workflow"
+  ],
+  "license": "MIT"
+}
