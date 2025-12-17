@@ -1,12 +1,12 @@
 {
   "name": "multi-agent-orchestrator",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Sistema di orchestrazione con 58 agenti Sonnet specializzati. Opus analizza e pianifica, Sonnet esegue in parallelo.",
   "author": {
     "name": "Maurizio Stabile",
     "email": "maurizio@swebby.it"
   },
-  "hooks": "../hooks/hooks.json",
+  "hooks": "./hooks/hooks.json",
   "keywords": [
     "orchestration",
     "multi-agent",
