@@ -1,6 +1,6 @@
 # Swebby Claude Plugins
 
-Marketplace di plugin per Claude Code, focalizzato su sviluppo Django e workflow orchestrati multi-agente.
+Marketplace di plugin per Claude Code, focalizzato su orchestrazione multi-agente intelligente con auto-scaling.
 
 ## 🚀 Installazione
 
@@ -12,6 +12,7 @@ Marketplace di plugin per Claude Code, focalizzato su sviluppo Django e workflow
 /plugin
 
 # Installa un plugin
+/plugin install multi-agent-orchestrator@swebby-plugins
 /plugin install django-orchestrator@swebby-plugins
 ```
 
@@ -19,13 +20,77 @@ Marketplace di plugin per Claude Code, focalizzato su sviluppo Django e workflow
 
 | Plugin | Descrizione | Categoria |
 |--------|-------------|-----------|
-| [django-orchestrator](#django-orchestrator) | Sistema multi-agente: Opus pianifica, Sonnet esegue | Development |
+| [multi-agent-orchestrator](#multi-agent-orchestrator) | Orchestrazione generica con auto-scaling 1-20 agenti | Development |
+| [django-orchestrator](#django-orchestrator) | Sistema multi-agente specifico per Django | Development |
+
+---
+
+## Multi-Agent Orchestrator
+
+Sistema di orchestrazione multi-agente **generico** con auto-scaling intelligente. Funziona con qualsiasi codebase e scala automaticamente da 1 a 20 agenti in base alla complessità del task.
+
+### Caratteristiche Principali
+
+- **Discovery MCP Automatico**: Rileva MCP semantici (code-search, sourcegraph) e li usa per ricerche precise
+- **Ricerca Intelligente**: Prima semantica, poi verifica con grep
+- **Auto-Scaling**: Calcola automaticamente quanti agenti servono (1-20)
+- **Esecuzione Parallela**: Massimizza efficienza con agenti indipendenti
+
+### Workflow
+
+```
+[Tu] → Richiesta
+      ↓
+[Orchestratore] → Discovery MCP disponibili
+      ↓
+[Orchestratore] → Ricerca semantica + grep
+      ↓
+[Orchestratore] → Piano con calcolo agenti
+      ↓
+[Tu] → Approva il piano
+      ↓
+[N Agenti] → Eseguono in parallelo (se indipendenti)
+      ↓
+[Orchestratore] → Verifica + Report finale
+```
+
+### Comandi
+
+| Comando | Descrizione |
+|---------|-------------|
+| `/implement <desc>` | Workflow completo: discovery → piano → scaling → esecuzione |
+| `/plan <desc>` | Solo pianificazione con calcolo agenti |
+| `/analyze <desc>` | Solo analisi codebase con MCP/grep |
+
+### Regole di Scaling
+
+| Scenario | Agenti |
+|----------|--------|
+| Modifiche collegate (stessa sezione/dipendenze) | 1 |
+| File diversi indipendenti | 1 per file |
+| Stesso file, sezioni distanti (>50 linee) | Separati |
+| Massimo | 20 |
+
+### Esempio d'Uso
+
+```bash
+# Implementa una feature
+/implement Aggiungi sistema di notifiche push
+
+# Claude:
+# 1. Cerca MCP semantici disponibili
+# 2. Esegue ricerca semantica + grep
+# 3. Crea piano: "5 file indipendenti → 5 agenti"
+# 4. Aspetta approvazione
+# 5. Lancia 5 agenti in parallelo
+# 6. Verifica e report
+```
 
 ---
 
 ## Django Orchestrator
 
-Sistema di orchestrazione multi-agente per progetti Django. Trasforma il tuo workflow in un processo strutturato dove Opus analizza e pianifica, mentre subagenti Sonnet eseguono i task in parallelo.
+Sistema di orchestrazione multi-agente **specifico per Django**. Trasforma il tuo workflow in un processo strutturato dove Opus analizza e pianifica, mentre subagenti Sonnet eseguono i task in parallelo.
 
 ### Workflow
 
@@ -82,12 +147,19 @@ claude --model opus
 swebby-claude-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json      # Manifest del marketplace
+├── multi-agent-orchestrator/
+│   ├── .claude-plugin/
+│   │   └── plugin.json       # Manifest del plugin
+│   ├── agents/               # Agente generico code-modifier
+│   ├── commands/             # implement, plan, analyze
+│   ├── skills/               # Logica orchestrazione con auto-scaling
+│   └── hooks/                # Enforcement workflow
 ├── django-orchestrator-plugin/
 │   ├── .claude-plugin/
 │   │   └── plugin.json       # Manifest del plugin
-│   ├── agents/               # Subagenti specializzati
+│   ├── agents/               # Subagenti Django specializzati
 │   ├── commands/             # Comandi slash
-│   └── skills/               # Skill di orchestrazione
+│   └── skills/               # Skill di orchestrazione Django
 └── README.md
 ```
 

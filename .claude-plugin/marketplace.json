@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "swebby-plugins",
-  "version": "1.0.0",
-  "description": "Plugin per sviluppo Django con orchestrazione multi-agente",
+  "version": "1.1.0",
+  "description": "Plugin per orchestrazione multi-agente intelligente con auto-scaling",
   "owner": {
     "name": "Maurizio Stabile",
     "email": "maurizio@swebby.it"
@@ -14,6 +14,16 @@
       "source": "./django-orchestrator-plugin",
       "category": "development",
       "version": "1.0.1",
+      "author": {
+        "name": "Maurizio Stabile"
+      }
+    },
+    {
+      "name": "multi-agent-orchestrator",
+      "description": "Orchestrazione multi-agente generica con auto-scaling intelligente (1-20 agenti). Rileva MCP semantici, pianifica e scala automaticamente.",
+      "source": "./multi-agent-orchestrator",
+      "category": "development",
+      "version": "1.0.0",
       "author": {
         "name": "Maurizio Stabile"
       }
