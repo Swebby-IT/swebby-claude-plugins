@@ -13,7 +13,7 @@
       "description": "Sistema di orchestrazione multi-agente per Django. Opus pianifica, Sonnet esegue.",
       "source": "./django-orchestrator-plugin",
       "category": "development",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "author": {
         "name": "Maurizio Stabile"
       }
@@ -23,7 +23,7 @@
       "description": "Orchestrazione con 58 agenti Sonnet specializzati (20 frontend, 20 backend, 18 specialist). Opus pianifica, Sonnet esegue in parallelo.",
       "source": "./multi-agent-orchestrator",
       "category": "development",
-      "version": "1.2.3",
+      "version": "1.2.4",
       "author": {
         "name": "Maurizio Stabile"
       }
