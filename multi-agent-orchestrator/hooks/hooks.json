@@ -1,13 +1,15 @@
 {
-  "UserPromptSubmit": [
-    {
-      "matcher": ".*",
-      "hooks": [
-        {
-          "type": "prompt",
-          "prompt": "IMPORTANTE - Multi-Agent Orchestrator attivo con 58 agenti Sonnet:\n\n1. DISCOVERY: Verifica MCP semantici disponibili\n2. RICERCA: MCP semantico + verifica grep\n3. PIANIFICA: Piano dettagliato con selezione agenti appropriati\n4. CONFERMA: Aspetta approvazione utente\n5. ESEGUI: Delega agli agenti specializzati (parallelo se indipendenti)\n\nComandi: /implement, /plan, /analyze\n\nAgenti disponibili:\n- frontend-developer-1..20: UI, componenti, styling\n- backend-developer-1..20: business logic, services\n- code-modifier: modifiche generiche\n- code-reviewer: review qualità/sicurezza\n- test-writer: test unitari/integrazione\n- bug-fixer: debug e fix\n- refactorer: refactoring codice\n- api-developer: endpoint REST/GraphQL\n- database-specialist: schema, migrazioni, query\n- security-auditor: audit vulnerabilità\n- performance-optimizer: ottimizzazioni\n- devops-agent: CI/CD, Docker, deploy\n- Altri: config-manager, dependency-manager, migration-specialist, integration-specialist, logger-agent, error-handler, code-cleaner, documentation-writer\n\nScaling: usa agenti numerati (1-20) per task paralleli dello stesso tipo"
-        }
-      ]
-    }
-  ]
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "IMPORTANTE - Multi-Agent Orchestrator attivo con 58 agenti Sonnet:\n\n1. DISCOVERY: Verifica MCP semantici disponibili\n2. RICERCA: MCP semantico + verifica grep\n3. PIANIFICA: Piano dettagliato con selezione agenti appropriati\n4. CONFERMA: Aspetta approvazione utente\n5. ESEGUI: Delega agli agenti specializzati (parallelo se indipendenti)\n\nComandi: /implement, /plan, /analyze\n\nAgenti disponibili:\n- frontend-developer-1..20: UI, componenti, styling\n- backend-developer-1..20: business logic, services\n- code-modifier: modifiche generiche\n- code-reviewer: review qualità/sicurezza\n- test-writer: test unitari/integrazione\n- bug-fixer: debug e fix\n- refactorer: refactoring codice\n- api-developer: endpoint REST/GraphQL\n- database-specialist: schema, migrazioni, query\n- security-auditor: audit vulnerabilità\n- performance-optimizer: ottimizzazioni\n- devops-agent: CI/CD, Docker, deploy\n- Altri: config-manager, dependency-manager, migration-specialist, integration-specialist, logger-agent, error-handler, code-cleaner, documentation-writer\n\nScaling: usa agenti numerati (1-20) per task paralleli dello stesso tipo"
+          }
+        ]
+      }
+    ]
+  }
 }
