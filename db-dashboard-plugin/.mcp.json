@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "${DB_CONNECTION_URL}"
+      ],
+      "env": {
+        "DB_CONNECTION_URL": ""
+      }
+    }
+  }
+}

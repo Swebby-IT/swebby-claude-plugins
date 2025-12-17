@@ -1,0 +1,84 @@
+# db.yaml - Configurazione Database PostgreSQL
+# Copia questo file nella root del tuo progetto e personalizza i valori
+
+# ============================================
+# CONNESSIONE DATABASE
+# ============================================
+connection:
+  # Opzione 1: URL completo (consigliato)
+  url: "postgresql://user:password@localhost:5432/database"
+  
+  # Opzione 2: Componenti separati (alternativa)
+  # host: localhost
+  # port: 5432
+  # database: mydb
+  # user: myuser
+  # password: mypassword
+  
+  # Opzione 3: Usa variabili d'ambiente
+  # url: "${DATABASE_URL}"
+
+# ============================================
+# OPZIONI
+# ============================================
+options:
+  # Schema di default da usare
+  schema: public
+  
+  # IMPORTANTE: Mantieni sempre true per sicurezza
+  read_only: true
+  
+  # Timeout query in secondi
+  timeout: 30
+  
+  # Limite default righe per query
+  row_limit: 1000
+
+# ============================================
+# HINT PER L'AGENTE ANALYST (opzionale)
+# ============================================
+# Aiuta l'agente a capire meglio il tuo database
+
+schema_hints:
+  # Tabelle più importanti/usate
+  important_tables:
+    - users
+    - orders
+    - products
+    - categories
+  
+  # Relazioni tra tabelle (per JOIN corretti)
+  relationships:
+    - "orders.user_id -> users.id"
+    - "orders.product_id -> products.id"
+    - "products.category_id -> categories.id"
+  
+  # Campi data comuni (per filtri temporali)
+  date_fields:
+    orders: created_at
+    users: registered_at
+  
+  # Metriche comuni
+  common_metrics:
+    - name: "vendite totali"
+      table: orders
+      aggregation: "SUM(total_amount)"
+    - name: "numero ordini"
+      table: orders
+      aggregation: "COUNT(*)"
+    - name: "valore medio ordine"
+      table: orders
+      aggregation: "AVG(total_amount)"
+
+# ============================================
+# FORMATO OUTPUT PREFERITO
+# ============================================
+output:
+  # Dove salvare i report
+  directory: "./output"
+  
+  # Formato timestamp nei nomi file
+  timestamp_format: "%Y%m%d_%H%M%S"
+  
+  # Mantieni ultimi N report (0 = tutti)
+  keep_last: 10

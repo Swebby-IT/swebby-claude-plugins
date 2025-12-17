@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DB Dashboard Report",
+  "description": "Schema per i report generati dall'agente db-analyst",
+  "type": "object",
+  "required": ["metadata", "data", "visualization_plan"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["report_id", "generated_at", "request"],
+      "properties": {
+        "report_id": {
+          "type": "string",
+          "description": "UUID univoco del report"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp ISO 8601"
+        },
+        "request": {
+          "type": "string",
+          "description": "Richiesta originale dell'utente"
+        },
+        "interpretation": {
+          "type": "string",
+          "description": "Come l'agente ha interpretato la richiesta"
+        },
+        "db_schema_context": {
+          "type": "object",
+          "properties": {
+            "tables_used": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "relationships": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "Riassunto dei risultati"
+        },
+        "key_findings": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "data_quality_notes": {
+          "type": "string"
+        }
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": ["queries_executed", "results"],
+      "properties": {
+        "queries_executed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "sql"],
+            "properties": {
+              "name": { "type": "string" },
+              "sql": { "type": "string" },
+              "purpose": { "type": "string" },
+              "row_count": { "type": "integer" }
+            }
+          }
+        },
+        "results": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "object" }
+          }
+        },
+        "aggregations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["number", "string"]
+          }
+        }
+      }
+    },
+    "visualization_plan": {
+      "type": "object",
+      "required": ["recommended_charts"],
+      "properties": {
+        "recommended_charts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "title", "data_source", "mapping"],
+            "properties": {
+              "id": { "type": "string" },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bar",
+                  "horizontal_bar",
+                  "line",
+                  "area",
+                  "pie",
+                  "doughnut",
+                  "scatter",
+                  "heatmap",
+                  "table",
+                  "kpi_card",
+                  "gauge"
+                ]
+              },
+              "title": { "type": "string" },
+              "data_source": { "type": "string" },
+              "mapping": {
+                "type": "object",
+                "properties": {
+                  "x": { "type": "string" },
+                  "y": { "type": "string" },
+                  "series": { "type": "string" },
+                  "label": { "type": "string" },
+                  "value": { "type": "string" }
+                }
+              },
+              "insights": { "type": "string" },
+              "priority": { "type": "integer" },
+              "options": { "type": "object" }
+            }
+          }
+        },
+        "layout_suggestion": { "type": "string" },
+        "color_scheme": { "type": "string" }
+      }
+    }
+  }
+}

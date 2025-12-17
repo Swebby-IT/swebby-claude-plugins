@@ -1,0 +1,4 @@
+# Questa directory contiene i report e le dashboard generate
+# I file seguono il pattern:
+# - report_YYYYMMDD_HHMMSS.json
+# - dashboard_YYYYMMDD_HHMMSS.html
