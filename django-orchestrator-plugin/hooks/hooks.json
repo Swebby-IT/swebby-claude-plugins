@@ -2,11 +2,10 @@
   "hooks": {
     "UserPromptSubmit": [
       {
-        "matcher": ".*",
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "IMPORTANTE: Per qualsiasi modifica al codice, segui il workflow orchestrato:\n1. Usa 'ultrathink' per analizzare la richiesta\n2. Crea un piano dettagliato\n3. FERMATI e aspetta approvazione\n4. Solo dopo, delega ai subagenti (django-developer, frontend-developer, test-writer)\n\nComandi disponibili: /implement, /plan, /fix, /review"
+            "message": "IMPORTANTE: Per qualsiasi modifica al codice, segui il workflow orchestrato: 1) Analizza la richiesta 2) Crea piano dettagliato 3) FERMATI e aspetta approvazione 4) Delega ai subagenti (django-developer, frontend-developer, test-writer). Comandi: /implement, /plan, /fix, /review"
           }
         ]
       }
