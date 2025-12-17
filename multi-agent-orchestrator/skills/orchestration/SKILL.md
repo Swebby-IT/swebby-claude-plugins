@@ -119,6 +119,77 @@ REGOLA 3: Scaling massimo
 - Oltre 20: raggruppa task correlati
 ```
 
+#### 4.1.1 REGOLA TASK ATOMICI (CRITICA)
+
+**I subagenti Sonnet funzionano meglio con task ATOMICI.**
+
+Un task è atomico quando:
+- Ha **UNA SOLA responsabilità** chiara
+- Può essere completato **senza decisioni ambigue**
+- Ha **input e output ben definiti**
+- **Non richiede conoscenza** di altri task in parallelo
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    TASK ATOMICO vs NON ATOMICO                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ❌ NON ATOMICO (troppo vago/complesso):                        │
+│  "Implementa l'autenticazione utente"                           │
+│  → Troppe decisioni da prendere, troppi file                    │
+│                                                                 │
+│  ✅ ATOMICO (specifico):                                        │
+│  "Aggiungi funzione validate_password() in auth/validators.py   │
+│   che verifica lunghezza >= 8 e almeno un numero"               │
+│  → Una funzione, un file, criteri chiari                        │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ❌ NON ATOMICO:                                                 │
+│  "Refactoring del modulo users"                                 │
+│                                                                 │
+│  ✅ ATOMICO:                                                     │
+│  "Rinomina la funzione get_user() in fetch_user_by_id()         │
+│   nel file users/queries.py, linee 45-60"                       │
+│                                                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ❌ NON ATOMICO:                                                 │
+│  "Aggiungi validazione ai form"                                 │
+│                                                                 │
+│  ✅ ATOMICO:                                                     │
+│  "Nel componente LoginForm.tsx, aggiungi validazione email      │
+│   usando il pattern regex già presente in utils/validators.ts"  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Decomposizione Task Complessi:**
+
+Se hai un task complesso, DECOMPONILO in task atomici:
+
+```
+Task complesso: "Aggiungi endpoint REST per creare utenti"
+
+Decomposto in task atomici:
+├── Task 1: Crea schema Pydantic UserCreate in schemas/user.py
+├── Task 2: Crea funzione create_user() in services/user.py
+├── Task 3: Crea endpoint POST /users in routes/user.py
+└── Task 4: Aggiungi test per endpoint in tests/test_user.py
+
+Ogni task → 1 agente con istruzioni specifiche
+```
+
+**Checklist Task Atomico:**
+
+Prima di assegnare un task a un agente, verifica:
+- [ ] Il task ha UNA SOLA responsabilità?
+- [ ] Le istruzioni sono così specifiche che non servono decisioni?
+- [ ] L'output atteso è un esempio concreto di codice?
+- [ ] Un developer junior potrebbe completarlo senza chiedere?
+
+Se qualsiasi risposta è NO → decomponi ulteriormente.
+
 #### 4.2 Formula di Calcolo
 
 ```python
@@ -179,29 +250,169 @@ File: handlers.py
 
 #### 5.1 Preparazione Task per Agente
 
-Per ogni agente, fornisci:
+**REGOLA CRITICA:** I subagenti Sonnet NON hanno accesso al contesto della conversazione.
+Devi fornire TUTTE le informazioni necessarie nel prompt del task.
+
+Per ogni agente, fornisci **OBBLIGATORIAMENTE** tutti questi campi:
 
 ```markdown
 ## Task per Agente #N
 
-**Obiettivo:** [cosa deve fare]
+**Obiettivo:** [descrizione chiara e completa di cosa deve fare]
+
+**Razionale:** [PERCHÉ questa modifica è necessaria - aiuta l'agente a fare scelte migliori]
 
 **File da modificare:**
 - `path/file.py` linee X-Y
 
-**Specifiche dettagliate:**
-1. [istruzione specifica 1]
-2. [istruzione specifica 2]
+**Istruzioni PASSO-PASSO:**
+1. [azione specifica con dettagli implementativi]
+2. [azione specifica con dettagli implementativi]
+3. [azione specifica con dettagli implementativi]
 
-**Contesto:**
-[snippet di codice rilevante se necessario]
+**Contesto codice ATTUALE (OBBLIGATORIO):**
+```[linguaggio]
+[SEMPRE includere lo snippet di codice esistente che verrà modificato]
+[Includere anche codice circostante rilevante per capire il contesto]
+```
+
+**Pattern e convenzioni da seguire:**
+- Naming: [camelCase/snake_case/etc.]
+- Import style: [esempio da seguire]
+- Error handling: [pattern usato nel progetto]
+- [Altri pattern rilevanti del codebase]
 
 **Output atteso:**
-[descrizione risultato]
+[descrizione PRECISA del risultato, con esempio di come dovrebbe apparire il codice]
 
 **NON modificare:**
-[file/sezioni da non toccare]
+- [file/sezioni specifiche da non toccare]
+- [funzionalità da preservare]
+
+**Dipendenze:**
+- Questo task dipende da: [nessuno / Task #X]
+- Altri task dipendono da questo: [nessuno / Task #Y]
 ```
+
+**ESEMPIO CONCRETO:**
+
+```markdown
+## Task per Agente #3
+
+**Obiettivo:** Aggiungere validazione email nella funzione create_user
+
+**Razionale:** Gli utenti possono attualmente registrarsi con email malformate,
+causando errori nei sistemi di notifica downstream. Serve validazione frontend+backend.
+
+**File da modificare:**
+- `src/users/services.py` linee 45-55
+
+**Istruzioni PASSO-PASSO:**
+1. Aggiungere `import re` in cima al file (dopo gli altri import standard)
+2. Creare funzione `is_valid_email(email: str) -> bool` PRIMA di create_user
+3. Usare regex pattern RFC 5322 semplificato: `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+4. In create_user, aggiungere validazione come PRIMA riga della funzione
+5. Lanciare `ValueError` con messaggio che include l'email invalida
+
+**Contesto codice ATTUALE (OBBLIGATORIO):**
+```python
+# src/users/services.py
+from typing import Optional
+from .models import User
+from .exceptions import UserExistsError
+
+def create_user(email: str, name: str) -> User:
+    """Crea un nuovo utente nel sistema."""
+    if User.objects.filter(email=email).exists():
+        raise UserExistsError(f"User {email} already exists")
+    user = User(email=email, name=name)
+    user.save()
+    return user
+```
+
+**Pattern e convenzioni da seguire:**
+- Naming: snake_case per funzioni
+- Import: standard library first, then local imports
+- Docstring: già presente, mantenere stile Google
+- Exceptions: usare ValueError per input invalidi (pattern esistente)
+
+**Output atteso:**
+```python
+import re  # aggiunto
+
+def is_valid_email(email: str) -> bool:
+    """Valida formato email."""
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return bool(re.match(pattern, email))
+
+def create_user(email: str, name: str) -> User:
+    """Crea un nuovo utente nel sistema."""
+    if not is_valid_email(email):
+        raise ValueError(f"Invalid email format: {email}")
+    # resto invariato...
+```
+
+**NON modificare:**
+- La firma della funzione create_user
+- La logica di controllo UserExistsError
+- Altri file
+
+**Dipendenze:**
+- Questo task dipende da: nessuno
+- Altri task dipendono da questo: Task #5 (test)
+```
+
+#### 5.1.1 CHECKLIST VALIDAZIONE PRE-LANCIO (OBBLIGATORIA)
+
+**PRIMA di lanciare OGNI agente**, verifica che il tuo prompt contenga TUTTI questi elementi:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  CHECKLIST VALIDAZIONE PROMPT - NON LANCIARE SE INCOMPLETO     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  [ ] OBIETTIVO: Descrizione chiara e completa?                 │
+│      ❌ "Modifica il file" → troppo vago                        │
+│      ✅ "Aggiungi validazione email nella funzione X"          │
+│                                                                 │
+│  [ ] RAZIONALE: Spiegato PERCHÉ serve questa modifica?         │
+│      ❌ mancante                                                │
+│      ✅ "Per prevenire registrazioni con email malformate"     │
+│                                                                 │
+│  [ ] FILE + LINEE: Path esatto e range linee specifico?        │
+│      ❌ "modifica services.py"                                  │
+│      ✅ "src/users/services.py linee 45-60"                    │
+│                                                                 │
+│  [ ] CONTESTO CODICE: Hai incluso lo snippet ESISTENTE?        │
+│      ❌ mancante o "vedi file"                                  │
+│      ✅ Codice attuale copiato nel prompt                      │
+│                                                                 │
+│  [ ] ISTRUZIONI PASSO-PASSO: Azioni specifiche numerate?       │
+│      ❌ "implementa la validazione"                             │
+│      ✅ "1. Importa re  2. Crea funzione X  3. Chiama in Y"    │
+│                                                                 │
+│  [ ] PATTERN PROGETTO: Naming, import style, error handling?   │
+│      ❌ mancante                                                │
+│      ✅ "snake_case, import stdlib first, raise ValueError"    │
+│                                                                 │
+│  [ ] OUTPUT ATTESO: Esempio di come deve apparire il codice?   │
+│      ❌ mancante o descrizione testuale                         │
+│      ✅ Snippet di codice con risultato finale                 │
+│                                                                 │
+│  [ ] VINCOLI: Specificato cosa NON modificare?                 │
+│      ❌ mancante                                                │
+│      ✅ "NON modificare firma funzione, altri file"            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**SE MANCA ANCHE UN SOLO ELEMENTO:**
+1. **NON lanciare l'agente**
+2. Prima raccogli l'informazione mancante (leggi il file, analizza il contesto)
+3. Completa il prompt
+4. Poi lancia
+
+**RICORDA:** L'agente Sonnet NON ha il tuo contesto. Se il prompt è incompleto, farà scelte arbitrarie o fallirà. È sempre meglio spendere 30 secondi a completare il prompt che sprecare un intero ciclo agente.
 
 #### 5.2 Esecuzione Parallela
 

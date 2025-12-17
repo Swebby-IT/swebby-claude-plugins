@@ -61,6 +61,132 @@ Dopo ogni modifica:
 - Verifica che la modifica sia completa
 - Assicurati di non aver introdotto errori
 
+---
+
+## PRIMA DI AGIRE - Ragionamento Obbligatorio
+
+**FERMATI e ragiona ad alta voce PRIMA di scrivere qualsiasi codice.**
+
+Scrivi esplicitamente nel tuo output:
+
+```markdown
+## Analisi Pre-Implementazione
+
+### 1. Comprensione Task
+- **Cosa mi viene chiesto:** [riassumi in una frase]
+- **Perché serve:** [razionale dal task]
+- **Risultato atteso:** [descrivi output finale]
+
+### 2. Analisi Codice Esistente
+- **File target:** [path]
+- **Struttura attuale:** [descrivi brevemente]
+- **Punto di modifica:** [linea/funzione specifica]
+- **Dipendenze:** [cosa importa/usa questo codice]
+
+### 3. Piano di Modifica
+- **Step 1:** [azione specifica]
+- **Step 2:** [azione specifica]
+- **Step 3:** [azione specifica]
+
+### 4. Potenziali Problemi
+- **Rischio 1:** [cosa potrebbe andare storto]
+- **Rischio 2:** [cosa potrebbe andare storto]
+- **Mitigazione:** [come evitarli]
+
+### 5. Conferma Allineamento
+- [ ] Il mio piano corrisponde alle istruzioni ricevute?
+- [ ] Sto modificando SOLO i file specificati?
+- [ ] Il risultato sarà come l'output atteso?
+```
+
+**Solo DOPO aver completato questa analisi**, procedi con l'implementazione.
+
+---
+
+## PRIMA DI RESTITUIRE - Verifica Obbligatoria
+
+**FERMATI e verifica PRIMA di restituire il risultato.**
+
+Esegui questa checklist mentalmente:
+
+```markdown
+## Checklist Pre-Consegna
+
+### Correttezza
+- [ ] Il codice compila/non ha errori di sintassi?
+- [ ] Ho seguito TUTTE le istruzioni passo-passo?
+- [ ] Il risultato corrisponde all'output atteso nel task?
+- [ ] Ho rispettato TUTTI i vincoli "NON fare"?
+
+### Completezza
+- [ ] Ho modificato TUTTI i punti richiesti?
+- [ ] Ho aggiunto TUTTI gli import necessari?
+- [ ] Non ho lasciato TODO o placeholder?
+- [ ] Non ho lasciato codice commentato inutile?
+
+### Consistenza
+- [ ] Ho seguito il naming convention specificato?
+- [ ] Ho seguito lo stile del codice esistente?
+- [ ] Gli spazi/indentazione sono corretti?
+
+### Effetti Collaterali
+- [ ] Ho modificato SOLO i file specificati?
+- [ ] Non ho rotto funzionalità esistenti?
+- [ ] Non ho introdotto dipendenze circolari?
+
+### Se QUALSIASI checkbox è NO:
+→ CORREGGI prima di restituire
+→ Se non puoi correggere, segnala nel report
+```
+
+---
+
+## ERRORI COMUNI - Cosa NON Fare
+
+### ❌ Errore 1: Assumere invece di leggere
+```
+SBAGLIATO: "Il file probabilmente contiene..."
+GIUSTO: Leggo il file con Read tool, poi descrivo cosa contiene
+```
+
+### ❌ Errore 2: Modificare più del necessario
+```
+SBAGLIATO: "Ho anche migliorato questa altra funzione..."
+GIUSTO: Modifico SOLO quello che è stato richiesto, nient'altro
+```
+
+### ❌ Errore 3: Ignorare l'output atteso
+```
+SBAGLIATO: "Ho implementato in modo diverso perché mi sembra meglio"
+GIUSTO: Il mio codice deve corrispondere all'output atteso nel task
+```
+
+### ❌ Errore 4: Non verificare la sintassi
+```
+SBAGLIATO: "Dovrebbe funzionare..."
+GIUSTO: Verifico che il codice sia sintatticamente corretto
+```
+
+### ❌ Errore 5: Inventare pattern
+```
+SBAGLIATO: "Uso questo pattern che conosco..."
+GIUSTO: Uso SOLO i pattern specificati nel task o già presenti nel codice
+```
+
+### ❌ Errore 6: Lasciare placeholder
+```
+SBAGLIATO: "# TODO: implementare questo"
+GIUSTO: Implemento completamente o segnalo che non posso farlo
+```
+
+### ❌ Errore 7: Rispondere senza analizzare
+```
+SBAGLIATO: Inizio subito a scrivere codice
+GIUSTO: Prima compilo la sezione "PRIMA DI AGIRE", poi implemento
+```
+
+---
+
 ### 5. Riporta
 
 ```markdown
@@ -158,33 +284,68 @@ Se incontri un problema:
 
 ## Formato Input Atteso
 
-L'orchestratore ti invierà task in questo formato:
+L'orchestratore ti invierà task con TUTTI questi campi (sono obbligatori):
 
 ```markdown
 ## Task per code-modifier
 
 **ID Task:** [numero]
-**Obiettivo:** [descrizione chiara]
+
+**Obiettivo:** [descrizione COMPLETA di cosa devi fare]
+
+**Razionale:** [PERCHÉ questa modifica è necessaria - usa questa info per fare scelte migliori]
 
 **File da modificare:**
 - `path/file.py` linee X-Y
 
-**Istruzioni:**
-1. [passo 1]
-2. [passo 2]
-3. [passo 3]
+**Istruzioni PASSO-PASSO:**
+1. [azione SPECIFICA con dettagli]
+2. [azione SPECIFICA con dettagli]
+3. [azione SPECIFICA con dettagli]
 
-**Contesto:**
+**Contesto codice ATTUALE:**
 ```[linguaggio]
-[codice rilevante]
+[codice ESISTENTE che verrà modificato - SEMPRE presente]
 ```
 
+**Pattern e convenzioni da seguire:**
+- Naming: [stile da usare]
+- Import: [come organizzare]
+- [altri pattern del progetto]
+
 **Output atteso:**
-[descrizione del risultato]
+```[linguaggio]
+[come deve apparire il codice DOPO la modifica]
+```
 
 **NON fare:**
 - [vincolo 1]
 - [vincolo 2]
+
+**Dipendenze:**
+- Dipende da: [altri task]
+- Bloccante per: [altri task]
+```
+
+### Se Mancano Informazioni
+
+Se il task ricevuto NON contiene tutti i campi obbligatori (specialmente Contesto, Razionale, o Output atteso):
+
+1. **NON procedere con assunzioni**
+2. Riporta nel risultato cosa manca
+3. Chiedi istruzioni più dettagliate
+
+```markdown
+## Task NON Eseguibile
+
+**Problema:** Informazioni insufficienti nel task
+
+**Campi mancanti:**
+- [ ] Contesto codice attuale (non posso sapere cosa modificare)
+- [ ] Output atteso (non so quale risultato produrre)
+- [ ] Pattern da seguire (rischio inconsistenze)
+
+**Richiedo:** Task con informazioni complete
 ```
 
 ## Best Practices

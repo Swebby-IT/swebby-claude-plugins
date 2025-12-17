@@ -114,6 +114,39 @@ Applica le regole di scaling:
 - Agente 3: Gruppo C (file indipendente)
 ```
 
+### 2.3.1 REGOLA TASK ATOMICI (CRITICA)
+
+**Ogni task assegnato a un agente deve essere ATOMICO.**
+
+Un task atomico ha:
+- **UNA SOLA responsabilità** chiara
+- **Nessuna decisione ambigua** da prendere
+- **Input e output ben definiti** con esempi concreti
+
+```
+❌ NON ATOMICO: "Implementa validazione form"
+✅ ATOMICO: "Aggiungi validazione email in LoginForm.tsx linee 23-45
+            usando regex ^[a-z]+@[a-z]+\.[a-z]+$ già in utils/regex.ts"
+
+❌ NON ATOMICO: "Refactoring modulo auth"
+✅ ATOMICO: "Rinomina checkAuth() in validateSession() in auth.py:67"
+```
+
+**Decomposizione:**
+```
+Task complesso → Decomponi in N task atomici → N agenti paralleli
+
+"Aggiungi endpoint users" diventa:
+├── Task 1: Schema Pydantic (1 agente)
+├── Task 2: Service function (1 agente)
+├── Task 3: Route endpoint (1 agente)
+└── Task 4: Test (1 agente)
+```
+
+**Test atomicità:** Un junior developer potrebbe completarlo senza chiedere?
+- Sì → Task atomico, procedi
+- No → Decomponi ulteriormente
+
 ### 2.4 Se Incerto, CHIEDI
 
 Se hai dubbi su:
@@ -226,25 +259,186 @@ Per task con DIPENDENZE:
 
 ### 4.5 Formato Prompt per Agente
 
-```
+**REGOLA CRITICA:** I subagenti Sonnet NON hanno il contesto della conversazione.
+Devi fornire TUTTE le informazioni nel prompt. Se ometti dettagli, l'agente farà scelte arbitrarie.
+
+**Campi OBBLIGATORI per ogni task:**
+
+```markdown
 ## Task per [nome-agente]
 
-**Obiettivo:** [cosa deve fare]
+**Obiettivo:** [descrizione COMPLETA di cosa deve fare]
+
+**Razionale:** [PERCHÉ questa modifica - aiuta l'agente a fare scelte informate]
 
 **File da modificare:**
 - `path/file.py` linee X-Y
 
-**Istruzioni dettagliate:**
-1. [passo 1]
-2. [passo 2]
+**Istruzioni PASSO-PASSO:**
+1. [azione SPECIFICA con dettagli implementativi]
+2. [azione SPECIFICA con dettagli implementativi]
+3. [azione SPECIFICA con dettagli implementativi]
 
-**Contesto codice attuale:**
-[snippet rilevante]
-
-**NON fare:**
-- [vincolo 1]
-- [vincolo 2]
+**Contesto codice ATTUALE (SEMPRE INCLUDERE):**
+```[linguaggio]
+[snippet del codice ESISTENTE che verrà modificato]
+[includere anche contesto circostante se rilevante]
 ```
+
+**Pattern e convenzioni del progetto:**
+- Naming: [camelCase/snake_case/etc.]
+- Import style: [pattern usato]
+- Error handling: [come gestire errori]
+
+**Output atteso:**
+```[linguaggio]
+[come dovrebbe apparire il codice DOPO la modifica]
+```
+
+**NON modificare:**
+- [file/sezioni da non toccare]
+- [comportamenti da preservare]
+
+**Dipendenze:**
+- Dipende da: [Task #X / nessuno]
+- Bloccante per: [Task #Y / nessuno]
+```
+
+**ESEMPIO COMPLETO:**
+
+```markdown
+## Task per backend-developer-1
+
+**Obiettivo:** Aggiungere rate limiting all'endpoint /api/users/login
+
+**Razionale:** Prevenire attacchi brute-force. Attualmente non c'è limite ai tentativi
+di login, permettendo attacchi automatizzati.
+
+**File da modificare:**
+- `src/api/auth.py` linee 45-70
+
+**Istruzioni PASSO-PASSO:**
+1. Importare `from django.core.cache import cache` dopo gli altri import Django
+2. Creare costanti RATE_LIMIT_ATTEMPTS=5 e RATE_LIMIT_WINDOW=300 (5 min)
+3. Creare funzione `check_rate_limit(ip: str) -> bool` che usa cache
+4. In `login_view`, chiamare check_rate_limit PRIMA della validazione credenziali
+5. Se rate limit superato, restituire Response 429 con header Retry-After
+
+**Contesto codice ATTUALE (SEMPRE INCLUDERE):**
+```python
+# src/api/auth.py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib.auth import authenticate
+
+@api_view(['POST'])
+def login_view(request):
+    """Endpoint di login."""
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    user = authenticate(email=email, password=password)
+    if user is None:
+        return Response({'error': 'Invalid credentials'}, status=401)
+
+    token = generate_token(user)
+    return Response({'token': token})
+```
+
+**Pattern e convenzioni del progetto:**
+- Naming: snake_case per funzioni, UPPER_CASE per costanti
+- Import: Django imports first, then rest_framework, then local
+- Error responses: sempre dict con key 'error'
+- Cache keys: prefix con nome modulo, es. 'auth:rate_limit:{ip}'
+
+**Output atteso:**
+```python
+from django.core.cache import cache  # aggiunto
+
+RATE_LIMIT_ATTEMPTS = 5
+RATE_LIMIT_WINDOW = 300  # 5 minuti
+
+def check_rate_limit(ip: str) -> bool:
+    """Verifica se IP ha superato rate limit."""
+    key = f'auth:rate_limit:{ip}'
+    attempts = cache.get(key, 0)
+    return attempts < RATE_LIMIT_ATTEMPTS
+
+@api_view(['POST'])
+def login_view(request):
+    """Endpoint di login con rate limiting."""
+    ip = request.META.get('REMOTE_ADDR')
+
+    if not check_rate_limit(ip):
+        return Response(
+            {'error': 'Too many attempts'},
+            status=429,
+            headers={'Retry-After': str(RATE_LIMIT_WINDOW)}
+        )
+    # ... resto della logica
+```
+
+**NON modificare:**
+- La logica di authenticate()
+- Il formato della response di successo
+- Altri endpoint nel file
+
+**Dipendenze:**
+- Dipende da: nessuno
+- Bloccante per: Task #4 (test rate limiting)
+```
+
+### 4.6 CHECKLIST VALIDAZIONE PRE-LANCIO (OBBLIGATORIA)
+
+**PRIMA di lanciare OGNI agente**, verifica che il tuo prompt contenga TUTTI questi elementi:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  CHECKLIST VALIDAZIONE PROMPT - NON LANCIARE SE INCOMPLETO     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  [ ] OBIETTIVO: Descrizione chiara e completa?                 │
+│      ❌ "Modifica il file" → troppo vago                        │
+│      ✅ "Aggiungi validazione email nella funzione X"          │
+│                                                                 │
+│  [ ] RAZIONALE: Spiegato PERCHÉ serve questa modifica?         │
+│      ❌ mancante                                                │
+│      ✅ "Per prevenire registrazioni con email malformate"     │
+│                                                                 │
+│  [ ] FILE + LINEE: Path esatto e range linee specifico?        │
+│      ❌ "modifica services.py"                                  │
+│      ✅ "src/users/services.py linee 45-60"                    │
+│                                                                 │
+│  [ ] CONTESTO CODICE: Hai incluso lo snippet ESISTENTE?        │
+│      ❌ mancante o "vedi file"                                  │
+│      ✅ Codice attuale copiato nel prompt                      │
+│                                                                 │
+│  [ ] ISTRUZIONI PASSO-PASSO: Azioni specifiche numerate?       │
+│      ❌ "implementa la validazione"                             │
+│      ✅ "1. Importa re  2. Crea funzione X  3. Chiama in Y"    │
+│                                                                 │
+│  [ ] PATTERN PROGETTO: Naming, import style, error handling?   │
+│      ❌ mancante                                                │
+│      ✅ "snake_case, import stdlib first, raise ValueError"    │
+│                                                                 │
+│  [ ] OUTPUT ATTESO: Esempio di come deve apparire il codice?   │
+│      ❌ mancante o descrizione testuale                         │
+│      ✅ Snippet di codice con risultato finale                 │
+│                                                                 │
+│  [ ] VINCOLI: Specificato cosa NON modificare?                 │
+│      ❌ mancante                                                │
+│      ✅ "NON modificare firma funzione, altri file"            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**SE MANCA ANCHE UN SOLO ELEMENTO:**
+1. **NON lanciare l'agente**
+2. Prima raccogli l'informazione mancante (leggi il file, analizza il contesto)
+3. Completa il prompt
+4. Poi lancia
+
+**RICORDA:** L'agente Sonnet NON ha il tuo contesto. Se il prompt è incompleto, farà scelte arbitrarie o fallirà.
 
 ---
 
