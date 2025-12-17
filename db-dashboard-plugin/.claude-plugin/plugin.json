@@ -2,7 +2,7 @@
   "name": "db-dashboard",
   "version": "1.0.0",
   "description": "Plugin multi-agente per generare dashboard HTML con report da database PostgreSQL. Usa Opus per analisi e pianificazione query, Sonnet per generazione dashboard con Tailwind CSS v4 e grafici avanzati.",
-  "author": "Vincenzo",
+  "author": "Vincenzo Vigorito",
   "license": "MIT",
   "keywords": [
     "postgresql",
