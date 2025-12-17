@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "message": "IMPORTANTE - Multi-Agent Orchestrator attivo con 58 agenti Sonnet. Comandi: /implement, /plan, /analyze. Agenti: frontend-developer-1..20, backend-developer-1..20, code-modifier, code-reviewer, test-writer, bug-fixer, refactorer, api-developer, database-specialist, security-auditor, performance-optimizer, devops-agent, config-manager, dependency-manager, migration-specialist, integration-specialist, logger-agent, error-handler, code-cleaner, documentation-writer."
+            "prompt": "IMPORTANTE - Multi-Agent Orchestrator attivo con 58 agenti Sonnet. Comandi: /implement, /plan, /analyze. Agenti: frontend-developer-1..20, backend-developer-1..20, code-modifier, code-reviewer, test-writer, bug-fixer, refactorer, api-developer, database-specialist, security-auditor, performance-optimizer, devops-agent, config-manager, dependency-manager, migration-specialist, integration-specialist, logger-agent, error-handler, code-cleaner, documentation-writer."
           }
         ]
       }

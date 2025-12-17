@@ -1,6 +1,6 @@
 {
   "name": "django-orchestrator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Sistema di orchestrazione multi-agente per progetti Django. Opus pianifica, Sonnet esegue.",
   "author": {
     "name": "Maurizio Stabile",
