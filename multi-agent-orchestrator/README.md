@@ -2,13 +2,17 @@
 
 Sistema di orchestrazione multi-agente generico con auto-scaling intelligente per Claude Code.
 
+**Pattern di esecuzione:** Opus analizza e pianifica → Sonnet esegue tramite agenti
+
 ## Caratteristiche
 
+- **Separazione Opus/Sonnet**: Opus (orchestratore) per analisi e pianificazione, Sonnet (agenti) per esecuzione
 - **Discovery MCP Automatico**: Rileva automaticamente MCP semantici disponibili (code-search, sourcegraph, ecc.)
 - **Ricerca Intelligente**: Prima ricerca semantica, poi verifica con grep
 - **Pianificazione Dettagliata**: Crea piani completi con approvazione utente
 - **Auto-Scaling Agenti**: Calcola automaticamente il numero ottimale di agenti (1-20)
-- **Esecuzione Parallela**: Massimizza efficienza lanciando agenti indipendenti in parallelo
+- **Esecuzione Parallela**: Massimizza efficienza lanciando agenti Sonnet in parallelo
+- **Risparmio Token**: Contesti separati e puliti per ogni agente
 
 ## Installazione
 

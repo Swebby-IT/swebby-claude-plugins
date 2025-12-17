@@ -199,21 +199,32 @@ Per ogni agente, crea istruzioni complete:
 - Mantieni compatibilità con [X]
 ```
 
-### 4.2 Lancia Agenti
+### 4.2 Lancia Agenti Sonnet
 
-**Agenti INDIPENDENTI:** Lancia in PARALLELO con Task tool
+**IMPORTANTE:** Usa SEMPRE il Task tool con `subagent_type: "multi-agent-orchestrator:code-modifier"` per delegare l'esecuzione a Sonnet.
+
+**Agenti INDIPENDENTI:** Lancia in PARALLELO
 
 ```
-Per ogni gruppo indipendente:
-- Usa Task tool con run_in_background=true
-- Lancia tutti contemporaneamente
+Per ogni gruppo indipendente, in UN SINGOLO messaggio:
+- Task tool con subagent_type="multi-agent-orchestrator:code-modifier"
+- run_in_background=true per tutti
+- Lancia TUTTI contemporaneamente nello stesso messaggio
+```
+
+Esempio per 3 agenti paralleli (UN SOLO messaggio con 3 Task tool):
+```
+Task 1: subagent_type="multi-agent-orchestrator:code-modifier", run_in_background=true
+Task 2: subagent_type="multi-agent-orchestrator:code-modifier", run_in_background=true
+Task 3: subagent_type="multi-agent-orchestrator:code-modifier", run_in_background=true
 ```
 
 **Agenti con DIPENDENZE:** Lancia in SEQUENZA
 
 ```
 Per gruppi con dipendenze:
-- Attendi completamento agente precedente
+- Lancia con Task tool (subagent_type="multi-agent-orchestrator:code-modifier")
+- Attendi completamento con TaskOutput
 - Verifica risultato
 - Poi lancia il successivo
 ```
