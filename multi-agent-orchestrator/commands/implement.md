@@ -169,46 +169,82 @@ Chiedi:
 
 ## FASE 4: Esecuzione Multi-Agente
 
-### 4.1 Delegazione ai Subagenti
+### REGOLA CRITICA: USA SEMPRE IL TASK TOOL
 
-Per ogni task nel piano approvato, **delega a code-modifier** con istruzioni precise.
+**NON modificare MAI il codice direttamente.** Per OGNI modifica devi:
+1. Usare il **Task tool**
+2. Con `subagent_type` appropriato (vedi lista agenti sotto)
+3. Il subagent Sonnet eseguirà la modifica
 
-Esempio di delegazione:
+### 4.1 Agenti Disponibili
+
+Scegli l'agente appropriato per ogni task:
+
+| Tipo Task | subagent_type |
+|-----------|---------------|
+| Modifiche frontend/UI | `multi-agent-orchestrator:frontend-developer-1` (fino a -20) |
+| Modifiche backend/logic | `multi-agent-orchestrator:backend-developer-1` (fino a -20) |
+| Modifiche generiche | `multi-agent-orchestrator:code-modifier` |
+| Bug fix | `multi-agent-orchestrator:bug-fixer` |
+| Refactoring | `multi-agent-orchestrator:refactorer` |
+| Test | `multi-agent-orchestrator:test-writer` |
+| Review | `multi-agent-orchestrator:code-reviewer` |
+| API | `multi-agent-orchestrator:api-developer` |
+| Database | `multi-agent-orchestrator:database-specialist` |
+
+### 4.2 Come Lanciare un Agente
+
+Per OGNI task, usa il Task tool così:
+
 ```
-Delego a code-modifier:
+Task tool:
+- subagent_type: "multi-agent-orchestrator:backend-developer-1"
+- prompt: "Task: [descrizione]\nFile: [path]\nIstruzioni: [dettagli]\nContesto: [codice]"
+```
 
-**Task:** Aggiungere validazione input nella funzione processOrder
-**File da modificare:** src/orders/processor.py linee 45-60
-**Specifiche:**
-- Aggiungere controllo null per parametro `items`
-- Validare che `total` sia positivo
-- Lanciare ValueError con messaggio descrittivo se invalido
+### 4.3 Task Paralleli (IMPORTANTE)
 
-**Contesto:**
-[snippet del codice attuale]
+Per task INDIPENDENTI, lancia TUTTI gli agenti in UN SINGOLO messaggio:
+
+```
+Messaggio con 3 Task tool simultanei:
+
+Task 1: subagent_type="multi-agent-orchestrator:backend-developer-1", prompt="..."
+Task 2: subagent_type="multi-agent-orchestrator:backend-developer-2", prompt="..."
+Task 3: subagent_type="multi-agent-orchestrator:frontend-developer-1", prompt="..."
+```
+
+**USA agenti numerati diversi** per task paralleli (backend-developer-1, backend-developer-2, ecc.)
+
+### 4.4 Task Sequenziali
+
+Per task con DIPENDENZE:
+1. Lancia il primo agente
+2. Attendi completamento con TaskOutput
+3. Verifica risultato
+4. Poi lancia il successivo
+
+### 4.5 Formato Prompt per Agente
+
+```
+## Task per [nome-agente]
+
+**Obiettivo:** [cosa deve fare]
+
+**File da modificare:**
+- `path/file.py` linee X-Y
+
+**Istruzioni dettagliate:**
+1. [passo 1]
+2. [passo 2]
+
+**Contesto codice attuale:**
+[snippet rilevante]
 
 **NON fare:**
-- Non modificare altre funzioni
-- Non aggiungere import non necessari
+- [vincolo 1]
+- [vincolo 2]
 ```
-
-### 4.2 Task Paralleli vs Sequenziali
-
-**Task INDIPENDENTI:** Lancia in PARALLELO
-- Delega tutti i task indipendenti contemporaneamente
-- Ogni task va a un'istanza separata di code-modifier
-
-**Task con DIPENDENZE:** Lancia in SEQUENZA
-- Attendi completamento del task precedente
-- Verifica risultato
-- Poi delega il successivo
-
-### 4.3 Monitora Esecuzione
-
-Per ogni task delegato:
-1. Attendi il completamento
-2. Verifica il risultato riportato dall'agente
-3. Se errore, decidi se ri-delegare con istruzioni corrette
 
 ---
 
@@ -272,9 +308,10 @@ Se ci sono conflitti tra modifiche:
 
 ## Regole Fondamentali
 
-1. **MAI** saltare la fase di discovery MCP
-2. **SEMPRE** verificare con grep anche dopo ricerca semantica
-3. **MAI** procedere senza piano approvato
-4. **SEMPRE** usare i subagenti (code-modifier) per l'esecuzione
-5. **SEMPRE** verificare i risultati di ogni subagent
-6. **SEMPRE** lanciare in parallelo task indipendenti
+1. **MAI** modificare codice direttamente - USA SEMPRE Task tool con subagent_type
+2. **MAI** saltare la fase di discovery MCP
+3. **SEMPRE** verificare con grep anche dopo ricerca semantica
+4. **MAI** procedere senza piano approvato
+5. **SEMPRE** usare Task tool per delegare a subagenti Sonnet
+6. **SEMPRE** verificare i risultati di ogni subagent
+7. **SEMPRE** lanciare in parallelo task indipendenti (multipli Task tool in un messaggio)

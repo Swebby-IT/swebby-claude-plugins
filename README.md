@@ -20,7 +20,7 @@ Marketplace di plugin per Claude Code con orchestrazione multi-agente.
 
 | Plugin | Versione | Descrizione |
 |--------|----------|-------------|
-| multi-agent-orchestrator | 1.2.4 | 58 agenti Sonnet specializzati (20 frontend, 20 backend, 18 specialist) |
+| multi-agent-orchestrator | 1.2.5 | 58 agenti Sonnet specializzati (20 frontend, 20 backend, 18 specialist) |
 | django-orchestrator | 1.0.5 | Orchestrazione multi-agente per Django |
 
 ## Licenza

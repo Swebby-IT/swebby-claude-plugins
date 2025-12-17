@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "IMPORTANTE - Multi-Agent Orchestrator attivo con 58 agenti Sonnet. Comandi: /implement, /plan, /analyze. Agenti: frontend-developer-1..20, backend-developer-1..20, code-modifier, code-reviewer, test-writer, bug-fixer, refactorer, api-developer, database-specialist, security-auditor, performance-optimizer, devops-agent, config-manager, dependency-manager, migration-specialist, integration-specialist, logger-agent, error-handler, code-cleaner, documentation-writer."
+            "prompt": "REGOLA CRITICA: NON modificare MAI codice direttamente. USA SEMPRE il Task tool con subagent_type per delegare a Sonnet. Agenti: multi-agent-orchestrator:frontend-developer-1..20, multi-agent-orchestrator:backend-developer-1..20, multi-agent-orchestrator:code-modifier, ecc. Per task paralleli: lancia multipli Task tool in UN SINGOLO messaggio."
           }
         ]
       }
