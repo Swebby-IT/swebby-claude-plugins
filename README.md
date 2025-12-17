@@ -22,7 +22,7 @@ Marketplace di plugin per Claude Code con orchestrazione multi-agente.
 |--------|----------|-------------|
 | multi-agent-orchestrator | 1.2.5 | 58 agenti Sonnet specializzati (20 frontend, 20 backend, 18 specialist) |
 | django-orchestrator | 1.0.5 | Orchestrazione multi-agente per Django |
-| db-dashboard | 1.0.0 | Dashboard HTML da PostgreSQL con Tailwind CSS v4 e grafici |
+| db-dashboard | 1.0.1 | Dashboard HTML da PostgreSQL con Tailwind CSS v4 e grafici |
 
 ## Licenza
 

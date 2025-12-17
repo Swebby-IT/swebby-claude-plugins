@@ -33,7 +33,7 @@
       "description": "Genera dashboard HTML con report da database PostgreSQL. Opus analizza, Sonnet genera con Tailwind CSS v4 e grafici.",
       "source": "./db-dashboard-plugin",
       "category": "development",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "Vincenzo Vigorito"
       }
