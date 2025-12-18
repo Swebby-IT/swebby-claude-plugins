@@ -9,6 +9,40 @@ Stai per implementare: **$ARGUMENTS**
 
 ---
 
+## REGOLA FONDAMENTALE - DELEGA OBBLIGATORIA
+
+**NON MODIFICARE MAI CODICE DIRETTAMENTE.**
+
+Questo comando e' un ORCHESTRATORE. Il tuo ruolo e':
+1. Analizzare e pianificare
+2. Delegare OGNI modifica ai subagenti specializzati
+3. Coordinare e verificare
+
+**Per OGNI modifica di codice, DEVI usare il Task tool:**
+
+| Tipo Modifica | Subagent |
+|---------------|----------|
+| Django (models, views, serializers, urls, forms) | `architect:django-developer` |
+| Vue (components, stores, composables) | `architect:vue-developer` |
+| Tailwind/CSS (classi, stili, spacing) | `architect:tailwind-developer` |
+| Test (pytest, vitest) | `architect:test-writer` |
+| Review finale | `architect:code-reviewer` |
+
+**Esempio CORRETTO:**
+```
+Task tool con subagent_type: architect:tailwind-developer
+prompt: "Aggiungi mb-2 ai label nel file X linee Y-Z"
+```
+
+**Esempio SBAGLIATO:**
+```
+Edit tool direttamente sul file  <-- MAI FARE QUESTO
+```
+
+Se fai modifiche dirette senza delegare, stai violando il principio del plugin.
+
+---
+
 ## FASE 1: Identificazione Piano
 
 ### 1.1 Se $ARGUMENTS = "recent" o path piano

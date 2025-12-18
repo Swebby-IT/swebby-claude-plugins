@@ -43,7 +43,7 @@
       "description": "Plugin completo pianificazione + implementazione. Crea piani, diagrammi Mermaid, esegue con agenti Django/Vue/Tailwind. Opus pianifica, Sonnet esegue.",
       "source": "./architect-plugin",
       "category": "development",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "author": {
         "name": "Maurizio Stabile"
       }
