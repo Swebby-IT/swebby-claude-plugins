@@ -1,11 +1,44 @@
 ---
 description: Implementa una feature con orchestrazione intelligente multi-agente (analisi MCP → piano → auto-scaling → esecuzione parallela)
-argument-hint: "<descrizione della modifica da implementare>"
+argument-hint: "<descrizione della modifica da implementare> [--model=sonnet|opus|haiku]"
 ---
 
 # Comando: Implementa con Multi-Agent Orchestration
 
 Stai per implementare: **$ARGUMENTS**
+
+## FASE 0: Parsing Parametri
+
+### 0.1 Estrai il Modello
+
+Analizza `$ARGUMENTS` per estrarre il parametro `--model`:
+
+```
+Cerca pattern: --model=sonnet | --model=opus | --model=haiku
+
+Se trovato:
+  MODELLO_AGENTI = [valore estratto]
+  DESCRIZIONE_TASK = $ARGUMENTS senza --model=...
+
+Se NON trovato:
+  MODELLO_AGENTI = sonnet (default)
+  DESCRIZIONE_TASK = $ARGUMENTS
+```
+
+**Modelli disponibili:**
+| Modello | Uso Consigliato | Costo Relativo |
+|---------|-----------------|----------------|
+| `haiku` | Task semplici, economico | $ |
+| `sonnet` | Task standard, bilanciato (DEFAULT) | $$ |
+| `opus` | Task complessi, massima qualità | $$$ |
+
+Registra:
+```markdown
+**Modello selezionato:** [sonnet/opus/haiku]
+**Task da implementare:** [descrizione senza parametro]
+```
+
+---
 
 ## FASE 1: Discovery MCP
 
@@ -65,6 +98,77 @@ Leggi i file identificati per comprendere:
 - Pattern e convenzioni usate
 - Dipendenze e import
 - Punti di modifica necessari
+
+---
+
+## FASE 1.5: Analisi Dipendenze (CRITICA)
+
+### 1.5.1 Costruisci il Grafo delle Dipendenze
+
+**PRIMA di pianificare**, analizza le dipendenze tra i file identificati:
+
+1. **Estrai Import** per ogni file:
+   ```
+   Python: from X import Y, import X
+   JS/TS: import { } from '...', require('...')
+   ```
+
+2. **Mappa le Dipendenze**:
+   ```markdown
+   | File | Importa da | Importato da |
+   |------|------------|--------------|
+   | models/user.py | - | services/user.py, routes/user.py |
+   | services/user.py | models/user.py | routes/user.py |
+   | routes/user.py | services/user.py, models/user.py | - |
+   ```
+
+3. **Identifica Ordine di Modifica** (Topological Sort):
+   - File "foglia" (senza dipendenze) → modificare PRIMA
+   - File che dipendono da altri → modificare DOPO
+
+   ```
+   Ordine corretto:
+   1. models/user.py (foglia - nessuna dipendenza)
+   2. services/user.py (dipende da models)
+   3. routes/user.py (dipende da services + models)
+   ```
+
+4. **Rileva Dipendenze Circolari**:
+   - Se A importa B e B importa A → **STESSO AGENTE** per entrambi
+   - Cicli complessi → raggruppa tutto il ciclo in UN agente
+
+### 1.5.2 Output Analisi Dipendenze
+
+```markdown
+## Grafo Dipendenze
+
+### Visualizzazione
+```
+models/user.py (foglia)
+    ↓
+services/user.py
+    ↓
+routes/user.py
+    ↓
+tests/test_user.py
+```
+
+### Implicazioni per Parallelismo
+- **NON parallelizzabili:** modifiche su file con dipendenze dirette
+- **Parallelizzabili:** modifiche su file senza dipendenze reciproche
+
+### Ordine Esecuzione Consigliato
+1. models/user.py → 2. services/user.py → 3. routes/user.py → 4. tests/
+   (SEQUENZIALE per catena dipendenze)
+
+oppure:
+
+frontend/component.vue | backend/api.py | utils/helper.py
+   (PARALLELO - nessuna dipendenza reciproca)
+```
+
+**REGOLA CRITICA:** Se il grafo mostra dipendenze, rispetta l'ordine.
+NON lanciare in parallelo file che hanno dipendenze tra loro.
 
 ---
 
@@ -189,7 +293,35 @@ Se hai dubbi su:
 - **Sezioni totali:** M
 - **Agenti necessari:** X
 - **Esecuzione:** Parallela/Mista/Sequenziale
+
+### Stima Costi
+| Task | Agente | Modello | Complessità | Costo Stimato |
+|------|--------|---------|-------------|---------------|
+| #1 | backend-dev-1 | [MODELLO] | Media | ~$X.XX |
+| #2 | frontend-dev-1 | [MODELLO] | Bassa | ~$X.XX |
+| **TOTALE** | | | | **~$X.XX** |
 ```
+
+### 3.1.1 Calcolo Costi
+
+Usa questa tabella per stimare i costi:
+
+| Modello | Costo Base/Task |
+|---------|-----------------|
+| haiku   | ~$0.01          |
+| sonnet  | ~$0.05          |
+| opus    | ~$0.25          |
+
+**Moltiplicatori complessità:**
+- Semplice (1-10 linee): 1x
+- Media (10-50 linee): 2x
+- Complessa (50+ linee): 3x
+
+**Formula:** `costo_task = costo_base × moltiplicatore_complessità`
+
+**Warning automatici:**
+- Se costo totale > $0.50 → Mostra avviso: "⚠️ Costo stimato elevato"
+- Se costo totale > $1.00 → Mostra avviso: "⚠️⚠️ Costo molto elevato - considera --model=haiku per task semplici"
 
 ### 3.2 FERMATI E ASPETTA APPROVAZIONE
 
@@ -232,8 +364,14 @@ Per OGNI task, usa il Task tool così:
 ```
 Task tool:
 - subagent_type: "multi-agent-orchestrator:backend-developer-1"
+- model: MODELLO_AGENTI  ← USA IL MODELLO ESTRATTO IN FASE 0
 - prompt: "Task: [descrizione]\nFile: [path]\nIstruzioni: [dettagli]\nContesto: [codice]"
 ```
+
+**IMPORTANTE:** Passa SEMPRE il parametro `model` con il valore estratto dalla FASE 0:
+- Se utente ha specificato `--model=opus` → `model: "opus"`
+- Se utente ha specificato `--model=haiku` → `model: "haiku"`
+- Se nessun parametro (default) → `model: "sonnet"`
 
 ### 4.3 Task Paralleli (IMPORTANTE)
 
@@ -255,7 +393,46 @@ Per task con DIPENDENZE:
 1. Lancia il primo agente
 2. Attendi completamento con TaskOutput
 3. Verifica risultato
-4. Poi lancia il successivo
+4. **Estrai contesto condiviso** (vedi 4.4.1)
+5. Poi lancia il successivo con contesto
+
+### 4.4.1 Shared Context Buffer (IMPORTANTE)
+
+Quando esegui task SEQUENZIALI (con dipendenze), passa il contesto tra agenti:
+
+**Dopo che Agente N completa, estrai:**
+- Naming usati (es. `user_id` non `userId`)
+- Pattern implementati (es. come gestisce errori)
+- Strutture dati create (es. nuovi campi, tipi)
+- Costanti/configurazioni aggiunte
+
+**Aggiungi al prompt di Agente N+1:**
+
+```markdown
+**Contesto da task precedenti:**
+- Task #1 ha creato: `class UserSchema` con campo `email_verified: bool`
+- Naming convention usata: snake_case
+- Pattern errori: `raise HTTPException(status_code=X, detail=Y)`
+- Import aggiunti: `from pydantic import BaseModel`
+```
+
+**Per task PARALLELI:**
+- NON puoi passare contesto (eseguono insieme)
+- Quindi specifica **pattern e convenzioni IDENTICI** in tutti i prompt
+- Usa la sezione "Pattern e convenzioni" per garantire coerenza
+
+**Esempio flusso con context buffer:**
+```
+Task #1 (models/user.py) → Completa
+    ↓
+Estrai: "creato campo 'status: UserStatus' enum con ACTIVE, INACTIVE, BANNED"
+    ↓
+Task #2 (services/user.py) → Riceve contesto: "usa UserStatus.ACTIVE etc."
+    ↓
+Estrai: "creato metodo 'change_status(user_id, new_status)'"
+    ↓
+Task #3 (routes/user.py) → Riceve contesto completo da #1 e #2
+```
 
 ### 4.5 Formato Prompt per Agente
 

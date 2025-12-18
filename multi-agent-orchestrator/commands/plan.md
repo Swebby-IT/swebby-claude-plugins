@@ -1,11 +1,33 @@
 ---
 description: Crea un piano dettagliato con calcolo automatico agenti, senza eseguire modifiche
-argument-hint: "<descrizione della modifica da pianificare>"
+argument-hint: "<descrizione della modifica da pianificare> [--model=sonnet|opus|haiku]"
 ---
 
 # Comando: Pianifica con Auto-Scaling
 
 Stai pianificando: **$ARGUMENTS**
+
+## Step 0: Parsing Parametri
+
+Analizza `$ARGUMENTS` per estrarre il parametro `--model`:
+
+```
+Se trovato --model=sonnet|opus|haiku:
+  MODELLO_AGENTI = [valore]
+  DESCRIZIONE = $ARGUMENTS senza --model=...
+Altrimenti:
+  MODELLO_AGENTI = sonnet (default)
+  DESCRIZIONE = $ARGUMENTS
+```
+
+**Modelli disponibili:**
+| Modello | Uso | Costo |
+|---------|-----|-------|
+| haiku | Task semplici | $ |
+| sonnet | Standard (DEFAULT) | $$ |
+| opus | Task complessi | $$$ |
+
+---
 
 ## Istruzioni
 
@@ -74,6 +96,39 @@ Se non disponibile:
 1. `path/file1.py` - [motivo]
 2. `path/file2.py` - [motivo]
 ```
+
+---
+
+## Step 2.5: Analisi Dipendenze
+
+### 2.5.1 Costruisci Grafo Dipendenze
+
+Per ogni file identificato, analizza gli import:
+
+```markdown
+| File | Importa da | Importato da |
+|------|------------|--------------|
+| models/user.py | - | services/, routes/ |
+| services/user.py | models/user.py | routes/user.py |
+| routes/user.py | services/, models/ | - |
+```
+
+### 2.5.2 Determina Ordine Esecuzione
+
+```
+Ordine (topological sort):
+1. models/user.py (foglia)
+2. services/user.py (dipende da 1)
+3. routes/user.py (dipende da 1, 2)
+
+Implicazioni:
+- Se modifichi models → devi modificare PRIMA di services
+- Task con dipendenze = SEQUENZIALI (non paralleli)
+```
+
+### 2.5.3 Rileva Cicli
+
+Se A importa B e B importa A → stesso agente per entrambi.
 
 ---
 
@@ -213,6 +268,18 @@ Mostra come cambierebbe con requisiti diversi:
 [tabella gruppi]
 
 **TOTALE: N AGENTI**
+
+### Modello Selezionato
+**[MODELLO_AGENTI]** (default: sonnet)
+
+### Stima Costi
+| Task | Agente | Modello | Complessità | Costo |
+|------|--------|---------|-------------|-------|
+| #1 | backend-1 | [MODELLO] | Media | ~$X.XX |
+| #2 | frontend-1 | [MODELLO] | Bassa | ~$X.XX |
+| **Totale** | | | | **~$X.XX** |
+
+*Costi: haiku=$0.01, sonnet=$0.05, opus=$0.25 × complessità (1x/2x/3x)*
 
 ### Strategia Esecuzione
 ```

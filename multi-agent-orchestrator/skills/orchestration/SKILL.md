@@ -2,6 +2,24 @@
 
 Questa skill fornisce orchestrazione intelligente multi-agente con auto-scaling basato sulla complessità del task.
 
+## Scelta del Modello per gli Agenti
+
+I comandi `/implement` e `/plan` supportano il parametro `--model`:
+
+```
+/implement <task> --model=sonnet    # Default - bilanciato
+/implement <task> --model=opus      # Massima qualità
+/implement <task> --model=haiku     # Economico
+```
+
+| Modello | Quando Usare | Costo Relativo |
+|---------|--------------|----------------|
+| **haiku** | Task semplici, rename, fix minori | $ |
+| **sonnet** | Task standard, feature medie (DEFAULT) | $$ |
+| **opus** | Task complessi, refactoring critici, decisioni architetturali | $$$ |
+
+Il modello selezionato viene passato a TUTTI gli agenti lanciati.
+
 ## Quando Usare Questa Skill
 
 Attiva questa skill quando:
@@ -58,6 +76,55 @@ STEP 2: Glob per struttura
 
 STEP 3: Lettura file
 - Leggi i file identificati
+```
+
+### 2.5 FASE DIPENDENZE: Analisi Grafo (CRITICA)
+
+**PRIMA di pianificare**, costruisci il grafo delle dipendenze tra i file identificati:
+
+#### 2.5.1 Estrazione Import
+
+Per ogni file da modificare, identifica:
+- **Python:** `from X import Y`, `import X`
+- **JS/TS:** `import { } from '...'`, `require('...')`
+- **Altri:** pattern di import specifici del linguaggio
+
+#### 2.5.2 Costruzione Grafo
+
+```markdown
+| File | Importa da | Importato da |
+|------|------------|--------------|
+| models/user.py | - | services/, routes/ |
+| services/user.py | models/user.py | routes/user.py |
+| routes/user.py | services/, models/ | - |
+```
+
+#### 2.5.3 Topological Sort
+
+Ordina i file per ordine di modifica:
+1. **File foglia** (nessuna dipendenza) → modificare PRIMA
+2. **File intermedi** (dipendono da foglie) → modificare DOPO
+3. **File radice** (dipendono da tutti) → modificare ULTIMO
+
+```
+Esempio:
+models/ → services/ → routes/ → tests/
+   1          2           3         4
+```
+
+#### 2.5.4 Rilevamento Cicli
+
+Se `A importa B` e `B importa A`:
+- **Dipendenza circolare** rilevata
+- Entrambi i file devono essere modificati dallo **STESSO agente**
+- NON possono essere parallelizzati
+
+#### 2.5.5 Implicazioni per Parallelismo
+
+```
+File con dipendenze dirette  → SEQUENZIALE (rispetta ordine)
+File senza dipendenze        → PARALLELO (massima efficienza)
+File in ciclo               → STESSO AGENTE
 ```
 
 ### 3. FASE PIANIFICAZIONE: Piano Dettagliato
@@ -246,6 +313,49 @@ File: handlers.py
 → 15 AGENTI (uno per file)
 ```
 
+### 4.5 STIMA COSTI
+
+Prima di chiedere approvazione, calcola il costo stimato:
+
+#### Tabella Costi Base
+
+| Modello | Costo per Task |
+|---------|----------------|
+| haiku   | ~$0.01         |
+| sonnet  | ~$0.05         |
+| opus    | ~$0.25         |
+
+#### Moltiplicatori Complessità
+
+| Complessità | Linee | Moltiplicatore |
+|-------------|-------|----------------|
+| Semplice    | 1-10  | 1x             |
+| Media       | 10-50 | 2x             |
+| Complessa   | 50+   | 3x             |
+
+#### Formula
+
+```
+costo_task = costo_base_modello × moltiplicatore_complessità
+costo_totale = Σ(costo_task per ogni agente)
+```
+
+#### Output nel Piano
+
+```markdown
+### Stima Costi
+| Task | Agente | Modello | Complessità | Costo |
+|------|--------|---------|-------------|-------|
+| #1 | backend-1 | sonnet | Media | ~$0.10 |
+| #2 | frontend-1 | sonnet | Semplice | ~$0.05 |
+| **Totale** | | | | **~$0.15** |
+```
+
+#### Warning Automatici
+
+- Costo > $0.50 → "⚠️ Costo elevato"
+- Costo > $1.00 → "⚠️⚠️ Molto elevato - considera --model=haiku"
+
 ### 5. FASE ESECUZIONE: Lancio Agenti
 
 #### 5.1 Preparazione Task per Agente
@@ -421,6 +531,48 @@ Task indipendenti → Lancia in PARALLELO (max efficienza)
 Task con dipendenze → Lancia in SEQUENZA
 
 Usa Task tool con run_in_background=true per parallelismo
+```
+
+#### 5.3 Shared Context Buffer (per Task Sequenziali)
+
+Quando esegui task con DIPENDENZE (sequenziali), mantieni un buffer di contesto condiviso:
+
+##### Dopo che Agente N completa:
+
+1. **Estrai decisioni chiave:**
+   - Naming usati (es. `user_id` non `userId`)
+   - Pattern implementati (es. error handling)
+   - Strutture dati create (es. nuovi campi, enum)
+   - Import aggiunti
+
+2. **Aggiungi al prompt di Agente N+1:**
+
+```markdown
+**Contesto da task precedenti:**
+- Task #1 ha creato: `class UserSchema` con campo `email_verified: bool`
+- Naming: snake_case
+- Pattern errori: `raise HTTPException(status_code=X, detail=Y)`
+- Import: `from pydantic import BaseModel`
+```
+
+##### Per Task Paralleli:
+
+- NON puoi passare contesto (eseguono insieme)
+- Specifica pattern e convenzioni **IDENTICI** in tutti i prompt
+- Usa la sezione "Pattern e convenzioni" per garantire coerenza
+
+##### Esempio Flusso
+
+```
+Task #1 (models/) → Completa
+    ↓
+Estrai: "creato enum UserStatus con ACTIVE, INACTIVE"
+    ↓
+Task #2 (services/) → Riceve: "usa UserStatus.ACTIVE"
+    ↓
+Estrai: "creato change_status(user_id, status)"
+    ↓
+Task #3 (routes/) → Riceve contesto completo
 ```
 
 ### 6. FASE VERIFICA: Controllo Risultati
