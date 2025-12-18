@@ -34,7 +34,7 @@ Ho rilevato che hai già un MCP per la ricerca semantica configurato:
 ✅ Code-search OK - Salto alla verifica database...
 ```
 
-**SALTA a FASE 7** - Procedi con rilevamento database.
+**SALTA a FASE 7** - Procedi con rilevamento database, poi continua con FASE 8, 9, 10.
 
 ---
 
@@ -301,10 +301,10 @@ curl -s http://127.0.0.1:6333/collections
 node /opt/qdrant-mcp-server/build/index.js --help 2>&1 | head -5
 ```
 
-### 6.2 Report Finale
+### 6.2 Report Intermedio Code-Search
 
 ```markdown
-## Setup Completato
+## Code-Search Installato
 
 ### Componenti Installati
 - [x] Docker: funzionante
@@ -316,27 +316,9 @@ node /opt/qdrant-mcp-server/build/index.js --help 2>&1 | head -5
 - **Provider:** [provider]
 - **Modello:** [model]
 - **Path indicizzato:** [path]
-
-### Prossimi Passi
-1. **Riavvia Claude Code** per caricare il nuovo MCP
-2. L'indicizzazione inizierà automaticamente
-3. Usa `/implement` - la ricerca semantica sarà attiva
-
-### Comandi Utili
-```bash
-# Verifica stato Qdrant
-docker ps | grep qdrant
-
-# Log Qdrant
-docker logs qdrant
-
-# Riavvia Qdrant
-docker restart qdrant
-
-# Verifica collezioni
-curl http://127.0.0.1:6333/collections
 ```
-```
+
+**Procedi con FASE 7** per configurare database e memoria.
 
 ---
 
@@ -472,9 +454,13 @@ grep -E "^(DATABASE_URL|POSTGRES_|MYSQL_|MARIADB_|DB_)" .env 2>/dev/null
 
 Aggiungi la configurazione del database a `~/.claude/settings.json` insieme a code-search.
 
+**IMPORTANTE: Procedi SEMPRE con FASE 8** - La configurazione mem0 è parte essenziale del setup.
+
 ---
 
 ## FASE 8: Configurazione Memoria (mem0)
+
+**ESEGUI SEMPRE questa fase**, sia dopo installazione code-search che se code-search era già configurato.
 
 ### 8.1 Chiedi se Configurare Memoria
 
@@ -533,6 +519,8 @@ mcp__memory__delete_memory   # Elimina un ricordo
 ### 8.4 Aggiungi a Settings
 
 Aggiungi la configurazione mem0 a `~/.claude/settings.json` insieme agli altri MCP.
+
+**Procedi con FASE 9.**
 
 ---
 
@@ -677,6 +665,8 @@ mcp-index daemon /path
 - MCP Server Log: /tmp/mcp-server.log
 - Watch Log: /tmp/mcp-watch.log
 ```
+
+**Procedi con FASE 10.**
 
 ---
 
