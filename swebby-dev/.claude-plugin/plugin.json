@@ -1,6 +1,6 @@
 {
   "name": "swebby-dev",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Plugin multi-modalita per sviluppo software: Architect, Code, Ask, Orchestrator, Debug, Sensei",
   "author": {
     "name": "Maurizio Stabile",
