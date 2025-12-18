@@ -5,6 +5,38 @@ argument-hint: "<descrizione della modifica da implementare> [--model=sonnet|opu
 
 # Comando: Implementa con Multi-Agent Orchestration
 
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║   🚨🚨🚨  REGOLE ASSOLUTE - LEGGI PRIMA DI FARE QUALSIASI COSA  🚨🚨🚨      ║
+║                                                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║   TU (orchestratore) NON DEVI MAI MODIFICARE CODICE DIRETTAMENTE.            ║
+║                                                                              ║
+║   ❌ VIETATO USARE: Edit, Write, Update, NotebookEdit                        ║
+║   ❌ VIETATO: Modificare file senza passare da un subagent                   ║
+║   ❌ VIETATO: Procedere senza approvazione utente (FASE 3.2)                 ║
+║                                                                              ║
+║   ✅ OBBLIGATORIO: Usare SOLO Task tool con subagent_type                    ║
+║   ✅ OBBLIGATORIO: Fermarsi a FASE 3.2 e chiedere approvazione               ║
+║   ✅ OBBLIGATORIO: Delegare OGNI modifica a un agente specializzato          ║
+║                                                                              ║
+║   IL TUO RUOLO È:                                                            ║
+║   - Analizzare e pianificare                                                 ║
+║   - Leggere file (Read, Grep, Glob) per capire il contesto                   ║
+║   - Creare il piano e chiedere approvazione                                  ║
+║   - Lanciare subagent tramite Task tool per OGNI modifica                    ║
+║   - Verificare i risultati                                                   ║
+║                                                                              ║
+║   IL TUO RUOLO NON È:                                                        ║
+║   - Scrivere codice direttamente                                             ║
+║   - Usare Edit/Write/Update                                                  ║
+║   - Bypassare i subagent "per semplicità"                                    ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
 Stai per implementare: **$ARGUMENTS**
 
 ## FASE 0: Parsing Parametri
