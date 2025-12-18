@@ -25,6 +25,7 @@ cp -r multi-agent-orchestrator ~/.claude/plugins/
 
 | Comando | Descrizione |
 |---------|-------------|
+| `/setup` | Configura MCP code-search con Qdrant per ricerca semantica |
 | `/implement <desc> [--model=X]` | Workflow completo: discovery → analisi → piano → scaling → esecuzione |
 | `/plan <desc> [--model=X]` | Solo pianificazione con calcolo agenti, senza esecuzione |
 | `/analyze <desc>` | Solo analisi codebase con MCP/grep |
@@ -44,6 +45,28 @@ Specifica quale modello usare per gli agenti:
 | `haiku` | Task semplici, rename, fix minori | $ |
 | `sonnet` | Task standard (DEFAULT) | $$ |
 | `opus` | Task complessi, decisioni architetturali | $$$ |
+
+### Comando /setup
+
+Configura automaticamente l'MCP code-search con Qdrant:
+
+```bash
+/setup
+```
+
+Il comando:
+1. Verifica se esiste già un MCP code-search/qdrant
+2. Installa Docker se necessario (Debian/Ubuntu)
+3. Avvia Qdrant in container
+4. Installa e compila qdrant-mcp-server
+5. Chiede configurazione (provider, API key, path)
+6. Aggiorna `~/.claude/settings.json`
+
+**Provider supportati:**
+- OpenRouter (default) - `https://openrouter.ai/api/v1`
+- OpenAI - `https://api.openai.com/v1`
+
+**Modello embedding default:** `qwen/qwen3-embedding-8b` (4096 dimensioni)
 
 ## Come Funziona
 
