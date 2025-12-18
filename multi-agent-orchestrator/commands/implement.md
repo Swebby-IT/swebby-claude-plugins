@@ -39,22 +39,24 @@ argument-hint: "<descrizione della modifica da implementare> [--model=sonnet|opu
 
 Stai per implementare: **$ARGUMENTS**
 
-## FASE 0: Parsing Parametri
+## FASE 0: Parsing Parametri (OBBLIGATORIA)
 
-### 0.1 Estrai il Modello
+### 0.1 Estrai il Modello da $ARGUMENTS
 
-Analizza `$ARGUMENTS` per estrarre il parametro `--model`:
+**PRIMA DI TUTTO**, analizza `$ARGUMENTS` per estrarre `--model`:
 
 ```
-Cerca pattern: --model=sonnet | --model=opus | --model=haiku
+INPUT: $ARGUMENTS
 
-Se trovato:
-  MODELLO_AGENTI = [valore estratto]
-  DESCRIZIONE_TASK = $ARGUMENTS senza --model=...
+STEP 1: Cerca pattern --model=sonnet | --model=opus | --model=haiku
 
-Se NON trovato:
-  MODELLO_AGENTI = sonnet (default)
-  DESCRIZIONE_TASK = $ARGUMENTS
+STEP 2: Estrai valore
+  Se "--model=opus" trovato   → MODELLO = "opus"
+  Se "--model=haiku" trovato  → MODELLO = "haiku"
+  Se "--model=sonnet" trovato → MODELLO = "sonnet"
+  Se NON trovato              → MODELLO = "sonnet" (default)
+
+STEP 3: Rimuovi --model=xxx da $ARGUMENTS per ottenere DESCRIZIONE_TASK
 ```
 
 **Modelli disponibili:**
@@ -64,11 +66,17 @@ Se NON trovato:
 | `sonnet` | Task standard, bilanciato (DEFAULT) | $$ |
 | `opus` | Task complessi, massima qualità | $$$ |
 
-Registra:
+### 0.2 REGISTRA E RICORDA
+
+**STAMPA subito questi valori** (li userai in FASE 4):
+
 ```markdown
-**Modello selezionato:** [sonnet/opus/haiku]
-**Task da implementare:** [descrizione senza parametro]
+## Configurazione Estratta
+- **MODELLO:** [opus/sonnet/haiku]  ← USARE IN OGNI Task tool!
+- **Task da implementare:** [descrizione senza --model]
 ```
+
+⚠️ **RICORDA:** Questo MODELLO deve essere passato come parametro `model` in OGNI chiamata Task tool nella FASE 4!
 
 ---
 
@@ -412,14 +420,16 @@ Task tool:
 Per task INDIPENDENTI, lancia TUTTI gli agenti in UN SINGOLO messaggio:
 
 ```
-Messaggio con 3 Task tool simultanei:
+Messaggio con 3 Task tool simultanei (MODELLO = valore estratto in FASE 0):
 
-Task 1: subagent_type="multi-agent-orchestrator:backend-developer-1", prompt="..."
-Task 2: subagent_type="multi-agent-orchestrator:backend-developer-2", prompt="..."
-Task 3: subagent_type="multi-agent-orchestrator:frontend-developer-1", prompt="..."
+Task 1: subagent_type="multi-agent-orchestrator:backend-developer-1", model=MODELLO, prompt="..."
+Task 2: subagent_type="multi-agent-orchestrator:backend-developer-2", model=MODELLO, prompt="..."
+Task 3: subagent_type="multi-agent-orchestrator:frontend-developer-1", model=MODELLO, prompt="..."
 ```
 
 **USA agenti numerati diversi** per task paralleli (backend-developer-1, backend-developer-2, ecc.)
+
+⚠️ **NON DIMENTICARE `model=MODELLO`** in ogni Task tool!
 
 ### 4.4 Task Sequenziali
 
