@@ -711,6 +711,118 @@ Se ci sono conflitti tra modifiche:
 2. Determina la risoluzione corretta
 3. Applica manualmente o ri-delega
 
+### 5.4 Verifica con Playwright (SE DISPONIBILE)
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  VERIFICA AUTOMATICA - NON RILEGGERE I FILE, USA PLAYWRIGHT!              ║
+╠═══════════════════════════════════════════════════════════════════════════╣
+║                                                                           ║
+║  Invece di rileggere il codice per verificare le modifiche:               ║
+║  → Esegui test Playwright per confermare che FUNZIONA                     ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+**Prima verifica se Playwright è disponibile:**
+```bash
+npx playwright --version 2>/dev/null || echo "NOT_INSTALLED"
+```
+
+**Se disponibile, esegui verifiche appropriate:**
+
+#### 5.4.1 Verifiche Frontend (UI)
+
+Per modifiche a template, CSS, JavaScript:
+
+```bash
+# Test esistenti
+npx playwright test --grep "nome-feature"
+
+# Oppure smoke test rapido
+npx playwright test --project=chromium --timeout=10000
+```
+
+**Se non ci sono test specifici**, crea un test temporaneo:
+
+```javascript
+// test-temp.spec.js
+import { test, expect } from '@playwright/test';
+
+test('verifica modifica [NOME]', async ({ page }) => {
+  await page.goto('http://localhost:8000/[URL_PAGINA]');
+
+  // Verifica elemento esiste
+  await expect(page.locator('[SELETTORE]')).toBeVisible();
+
+  // Verifica testo
+  await expect(page.locator('[SELETTORE]')).toContainText('[TESTO_ATTESO]');
+
+  // Verifica colore (per CTA verdi etc.)
+  const button = page.locator('[SELETTORE_BOTTONE]');
+  await expect(button).toHaveCSS('background-color', 'rgb(16, 185, 129)'); // emerald-500
+
+  // Screenshot per confronto visivo
+  await page.screenshot({ path: 'test-results/verifica-[NOME].png' });
+});
+```
+
+```bash
+npx playwright test test-temp.spec.js
+```
+
+#### 5.4.2 Verifiche API (Backend)
+
+Per modifiche a endpoint, view, serializer:
+
+```javascript
+// test-api-temp.spec.js
+import { test, expect } from '@playwright/test';
+
+test('verifica API [ENDPOINT]', async ({ request }) => {
+  // GET
+  const response = await request.get('http://localhost:8000/api/[ENDPOINT]');
+  expect(response.ok()).toBeTruthy();
+
+  // POST con dati
+  const postResponse = await request.post('http://localhost:8000/api/[ENDPOINT]', {
+    data: { /* payload */ }
+  });
+  expect(postResponse.status()).toBe(201);
+
+  // Verifica struttura risposta
+  const json = await response.json();
+  expect(json).toHaveProperty('[CAMPO_ATTESO]');
+});
+```
+
+#### 5.4.3 Verifica Visiva (Screenshot Diff)
+
+```bash
+# Cattura screenshot prima (se possibile)
+# Dopo modifica, confronta
+
+npx playwright test --update-snapshots  # Prima volta
+npx playwright test                      # Confronto
+```
+
+#### 5.4.4 Cosa fare con i risultati
+
+| Risultato | Azione |
+|-----------|--------|
+| ✅ Test passano | Procedi a FASE 6 |
+| ❌ Test falliscono | Analizza errore, rilancia agente con fix |
+| ⚠️ Playwright non disponibile | Chiedi all'utente se vuole test manuale |
+
+**Report verifica:**
+```markdown
+### Verifica Playwright
+- **Test eseguiti:** X
+- **Passati:** Y
+- **Falliti:** Z
+- **Screenshot:** [path se generati]
+```
+
 ---
 
 ## FASE 6: Report Finale
