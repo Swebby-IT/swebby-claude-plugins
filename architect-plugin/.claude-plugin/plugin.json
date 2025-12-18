@@ -1,6 +1,6 @@
 {
   "name": "architect",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Plugin completo per pianificazione e implementazione. Analizza codebase, crea piani, genera diagrammi Mermaid/PlantUML. Esegue con agenti specializzati: Django, Vue 3, Tailwind CSS.",
   "author": {
     "name": "Maurizio Stabile",
