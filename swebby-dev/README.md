@@ -103,12 +103,6 @@ Esperto debugger per diagnosi sistematica.
 swebby-dev/
 ├── .claude-plugin/
 │   └── plugin.json
-├── agents/
-│   ├── architect.md
-│   ├── code.md
-│   ├── ask.md
-│   ├── orchestrator.md
-│   └── debug.md
 ├── commands/
 │   ├── architect.md
 │   ├── code.md
@@ -148,4 +142,4 @@ claude --plugin swebby-dev
 
 ## Versione
 
-0.2.0
+0.3.0
