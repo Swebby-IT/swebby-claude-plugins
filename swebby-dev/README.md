@@ -1,8 +1,47 @@
 # SwebbyDev Plugin
 
-Plugin multi-modalita per sviluppo software ispirato a KiloCode. Cinque modalita specializzate per diversi aspetti dello sviluppo.
+Plugin multi-modalita per sviluppo software ispirato a KiloCode. Sei modalita specializzate per diversi aspetti dello sviluppo.
 
 ## Modalita Disponibili
+
+### `/swebby-dev:sensei` - Orchestrazione Multi-Agente
+
+**LA MODALITA PIU POTENTE.** Opus pianifica e orchestra, agenti Sonnet eseguono.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    SENSEI (Opus)                         │
+│  Analizza -> Pianifica -> Prepara istruzioni dettagliate │
+└─────────────────────────────────────────────────────────┘
+                          │
+          ┌───────────────┼───────────────┐
+          ▼               ▼               ▼
+   ┌────────────┐  ┌────────────┐  ┌────────────┐
+   │ Developer  │  │  Tester    │  │ Reviewer   │
+   │  (Sonnet)  │  │  (Sonnet)  │  │  (Sonnet)  │
+   │  Esegue    │  │  Testa     │  │  Revisiona │
+   └────────────┘  └────────────┘  └────────────┘
+```
+
+**Cosa fa:**
+- Opus analizza la codebase e crea piano dettagliato
+- Chiede approvazione utente
+- Per ogni step, prepara istruzioni ULTRA specifiche (file, righe, codice esatto)
+- Delega ad agenti Sonnet che eseguono SENZA decidere
+- Verifica risultati e coordina test/review
+
+**Quando usarla:**
+- Implementazioni complesse
+- Quando vuoi che Opus pensi e Sonnet esegua
+- Per massimizzare qualita e controllo
+- Progetti che richiedono piu modifiche coordinate
+
+**Esempio:**
+```bash
+/swebby-dev:sensei Aggiungi autenticazione JWT con refresh token
+```
+
+---
 
 ### `/swebby-dev:architect` - Pianificazione
 
@@ -97,13 +136,28 @@ Esperto debugger per diagnosi sistematica.
 - Analizzare stack trace
 - Troubleshooting sistematico
 
+---
+
+## Agenti (usati da Sensei)
+
+Il plugin include tre agenti Sonnet usati dalla modalita Sensei:
+
+| Agente | Ruolo |
+|--------|-------|
+| `swebby-dev:developer` | Esegue modifiche al codice |
+| `swebby-dev:tester` | Scrive ed esegue test |
+| `swebby-dev:reviewer` | Code review |
+
+Questi agenti NON prendono decisioni - eseguono istruzioni precise da Sensei.
+
 ## Struttura Plugin
 
 ```
 swebby-dev/
 ├── .claude-plugin/
-│   └── plugin.json
+│   └── plugin.json      # Include definizione agenti
 ├── commands/
+│   ├── sensei.md        # Orchestrazione multi-agente
 │   ├── architect.md
 │   ├── code.md
 │   ├── ask.md
@@ -124,6 +178,9 @@ claude --plugin swebby-dev
 ## Esempi di Utilizzo
 
 ```bash
+# NUOVO: Orchestrazione multi-agente (Opus + Sonnet)
+/swebby-dev:sensei Implementa sistema di notifiche push
+
 # Pianificare una nuova feature
 /swebby-dev:architect Voglio aggiungere autenticazione OAuth2
 
@@ -140,6 +197,15 @@ claude --plugin swebby-dev
 /swebby-dev:debug L'API restituisce 500 quando faccio POST su /users
 ```
 
+## Differenza tra Sensei e Orchestrator
+
+| Orchestrator | Sensei |
+|--------------|--------|
+| Delega a modalita (stesso modello) | Delega ad agenti Sonnet |
+| Agenti decidono autonomamente | Agenti eseguono ordini precisi |
+| Istruzioni generiche | Istruzioni ultra-specifiche |
+| Piu veloce per task semplici | Piu controllo per task complessi |
+
 ## Versione
 
-0.3.0
+0.4.0
