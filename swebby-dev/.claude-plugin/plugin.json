@@ -2,60 +2,18 @@
   "name": "swebby-dev",
   "version": "0.1.0",
   "description": "Plugin multi-modalita per sviluppo software: Architect, Code, Ask, Orchestrator, Debug",
-  "author": "Swebby",
-  "homepage": "https://github.com/swebby/swebby-dev",
-  "agents": [
-    {
-      "name": "architect",
-      "path": "../agents/architect.md",
-      "description": "Pianificatore tecnico per progettare soluzioni e creare piani dettagliati"
-    },
-    {
-      "name": "code",
-      "path": "../agents/code.md",
-      "description": "Sviluppatore esperto per scrivere, modificare e refactorizzare codice"
-    },
-    {
-      "name": "ask",
-      "path": "../agents/ask.md",
-      "description": "Assistente tecnico per rispondere a domande e spiegare concetti"
-    },
-    {
-      "name": "orchestrator",
-      "path": "../agents/orchestrator.md",
-      "description": "Coordinatore workflow per gestire task complessi multi-step"
-    },
-    {
-      "name": "debug",
-      "path": "../agents/debug.md",
-      "description": "Esperto debugging per diagnosi sistematica e risoluzione problemi"
-    }
+  "author": {
+    "name": "Maurizio Stabile",
+    "email": "maurizio@swebby.it"
+  },
+  "keywords": [
+    "development",
+    "architect",
+    "code",
+    "debug",
+    "orchestrator",
+    "multi-mode",
+    "planning"
   ],
-  "commands": [
-    {
-      "name": "architect",
-      "path": "../commands/architect.md",
-      "description": "Avvia modalita Architect per pianificare e progettare"
-    },
-    {
-      "name": "code",
-      "path": "../commands/code.md",
-      "description": "Avvia modalita Code per implementare codice"
-    },
-    {
-      "name": "ask",
-      "path": "../commands/ask.md",
-      "description": "Avvia modalita Ask per domande e spiegazioni"
-    },
-    {
-      "name": "orchestrator",
-      "path": "../commands/orchestrator.md",
-      "description": "Avvia modalita Orchestrator per coordinare workflow complessi"
-    },
-    {
-      "name": "debug",
-      "path": "../commands/debug.md",
-      "description": "Avvia modalita Debug per troubleshooting"
-    }
-  ]
+  "license": "MIT"
 }
