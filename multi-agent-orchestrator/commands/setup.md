@@ -474,7 +474,124 @@ Aggiungi la configurazione del database a `~/.claude/settings.json` insieme a co
 
 ---
 
-## FASE 8: Report Finale Completo
+## FASE 8: Crea Guida nel Progetto
+
+Crea il file `.claude/MCP-SETUP.md` nella root del progetto con le istruzioni:
+
+```bash
+mkdir -p .claude
+```
+
+**Scrivi il file `.claude/MCP-SETUP.md`:**
+
+```markdown
+# MCP Setup - Guida Rapida
+
+Questo progetto è configurato con MCP (Model Context Protocol) per ricerca semantica e accesso database.
+
+## Ricerca Semantica (code-search)
+
+La ricerca semantica usa Qdrant per indicizzare il codice e trovare file/funzioni rilevanti.
+
+### Comandi mcp-index
+
+```bash
+# Prima indicizzazione (necessaria una sola volta)
+mcp-index index /path/to/project
+
+# Re-indicizza tutto (dopo modifiche massive)
+mcp-index reindex /path/to/project
+
+# Indicizza solo file modificati
+mcp-index changes /path/to/project
+
+# Cerca nel codice
+mcp-index search /path/to/project "gestione utenti"
+
+# Stato dell'indice
+mcp-index status /path/to/project
+
+# Avvia watch daemon (re-indicizza automaticamente)
+mcp-index daemon /path/to/project
+
+# Ferma daemon
+mcp-index daemon-stop
+
+# Log del daemon
+tail -f /tmp/mcp-watch.log
+```
+
+### Come Funziona
+
+1. **Indicizzazione**: I file vengono chunked e convertiti in embedding vettoriali
+2. **Storage**: Gli embedding sono salvati in Qdrant (localhost:6333)
+3. **Ricerca**: Le query vengono convertite in embedding e confrontate per similarità
+4. **Watch**: Il daemon monitora i file e re-indicizza automaticamente le modifiche
+
+### Configurazione
+
+- **Qdrant**: http://127.0.0.1:6333
+- **Embedding Model**: qwen/qwen3-embedding-8b (4096 dimensioni)
+- **Chunk Size**: 400 token
+- **Provider**: OpenRouter
+
+### File Ignorati
+
+Automaticamente esclusi dall'indicizzazione:
+- node_modules, .git, __pycache__
+- *.lock, *.min.js, *.min.css
+- .env*, *.sqlite
+- .idea, .vscode, dist, build
+
+## Database MCP
+
+[Se configurato, indica quale database e connection string]
+
+### Query Database
+
+Con l'MCP database puoi:
+- Esplorare lo schema
+- Eseguire query SQL
+- Analizzare tabelle
+
+## Troubleshooting
+
+### Qdrant non risponde
+```bash
+# Verifica container
+docker ps | grep qdrant
+
+# Riavvia
+docker restart qdrant
+
+# Log
+docker logs qdrant
+```
+
+### Indicizzazione lenta
+```bash
+# Usa indicizzazione incrementale
+mcp-index changes /path
+
+# Oppure daemon per auto-sync
+mcp-index daemon /path
+```
+
+### MCP non disponibile in Claude
+1. Riavvia Claude Code
+2. Verifica ~/.claude/settings.json
+3. Controlla che Qdrant sia running
+
+## Link Utili
+
+- Qdrant Dashboard: http://localhost:6333/dashboard
+- MCP Server Log: /tmp/mcp-server.log
+- Watch Log: /tmp/mcp-watch.log
+```
+
+---
+
+## FASE 9: Report Finale Completo
 
 ```markdown
 ## Setup Completato
@@ -485,10 +602,33 @@ Aggiungi la configurazione del database a `~/.claude/settings.json` insieme a co
 | code-search | ✅ Attivo | Qdrant localhost:6333 |
 | [database] | ✅ Attivo | [connection] |
 
+### File Creati
+- `.claude/MCP-SETUP.md` - Guida completa nel progetto
+
 ### Prossimi Passi
-1. **Riavvia Claude Code** per caricare i nuovi MCP
-2. Verifica con: "Quali MCP sono disponibili?"
-3. Usa `/implement` - ricerca semantica + accesso DB attivi
+
+1. **Indicizza il codebase** (prima volta):
+   ```bash
+   mcp-index index [PATH_PROGETTO]
+   ```
+
+2. **Avvia il daemon** (opzionale, per auto-sync):
+   ```bash
+   mcp-index daemon [PATH_PROGETTO]
+   ```
+
+3. **Riavvia Claude Code** per caricare i nuovi MCP
+
+4. **Verifica**: chiedi "Quali MCP sono disponibili?"
+
+5. **Usa `/implement`** - la ricerca semantica sarà attiva
+
+### Comandi Rapidi
+```bash
+mcp-index status [PATH]     # Verifica indice
+mcp-index search [PATH] "query"  # Cerca
+mcp-index daemon [PATH]     # Watch automatico
+```
 ```
 
 ---
