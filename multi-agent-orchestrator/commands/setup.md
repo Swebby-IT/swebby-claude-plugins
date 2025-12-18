@@ -167,6 +167,37 @@ ls -la /opt/qdrant-mcp-server/build/index.js
 
 Se il file non esiste, mostra errore di compilazione.
 
+### 4.3 Installa Script mcp-index
+
+Copia lo script di gestione indicizzazione:
+
+```bash
+# Lo script è incluso nel plugin
+PLUGIN_DIR=$(dirname $(dirname $(realpath "$0")))
+cp "$PLUGIN_DIR/scripts/mcp-index.sh" /usr/local/bin/mcp-index
+chmod +x /usr/local/bin/mcp-index
+```
+
+**Oppure manualmente:**
+```bash
+# Se il plugin è in ~/.claude/plugins/multi-agent-orchestrator
+cp ~/.claude/plugins/multi-agent-orchestrator/scripts/mcp-index.sh /usr/local/bin/mcp-index
+chmod +x /usr/local/bin/mcp-index
+```
+
+Lo script `mcp-index` fornisce comandi per gestire l'indicizzazione:
+
+| Comando | Descrizione |
+|---------|-------------|
+| `mcp-index start` | Avvia server MCP |
+| `mcp-index stop` | Ferma server MCP |
+| `mcp-index index /path` | Indicizza codebase |
+| `mcp-index reindex /path` | Cancella e re-indicizza |
+| `mcp-index search /path "query"` | Cerca nel codice |
+| `mcp-index status /path` | Stato indice |
+| `mcp-index daemon /path` | Watch in background |
+| `mcp-index daemon-stop` | Ferma daemon |
+
 ---
 
 ## FASE 5: Configurazione MCP
