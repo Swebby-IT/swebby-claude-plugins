@@ -520,6 +520,125 @@ mcp__memory__delete_memory   # Elimina un ricordo
 
 Aggiungi la configurazione mem0 a `~/.claude/settings.json` insieme agli altri MCP.
 
+**Procedi con FASE 8.5.**
+
+---
+
+## FASE 8.5: Installazione Playwright (Testing)
+
+**ESEGUI SEMPRE questa fase** per abilitare le verifiche automatiche.
+
+### 8.5.1 Verifica se Playwright è già installato
+
+```bash
+npx playwright --version 2>/dev/null && echo "INSTALLED" || echo "NOT_INSTALLED"
+```
+
+**Se già installato:** Salta a FASE 9.
+
+### 8.5.2 Chiedi Conferma Installazione
+
+Usa **AskUserQuestion**:
+
+```
+Vuoi installare Playwright per le verifiche automatiche?
+Playwright permette di testare le modifiche UI e API senza rileggere il codice.
+
+- Sì, installa Playwright (Recommended)
+- No, salto l'installazione
+```
+
+### 8.5.3 Installazione Playwright
+
+Se l'utente accetta:
+
+```bash
+# Installa Playwright
+npm init playwright@latest --yes
+
+# Installa i browser (chromium di default)
+npx playwright install chromium
+```
+
+### 8.5.4 Configurazione Base
+
+Crea/aggiorna `playwright.config.ts` con configurazione ottimizzata:
+
+```typescript
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './tests',
+  timeout: 30000,
+  retries: 1,
+  use: {
+    baseURL: 'http://localhost:8000',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+  },
+  projects: [
+    { name: 'chromium', use: { browserName: 'chromium' } },
+  ],
+});
+```
+
+### 8.5.5 Crea Directory Test
+
+```bash
+mkdir -p tests
+```
+
+### 8.5.6 Template Test Base
+
+Crea `tests/smoke.spec.ts`:
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('homepage loads', async ({ page }) => {
+  await page.goto('/');
+  await expect(page).toHaveTitle(/.*/);
+});
+
+test('admin loads', async ({ page }) => {
+  await page.goto('/admin/');
+  // Verifica che la pagina admin carichi
+  await expect(page.locator('body')).toBeVisible();
+});
+```
+
+### 8.5.7 Verifica Installazione
+
+```bash
+npx playwright test tests/smoke.spec.ts --project=chromium
+```
+
+### 8.5.8 Report Playwright
+
+```markdown
+## Playwright Installato
+
+- **Versione:** [version]
+- **Browser:** chromium
+- **Config:** playwright.config.ts
+- **Test dir:** ./tests
+
+### Comandi Utili
+```bash
+# Esegui tutti i test
+npx playwright test
+
+# Esegui test specifico
+npx playwright test tests/nome.spec.ts
+
+# Modalità UI (debug visivo)
+npx playwright test --ui
+
+# Genera report HTML
+npx playwright show-report
+```
+```
+
 **Procedi con FASE 9.**
 
 ---
@@ -682,8 +801,15 @@ mcp-index daemon /path
 | memory (mem0) | ✅ Attivo | Qdrant localhost:6333 |
 | [database] | ✅ Attivo | [connection] |
 
+### Testing
+| Tool | Stato | Note |
+|------|-------|------|
+| Playwright | ✅ Installato | chromium, tests/ |
+
 ### File Creati
 - `.claude/MCP-SETUP.md` - Guida completa nel progetto
+- `playwright.config.ts` - Configurazione Playwright
+- `tests/smoke.spec.ts` - Test base
 
 ### Prossimi Passi
 
@@ -701,13 +827,18 @@ mcp-index daemon /path
 
 4. **Verifica**: chiedi "Quali MCP sono disponibili?"
 
-5. **Usa `/implement`** - la ricerca semantica sarà attiva
+5. **Usa `/implement`** - la ricerca semantica e test Playwright saranno attivi
 
 ### Comandi Rapidi
 ```bash
+# Ricerca semantica
 mcp-index status [PATH]     # Verifica indice
 mcp-index search [PATH] "query"  # Cerca
 mcp-index daemon [PATH]     # Watch automatico
+
+# Testing Playwright
+npx playwright test         # Esegui tutti i test
+npx playwright test --ui    # Modalità debug visivo
 ```
 ```
 

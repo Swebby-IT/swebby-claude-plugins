@@ -1,6 +1,6 @@
 {
   "name": "multi-agent-orchestrator",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "description": "Sistema di orchestrazione con 58 agenti specializzati. Scelta modello (Sonnet/Opus/Haiku), dependency graph, shared context.",
   "author": {
     "name": "Maurizio Stabile",
