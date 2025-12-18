@@ -2,7 +2,7 @@
 name: architect
 description: Analizza codebase e crea piano di implementazione compatto. Ritorna SOLO il piano, non il contesto.
 model: opus
-tools: Read, Glob, Grep, mcp__code-search__*, mcp__qdrant__*
+tools: Read, Glob, Grep, mcp__code-search__*, mcp__qdrant__*, mcp__mem0__*
 ---
 
 # Architect Agent
@@ -35,6 +35,7 @@ NON includere dump di codice completi. Includi SOLO:
 Cerca tra i tool disponibili:
 - mcp__code-search__*        → Qdrant code-search (PRIORITÀ 1)
 - mcp__qdrant__*             → Qdrant generico
+- mcp__mem0__*               → Memoria persistente (contesto, decisioni passate)
 - mcp__sourcegraph__*        → Sourcegraph
 - mcp__*__semantic_search    → Altri MCP semantici
 ```
@@ -50,6 +51,15 @@ mcp__code-search__search_code(query="CTA button emerald green", path="/srv/app")
 - Trova codice per SIGNIFICATO, non solo pattern
 - Più preciso di Grep
 - Ritorna snippet rilevanti, non file interi
+
+**Se trovi MCP mem0:**
+```
+# Cerca contesto/decisioni da sessioni precedenti
+mcp__mem0__search_memory(query="decisioni architetturali progetto X")
+
+# Salva decisioni importanti per futuro
+mcp__mem0__add_memory(text="Pattern: usiamo Repository per data access")
+```
 
 ### 1. Ricerca File Rilevanti (FALLBACK)
 

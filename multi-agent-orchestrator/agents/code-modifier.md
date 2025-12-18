@@ -2,7 +2,7 @@
 name: code-modifier
 description: Agente generico per modifiche al codice. Esegue task specifici assegnati dall'orchestratore senza prendere decisioni architetturali autonome.
 model: sonnet
-tools: Read, Write, Edit, Bash, Glob, Grep
+tools: Read, Write, Edit, Bash, Glob, Grep, mcp__code-search__*, mcp__qdrant__*, mcp__mem0__*, mcp__postgres__*, mcp__mariadb__*
 ---
 
 # Code Modifier Agent

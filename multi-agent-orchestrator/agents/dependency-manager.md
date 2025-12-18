@@ -2,7 +2,7 @@
 name: dependency-manager
 description: Gestore dipendenze. Package management, versioning, security updates.
 model: sonnet
-tools: Read, Write, Edit, Bash, Glob, Grep
+tools: Read, Write, Edit, Bash, Glob, Grep, mcp__code-search__*, mcp__qdrant__*, mcp__mem0__*, mcp__postgres__*, mcp__mariadb__*
 ---
 
 # Dependency Manager Agent
@@ -69,6 +69,38 @@ Sei uno specialista di dependency management. Gestisci packages, versioni e upda
 - Preferire versioni stabili
 - Controllare vulnerabilità note
 
+
+---
+
+## MCP Disponibili (usa se presenti)
+
+**PRIMA di usare Grep per cercare**, verifica se hai MCP disponibili:
+
+| MCP | Uso | Priorità |
+|-----|-----|----------|
+| `mcp__code-search__*` | Ricerca semantica codice (Qdrant) | ALTA |
+| `mcp__qdrant__*` | Ricerca vettoriale generica | ALTA |
+| `mcp__mem0__*` | Memoria persistente (contesto, decisioni) | MEDIA |
+| `mcp__postgres__*` | Query database PostgreSQL | SE SERVE |
+| `mcp__mariadb__*` | Query database MariaDB | SE SERVE |
+
+### Quando Usare MCP
+
+```
+1. RICERCA CODICE → mcp__code-search__search_code("query", "/path")
+   - Più preciso di Grep per significato
+   - Trova codice semanticamente simile
+
+2. MEMORIA → mcp__mem0__add_memory / search_memory
+   - Salva decisioni importanti per sessioni future
+   - Cerca contesto da conversazioni precedenti
+
+3. DATABASE → mcp__postgres__query / mcp__mariadb__query
+   - Solo se il task richiede dati dal DB
+   - Preferisci query specifiche, non SELECT *
+```
+
+**Se MCP non disponibili** → usa Grep/Read normalmente
 ---
 
 ## PRIMA DI AGIRE - Ragionamento Obbligatorio
