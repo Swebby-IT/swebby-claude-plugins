@@ -1,5 +1,5 @@
 ---
-description: Implementa una feature con workflow Architect → Orchestrator → Debug (stile Kilo Code)
+description: Implementa una feature con workflow Architect → Orchestrator → Debug (contesto ottimizzato)
 argument-hint: "<descrizione della modifica da implementare> [--model=sonnet|opus|haiku]"
 ---
 
@@ -8,15 +8,16 @@ argument-hint: "<descrizione della modifica da implementare> [--model=sonnet|opu
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║                                                                              ║
-║   WORKFLOW A TRE RUOLI (stile Kilo Code)                                     ║
+║   WORKFLOW A TRE RUOLI (contesto ottimizzato)                                ║
 ║                                                                              ║
 ║   ┌─────────────┐     ┌──────────────┐     ┌─────────────┐                   ║
 ║   │  ARCHITECT  │ ──▶ │ ORCHESTRATOR │ ──▶ │    DEBUG    │                   ║
-║   │   (Opus)    │     │   (Coord.)   │     │   (Opus)    │                   ║
+║   │ (subagent)  │     │    (tu)      │     │ (Playwright)│                   ║
 ║   └─────────────┘     └──────────────┘     └─────────────┘                   ║
 ║         │                    │                    │                          ║
-║    Analizza +           Lancia N            Verifica con                     ║
-║    Pianifica            subagent            Playwright                       ║
+║   Legge file,          Riceve SOLO           Verifica con                    ║
+║   crea piano           piano compatto        test automatici                 ║
+║   COMPATTO             (contesto pulito!)                                    ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
@@ -25,24 +26,7 @@ argument-hint: "<descrizione della modifica da implementare> [--model=sonnet|opu
 
 ---
 
-## RUOLO 1: ARCHITECT (Tu - Opus)
-
-```
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  🏗️  ARCHITECT - Analizza il codebase e crea il piano di implementazione     ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║                                                                               ║
-║  PUOI USARE: Read, Grep, Glob, MCP semantici                                  ║
-║  NON PUOI USARE: Edit, Write, Update (mai modificare direttamente!)           ║
-║                                                                               ║
-║  OUTPUT: Piano dettagliato con task atomici per ogni subagent                 ║
-║                                                                               ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
-```
-
-### A.1 Parsing Parametri
-
-Analizza `$ARGUMENTS` per estrarre `--model`:
+## STEP 0: Parsing Parametri
 
 ```
 Se "--model=opus" trovato   → MODELLO_AGENT = "opus"
@@ -51,340 +35,245 @@ Se "--model=sonnet" trovato → MODELLO_AGENT = "sonnet"
 Se NON trovato              → MODELLO_AGENT = "sonnet" (default)
 ```
 
-**Stampa subito:**
+**Stampa:**
 ```markdown
 ## Configurazione
-- **MODELLO AGENT:** [valore] ← per i subagent di modifica
+- **MODELLO AGENT:** [valore]
 - **Task:** [descrizione senza --model]
 ```
 
-### A.2 Discovery MCP
-
-Verifica quali MCP sono disponibili:
-- `mcp__code-search__*` → Ricerca semantica
-- `mcp__*__search*` → Altri tool di ricerca
-
-### A.3 Ricerca e Analisi Codebase
-
-**LEGGI i file rilevanti** usando Read, Grep, Glob:
-
-1. Cerca file correlati al task
-2. Analizza struttura e pattern esistenti
-3. Identifica dipendenze tra file
-4. **SALVA il contesto letto** (servirà per i subagent)
-
-### A.4 Costruisci Grafo Dipendenze
-
-```markdown
-## Grafo Dipendenze
-
-File A (foglia) → File B → File C
-                         ↘ File D
-
-Ordine esecuzione:
-1. File A (nessuna dipendenza)
-2. File B (dipende da A)
-3. File C, D (dipendono da B) ← parallelizzabili
-```
-
-### A.5 Crea Piano Dettagliato
-
-Per OGNI modifica necessaria, crea un **task atomico**:
-
-```markdown
-## Piano di Implementazione
-
-### Task 1: [Nome descrittivo]
-- **File:** path/to/file.py
-- **Linee:** 45-60
-- **Funzione:** nome_funzione()
-- **Tipo:** Modifica/Nuovo/Elimina
-- **Dipende da:** Task N / nessuno
-- **Descrizione:** [cosa fare esattamente]
-- **CODICE ATTUALE:**
-  ```python
-  [codice che hai letto con Read - COPIA QUI]
-  ```
-- **MODIFICA:**
-  ```
-  OLD: [codice da sostituire]
-  NEW: [nuovo codice]
-  ```
-
-### Task 2: [Nome descrittivo]
-...
-```
-
-### A.6 STOP - Chiedi Approvazione
-
-```
-╔═══════════════════════════════════════════════════════════════╗
-║  ⚠️  STOP OBBLIGATORIO - ATTENDI APPROVAZIONE UTENTE  ⚠️      ║
-╚═══════════════════════════════════════════════════════════════╝
-```
-
-Usa **AskUserQuestion**:
-
-```
-Piano pronto con N task. Procedo con l'implementazione?
-
-- Sì, procedi
-- No, modifica il piano
-- Annulla
-```
-
-**NON procedere a RUOLO 2 senza approvazione esplicita.**
-
 ---
 
-## RUOLO 2: ORCHESTRATOR (Tu - Coordinatore)
+## STEP 1: Lancia ARCHITECT (subagent Opus)
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  🎯  ORCHESTRATOR - Scompone e coordina i subagent                            ║
+║  🏗️  ARCHITECT come SUBAGENT - Il suo contesto verrà SCARTATO                 ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║  L'Architect legge i file, analizza, e ritorna SOLO il piano compatto.       ║
+║  Tu (Orchestrator) ricevi solo il piano, non tutto il codice letto.          ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+```
+
+**Lancia Task tool:**
+
+```
+Task tool:
+  subagent_type: "multi-agent-orchestrator:architect"
+  model: "opus"
+  prompt: |
+    ## Richiesta Analisi e Piano
+
+    **Task da implementare:** [DESCRIZIONE_TASK]
+
+    **Istruzioni:**
+    1. Cerca i file rilevanti con Grep
+    2. Leggi SOLO le sezioni necessarie (usa offset/limit per file grandi)
+    3. Analizza le modifiche necessarie
+    4. Crea piano COMPATTO con:
+       - File e linee esatte
+       - Snippet OLD/NEW minimi (max 20 righe ciascuno)
+       - Dipendenze tra task
+       - Pattern del progetto
+
+    **IMPORTANTE:**
+    - NON includere file interi
+    - SOLO le righe da modificare
+    - Il tuo output deve essere passabile ai subagent
+```
+
+**Attendi completamento e ricevi il piano.**
+
+---
+
+## STEP 2: Mostra Piano e Chiedi Approvazione
+
+```
+╔═══════════════════════════════════════════════════════════════════════════╗
+║  ⚠️  STOP OBBLIGATORIO - MOSTRA PIANO E ATTENDI APPROVAZIONE  ⚠️          ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+```
+
+Mostra all'utente il piano ricevuto dall'Architect.
+
+Usa **AskUserQuestion**:
+```
+Piano ricevuto dall'Architect con N task. Procedo?
+- Sì, procedi
+- No, modifica
+- Annulla
+```
+
+**NON procedere senza approvazione.**
+
+---
+
+## STEP 3: ORCHESTRATOR - Lancia Subagent
+
+```
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║  🎯  ORCHESTRATOR - Lancia subagent con il piano ricevuto                     ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                               ║
 ║  NON modificare MAI codice direttamente!                                      ║
 ║  USA SOLO: Task tool con subagent_type                                        ║
 ║                                                                               ║
-║  Per OGNI task del piano → lancia un subagent specializzato                   ║
+║  Il piano dell'Architect contiene già OLD/NEW per ogni task.                  ║
+║  Passa questi direttamente ai subagent.                                       ║
 ║                                                                               ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-### O.1 Regole di Parallelismo
+### 3.1 Agenti Disponibili
 
-```
-Task SENZA dipendenze reciproche → LANCIA IN PARALLELO (un messaggio, N Task tool)
-Task CON dipendenze             → LANCIA IN SEQUENZA (attendi completamento)
-```
-
-### O.2 Agenti Disponibili
-
-| Tipo Task | subagent_type |
-|-----------|---------------|
-| Frontend/UI | `multi-agent-orchestrator:frontend-developer-1` (fino a -20) |
-| Backend/Logic | `multi-agent-orchestrator:backend-developer-1` (fino a -20) |
+| Tipo | subagent_type |
+|------|---------------|
+| Frontend | `multi-agent-orchestrator:frontend-developer-1` (fino a -20) |
+| Backend | `multi-agent-orchestrator:backend-developer-1` (fino a -20) |
 | Bug fix | `multi-agent-orchestrator:bug-fixer` |
 | API | `multi-agent-orchestrator:api-developer` |
 | Database | `multi-agent-orchestrator:database-specialist` |
-| Test | `multi-agent-orchestrator:test-writer` |
 
-### O.3 Formato Prompt per Subagent
+### 3.2 Formato Prompt per Subagent
 
-```
-╔═══════════════════════════════════════════════════════════════════════════════╗
-║  REGOLA CRITICA: IL SUBAGENT NON DEVE RILEGGERE I FILE!                       ║
-║  Passa TUTTO il contesto che hai già letto come Architect.                    ║
-╚═══════════════════════════════════════════════════════════════════════════════╝
-```
-
-**Template OBBLIGATORIO:**
+**Copia il task dal piano dell'Architect:**
 
 ```markdown
 ## Task per [nome-agente]
 
-**⚠️ NON leggere i file - tutto il contesto è già fornito sotto.**
+**⚠️ NON leggere i file - usa direttamente OLD/NEW forniti.**
 
-**Obiettivo:** [descrizione completa]
+**Obiettivo:** [dal piano Architect]
 
-**Razionale:** [PERCHÉ questa modifica]
+**File:** `[path]`
+**Linee:** [range]
 
-**File e posizione ESATTA:**
-- File: `path/file.py`
-- Linee: 45-60
-- Funzione: `nome_funzione()`
-
-**CODICE ATTUALE (NON rileggere):**
-```python
-# path/file.py linee 45-60
-45  def nome_funzione():
-46      # codice esistente
-47      ...
+**OLD:**
+```
+[codice da piano Architect]
 ```
 
-**MODIFICA DA APPLICARE:**
+**NEW:**
 ```
-OLD:
-[codice esatto da cercare]
-
-NEW:
-[codice esatto da inserire]
+[codice da piano Architect]
 ```
 
-**Pattern del progetto:**
-- Naming: snake_case
-- Import: Django first
-
-**NON toccare:**
-- Altre funzioni nel file
-
-**Verifica:**
-- [ ] Sintassi corretta
-- [ ] Pattern rispettati
+**Pattern:** [dal piano Architect]
 ```
 
-### O.4 Lancia Subagent
+### 3.3 Parallelismo
 
-**Task paralleli** (un messaggio con N Task tool):
+```
+Task SENZA dipendenze → LANCIA IN PARALLELO (un messaggio, N Task tool)
+Task CON dipendenze   → LANCIA IN SEQUENZA
+```
+
+**Task paralleli:**
 ```
 Task tool 1: subagent_type="...-developer-1", model=MODELLO_AGENT, prompt="..."
 Task tool 2: subagent_type="...-developer-2", model=MODELLO_AGENT, prompt="..."
-Task tool 3: subagent_type="...-developer-3", model=MODELLO_AGENT, prompt="..."
 ```
-
-**Task sequenziali** (con dipendenze):
-1. Lancia Task 1
-2. Attendi completamento
-3. Estrai contesto condiviso (naming usati, strutture create)
-4. Passa contesto a Task 2
-5. Ripeti
-
-### O.5 Gestione Errori Subagent
-
-Se un subagent fallisce:
-1. Analizza errore
-2. Rilancia con istruzioni più chiare
-3. Se persiste, segnala all'utente
-
-### O.6 Passa a Debug
-
-Dopo che TUTTI i subagent hanno completato → passa a RUOLO 3.
 
 ---
 
-## RUOLO 3: DEBUG (Tu - Opus)
+## STEP 4: DEBUG - Verifica con Playwright
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║  🔍  DEBUG - Verifica le modifiche con Playwright (NON rileggere file!)       ║
-╠═══════════════════════════════════════════════════════════════════════════════╣
-║                                                                               ║
-║  NON usare Read per verificare le modifiche!                                  ║
-║  USA: Playwright per testare che FUNZIONA                                     ║
-║                                                                               ║
+║  🔍  DEBUG - Verifica con Playwright (NON rileggere file!)                    ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-### D.1 Verifica Playwright Disponibile
+### 4.1 Verifica Playwright
 
 ```bash
 npx playwright --version 2>/dev/null && echo "OK" || echo "NOT_INSTALLED"
 ```
 
-### D.2 Test Frontend (se modifiche UI)
+### 4.2 Test Automatico
 
+**Frontend:**
 ```bash
-# Crea test temporaneo
 cat > test-verify.spec.ts << 'EOF'
 import { test, expect } from '@playwright/test';
-
-test('verifica modifica', async ({ page }) => {
+test('verifica', async ({ page }) => {
   await page.goto('http://localhost:8000/[URL]');
-
-  // Verifica elemento visibile
   await expect(page.locator('[SELETTORE]')).toBeVisible();
-
-  // Verifica testo
-  await expect(page.locator('[SELETTORE]')).toContainText('[TESTO]');
-
-  // Verifica colore (es. bottone verde)
-  await expect(page.locator('[SELETTORE]')).toHaveCSS('background-color', 'rgb(16, 185, 129)');
-
-  // Screenshot
-  await page.screenshot({ path: 'test-results/verifica.png' });
 });
 EOF
-
 npx playwright test test-verify.spec.ts
+rm test-verify.spec.ts
 ```
 
-### D.3 Test API (se modifiche backend)
-
+**API:**
 ```bash
 cat > test-api.spec.ts << 'EOF'
 import { test, expect } from '@playwright/test';
-
 test('verifica API', async ({ request }) => {
-  const response = await request.get('http://localhost:8000/api/[ENDPOINT]');
-  expect(response.ok()).toBeTruthy();
-
-  const json = await response.json();
-  expect(json).toHaveProperty('[CAMPO]');
+  const r = await request.get('http://localhost:8000/api/[ENDPOINT]');
+  expect(r.ok()).toBeTruthy();
 });
 EOF
-
 npx playwright test test-api.spec.ts
+rm test-api.spec.ts
 ```
 
-### D.4 Analisi Risultati
+### 4.3 Risultati
 
 | Risultato | Azione |
 |-----------|--------|
-| ✅ Test passano | Procedi a Report Finale |
-| ❌ Test falliscono | Torna a ORCHESTRATOR, rilancia subagent con fix |
-| ⚠️ Playwright non disponibile | Chiedi all'utente se vuole verifica manuale |
-
-### D.5 Cleanup Test Temporanei
-
-```bash
-rm -f test-verify.spec.ts test-api.spec.ts
-```
+| ✅ Test OK | Report finale |
+| ❌ Test FAIL | Torna a STEP 3, rilancia subagent con fix |
+| ⚠️ No Playwright | Chiedi verifica manuale |
 
 ---
 
-## REPORT FINALE
+## STEP 5: Report Finale
 
 ```markdown
 ## Implementazione Completata
 
-### Workflow Eseguito
-| Ruolo | Stato | Note |
-|-------|-------|------|
-| ARCHITECT | ✅ | Piano approvato |
-| ORCHESTRATOR | ✅ | N subagent lanciati |
-| DEBUG | ✅ | Test Playwright passati |
+### Workflow
+| Step | Stato |
+|------|-------|
+| ARCHITECT (subagent) | ✅ Piano creato |
+| ORCHESTRATOR | ✅ N subagent lanciati |
+| DEBUG | ✅ Test passati |
 
-### Modifiche Apportate
-| File | Modifica | Agente | Test |
-|------|----------|--------|------|
-| path/file1.py | +20/-5 linee | backend-developer-1 | ✅ |
-| path/file2.html | +15 linee | frontend-developer-1 | ✅ |
+### Modifiche
+| File | Agente | Test |
+|------|--------|------|
+| path/file.py | backend-1 | ✅ |
 
-### Verifica Playwright
-- **Test eseguiti:** X
-- **Passati:** Y
-- **Screenshot:** test-results/verifica.png
-
-### Prossimi Passi
-1. [Se necessario] Eseguire test completi: `npx playwright test`
-2. [Se necessario] Review manuale dei file modificati
+### Verifica
+- Test Playwright: ✅ Passati
 ```
 
 ---
 
-## RIEPILOGO RUOLI
+## RIEPILOGO WORKFLOW
 
 ```
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃                                                                              ┃
-┃  ARCHITECT (Tu - Opus)                                                       ┃
-┃  ├── Legge file con Read, Grep, Glob                                         ┃
-┃  ├── Analizza dipendenze                                                     ┃
-┃  ├── Crea piano dettagliato con task atomici                                 ┃
-┃  └── STOP: Chiede approvazione utente                                        ┃
+┃  STEP 1: ARCHITECT (subagent Opus)                                           ┃
+┃  ├── Legge file con Grep + Read(offset/limit)                                ┃
+┃  ├── Crea piano COMPATTO (max 20 righe per snippet)                          ┃
+┃  └── RITORNA piano → suo contesto viene SCARTATO                             ┃
 ┃                                                                              ┃
-┃  ORCHESTRATOR (Tu - Coordinatore)                                            ┃
-┃  ├── NON modifica mai direttamente (vietato Edit/Write)                      ┃
+┃  STEP 2: APPROVAZIONE                                                        ┃
+┃  └── Mostra piano, chiedi conferma utente                                    ┃
+┃                                                                              ┃
+┃  STEP 3: ORCHESTRATOR (tu - contesto pulito!)                                ┃
+┃  ├── Ricevi SOLO il piano compatto                                           ┃
 ┃  ├── Lancia subagent con Task tool                                           ┃
-┃  ├── Passa TUTTO il contesto (subagent non rilegge)                          ┃
-┃  └── Coordina parallelo/sequenziale                                          ┃
+┃  └── Passa OLD/NEW dal piano ai subagent                                     ┃
 ┃                                                                              ┃
-┃  DEBUG (Tu - Opus)                                                           ┃
-┃  ├── NON rilegge file per verificare                                         ┃
-┃  ├── Usa Playwright per testare                                              ┃
-┃  ├── Se test fallisce → torna a ORCHESTRATOR                                 ┃
-┃  └── Se test passa → Report finale                                           ┃
+┃  STEP 4: DEBUG                                                               ┃
+┃  ├── Verifica con Playwright                                                 ┃
+┃  └── Se fallisce → torna a STEP 3                                            ┃
 ┃                                                                              ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 ```
@@ -393,8 +282,8 @@ rm -f test-verify.spec.ts test-api.spec.ts
 
 ## REGOLE INVIOLABILI
 
-1. **ARCHITECT:** Solo lettura, mai modifiche
-2. **ORCHESTRATOR:** Solo Task tool, mai Edit/Write diretto
-3. **DEBUG:** Solo Playwright, mai Read per verificare
-4. **SEMPRE:** Approvazione utente prima di ORCHESTRATOR
-5. **SEMPRE:** Passare contesto completo ai subagent
+1. **ARCHITECT** è un subagent - il suo contesto viene scartato
+2. **ORCHESTRATOR** riceve SOLO il piano compatto
+3. **MAI** Edit/Write diretto - solo Task tool
+4. **SEMPRE** approvazione prima di STEP 3
+5. **DEBUG** usa Playwright, non Read
