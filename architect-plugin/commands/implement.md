@@ -1,5 +1,5 @@
 ---
-description: Esegue un piano di implementazione approvato delegando ai subagenti specializzati (Django, Vue, Tailwind)
+description: Esegue un piano di implementazione delegando ai subagenti specializzati (backend, frontend, styling)
 argument-hint: "<descrizione> oppure 'recent' per ultimo piano approvato"
 ---
 
@@ -22,15 +22,15 @@ Questo comando e' un ORCHESTRATORE. Il tuo ruolo e':
 
 | Tipo Modifica | Subagent |
 |---------------|----------|
-| Django (models, views, serializers, urls, forms) | `architect:django-developer` |
-| Vue (components, stores, composables) | `architect:vue-developer` |
-| Tailwind/CSS (classi, stili, spacing) | `architect:tailwind-developer` |
-| Test (pytest, vitest) | `architect:test-writer` |
+| Backend (models, views, API, services, database) | `architect:backend-developer` |
+| Frontend (components, stores, routing, UI logic) | `architect:frontend-developer` |
+| Styling (CSS, Tailwind, SCSS, UI appearance) | `architect:styling-developer` |
+| Test (unit, integration, e2e) | `architect:test-writer` |
 | Review finale | `architect:code-reviewer` |
 
 **Esempio CORRETTO:**
 ```
-Task tool con subagent_type: architect:tailwind-developer
+Task tool con subagent_type: architect:styling-developer
 prompt: "Aggiungi mb-2 ai label nel file X linee Y-Z"
 ```
 
@@ -40,6 +40,22 @@ Edit tool direttamente sul file  <-- MAI FARE QUESTO
 ```
 
 Se fai modifiche dirette senza delegare, stai violando il principio del plugin.
+
+---
+
+## FASE 0: Leggi Contesto Progetto
+
+**PRIMA DI TUTTO**, leggi il contesto:
+
+```
+1. Cerca `claude.md` o `CLAUDE.md` nella root
+2. Identifica lo stack:
+   - Backend: Django, FastAPI, Express, NestJS, Laravel, Rails, etc.
+   - Frontend: Vue, React, Angular, Svelte, Vanilla JS, etc.
+   - Styling: Tailwind, Bootstrap, SCSS, CSS Modules, etc.
+   - Database: PostgreSQL, MySQL, SQLite, MongoDB, etc.
+3. Passa questa info agli agenti
+```
 
 ---
 
@@ -79,7 +95,7 @@ Vuoi:
 
 ### 2.1 Parsing Task
 
-Estrai dal piano:
+Estrai dal piano (o dalla todo list):
 - Lista task con dipendenze
 - File da modificare
 - Tipo di modifica per ogni task
@@ -88,10 +104,10 @@ Estrai dal piano:
 
 | Tipo File/Modifica | Agente |
 |-------------------|--------|
-| models.py, views.py, forms.py, serializers.py, urls.py | `django-developer` |
-| *.vue, stores/*.js, composables/*.js | `vue-developer` |
-| Stili Tailwind (in .vue o .html) | `tailwind-developer` |
-| tests/*.py, tests/*.spec.js | `test-writer` |
+| models, views, API, serializers, services, routes backend | `backend-developer` |
+| components, stores, composables, hooks, pages frontend | `frontend-developer` |
+| CSS, stili, classi Tailwind/Bootstrap/SCSS | `styling-developer` |
+| test files (*.test.*, *.spec.*, test_*.py) | `test-writer` |
 | Review finale | `code-reviewer` |
 
 ### 2.3 Calcolo Ordine Esecuzione
@@ -106,8 +122,9 @@ Estrai dal piano:
 **Regole:**
 - Task con dipendenze → sequenziali
 - Task indipendenti → paralleli (max 3)
-- Django models PRIMA di views/serializers
-- Vue components PRIMA di stores che li usano
+- Backend models/schema PRIMA di API/views
+- Frontend components PRIMA di stores che li usano
+- Styling DOPO che la struttura HTML esiste
 
 ---
 
@@ -120,6 +137,7 @@ Per ogni task nel batch:
 
 1. Seleziona agente appropriato
 2. Prepara prompt con:
+   - Stack del progetto (da claude.md)
    - Obiettivo task
    - File e linee
    - Codice esistente (Read prima)
@@ -134,6 +152,8 @@ Per ogni task nel batch:
 
 ```markdown
 ## Task #[N]: [Titolo]
+
+**Stack progetto:** [da claude.md]
 
 **Obiettivo:** [descrizione chiara]
 
@@ -150,11 +170,6 @@ Per ogni task nel batch:
 2. [istruzione specifica 2]
 ...
 
-**Output atteso:**
-```[linguaggio]
-[esempio codice finale]
-```
-
 **Pattern da seguire:**
 - [pattern 1 dal progetto]
 - [pattern 2 dal progetto]
@@ -168,23 +183,23 @@ Per ogni task nel batch:
 
 ### 3.3 Lancia Agenti
 
-**Django:**
+**Backend:**
 ```
-Task tool con subagent_type: architect:django-developer
+Task tool con subagent_type: architect:backend-developer
 
 [prompt task]
 ```
 
-**Vue:**
+**Frontend:**
 ```
-Task tool con subagent_type: architect:vue-developer
+Task tool con subagent_type: architect:frontend-developer
 
 [prompt task]
 ```
 
-**Tailwind:**
+**Styling:**
 ```
-Task tool con subagent_type: architect:tailwind-developer
+Task tool con subagent_type: architect:styling-developer
 
 [prompt task]
 ```
@@ -217,16 +232,19 @@ Task tool con subagent_type: architect:test-writer
 Prompt:
 "Scrivi test per le modifiche implementate:
 
+Stack: [da claude.md]
+
 File modificati:
 [lista file]
 
 Modifiche:
 [riassunto modifiche]
 
-Crea:
-1. Test Django (pytest) per models/views modificati
-2. Test Vue (Vitest) per componenti modificati
-3. Esegui test e riporta risultati
+Crea test appropriati per lo stack:
+- Backend: pytest, jest, mocha, phpunit, rspec, etc.
+- Frontend: vitest, jest, testing-library, cypress, etc.
+
+Esegui test e riporta risultati.
 
 Output: File test + risultati esecuzione"
 ```
@@ -253,6 +271,8 @@ Task tool con subagent_type: architect:code-reviewer
 Prompt:
 "Esegui code review delle modifiche implementate:
 
+Stack: [da claude.md]
+
 File modificati:
 [lista file con diff]
 
@@ -260,7 +280,7 @@ Valuta:
 - Code quality
 - Security
 - Performance
-- Best practices Django/Vue/Tailwind
+- Best practices per lo stack usato
 - Test coverage
 
 Output: Review con score e feedback"
@@ -284,6 +304,7 @@ Se score < 5: Richiedi fix prima di completare
 ## Implementazione Completata
 
 **Piano:** [titolo piano]
+**Stack:** [backend] + [frontend] + [styling]
 **Data:** [YYYY-MM-DD HH:MM]
 
 ---
@@ -292,9 +313,9 @@ Se score < 5: Richiedi fix prima di completare
 
 | # | Task | Agente | Status |
 |---|------|--------|--------|
-| 1 | [titolo] | django-developer | ✅ |
-| 2 | [titolo] | vue-developer | ✅ |
-| 3 | [titolo] | tailwind-developer | ✅ |
+| 1 | [titolo] | backend-developer | ✅ |
+| 2 | [titolo] | frontend-developer | ✅ |
+| 3 | [titolo] | styling-developer | ✅ |
 
 ---
 
@@ -302,20 +323,15 @@ Se score < 5: Richiedi fix prima di completare
 
 | File | Azione | Agente |
 |------|--------|--------|
-| models.py | Modificato | django-developer |
-| ProductCard.vue | Creato | vue-developer |
+| models.py | Modificato | backend-developer |
+| ProductCard.vue | Creato | frontend-developer |
 
 ---
 
 ### Test
 
-**Django:**
 - Test scritti: X
 - Test passati: X/X
-
-**Vue:**
-- Test scritti: Y
-- Test passati: Y/Y
 
 ---
 
@@ -324,24 +340,11 @@ Se score < 5: Richiedi fix prima di completare
 **Score:** [X.X]/10
 **Verdetto:** [APPROVED/...]
 
-**Note:**
-- [feedback principale]
-
 ---
 
 ### Comandi Post-Implementazione
 
-```bash
-# Migrazioni Django (se necessario)
-python manage.py makemigrations
-python manage.py migrate
-
-# Build Vue (se necessario)
-npm run build
-
-# Esegui tutti i test
-pytest && npm run test
-```
+[comandi specifici per lo stack rilevato]
 
 ---
 
@@ -364,12 +367,13 @@ Se il piano era in .architect/plans/:
 
 ## REGOLE IMPORTANTI
 
-1. **Piano approvato obbligatorio** - Non implementare senza piano
-2. **Ordine corretto** - Rispetta dipendenze tra task
-3. **Verifica ogni step** - Non procedere se errori
-4. **Test obbligatori** - Scrivi e esegui test
-5. **Review finale** - Code review prima di completare
-6. **Report dettagliato** - Documenta tutto
+1. **Leggi claude.md** - Per capire lo stack del progetto
+2. **Piano approvato obbligatorio** - Non implementare senza piano
+3. **Ordine corretto** - Rispetta dipendenze tra task
+4. **Verifica ogni step** - Non procedere se errori
+5. **Test obbligatori** - Scrivi e esegui test
+6. **Review finale** - Code review prima di completare
+7. **Report dettagliato** - Documenta tutto
 
 ---
 
@@ -379,6 +383,7 @@ Se il piano era in .architect/plans/:
 |--------|--------|
 | Piano non trovato | Crea con /architect:plan |
 | Piano non approvato | Chiedi approvazione |
+| Stack non identificato | Chiedi chiarimenti |
 | Task fallito | Retry max 2 volte, poi segnala |
 | Test falliti | Fix e ri-esegui |
 | Review negativa | Applica fix suggeriti |
@@ -391,6 +396,7 @@ Se il piano era in .architect/plans/:
 1. Utente: /architect:implement Aggiungi filtro prodotti
 
 2. Orchestrator:
+   - Legge claude.md (trova: Django + Vue + Tailwind)
    - Crea piano con /architect:plan
    - Mostra piano
    - Chiede approvazione
@@ -398,11 +404,11 @@ Se il piano era in .architect/plans/:
 3. Utente: "Approva"
 
 4. Orchestrator:
-   - Task 1: django-developer → Aggiunge FilterSet
-   - Task 2: django-developer → Modifica ViewSet
-   - Task 3: vue-developer → Crea FilterComponent.vue
-   - Task 4: tailwind-developer → Stili filtro
-   - Task 5: test-writer → Test Django + Vue
+   - Task 1: backend-developer → Aggiunge FilterSet (Django)
+   - Task 2: backend-developer → Modifica ViewSet (Django)
+   - Task 3: frontend-developer → Crea FilterComponent.vue (Vue)
+   - Task 4: styling-developer → Stili filtro (Tailwind)
+   - Task 5: test-writer → Test backend + frontend
    - Task 6: code-reviewer → Review finale
 
 5. Output: Report completamento

@@ -40,10 +40,10 @@
     },
     {
       "name": "architect",
-      "description": "Plugin completo pianificazione + implementazione. Crea piani, diagrammi Mermaid, esegue con agenti Django/Vue/Tailwind. Opus pianifica, Sonnet esegue.",
+      "description": "Plugin pianificazione + implementazione stack-agnostic. TodoWrite per piani, AskUserQuestion per chiarimenti. Legge claude.md, delega a backend/frontend/styling developers.",
       "source": "./architect-plugin",
       "category": "development",
-      "version": "1.1.2",
+      "version": "2.0.0",
       "author": {
         "name": "Maurizio Stabile"
       }

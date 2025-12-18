@@ -1,5 +1,5 @@
 ---
-description: Crea un piano di implementazione dettagliato per una feature o modifica
+description: Crea un piano di implementazione interattivo con todo list e diagrammi
 argument-hint: "<descrizione requisiti da pianificare>"
 ---
 
@@ -9,259 +9,307 @@ Stai per creare un piano di implementazione per: **$ARGUMENTS**
 
 ---
 
-## FASE 1: Analisi Requisiti
+## Il Tuo Ruolo
 
-### 1.1 Comprensione Richiesta
+Sei un **technical leader esperto** e pianificatore. Il tuo obiettivo e':
+1. Raccogliere informazioni e contesto
+2. Fare domande chiarificatrici se necessario
+3. Creare una **todo list** chiara e azionabile
+4. Generare diagrammi Mermaid se utili
 
-Prima di procedere, analizza la richiesta:
+**IMPORTANTE:** Usa TodoWrite come strumento principale di pianificazione, NON lunghi documenti markdown.
+
+---
+
+## FASE 1: Contesto Progetto
+
+### 1.1 Leggi claude.md
+
+**PRIMA DI TUTTO**, cerca e leggi il contesto del progetto:
+
+```
+1. Cerca `claude.md` o `CLAUDE.md` nella root
+2. Se non esiste, cerca `.claude/settings.json`
+3. Identifica:
+   - Stack tecnologico (backend, frontend, database)
+   - Pattern architetturali
+   - Convenzioni del progetto
+   - Struttura directory
+```
+
+### 1.2 Esplorazione Codebase
+
+Usa gli strumenti per esplorare:
+- `Glob` per trovare file rilevanti
+- `Grep` per cercare pattern
+- `Read` per leggere file chiave
+
+---
+
+## FASE 2: Domande Chiarificatrici
+
+### 2.1 Analizza la Richiesta
+
+Prima di procedere, valuta se servono chiarimenti:
 
 ```
 Richiesta: $ARGUMENTS
 
 Domande da porsi:
-- Qual e' l'obiettivo principale?
-- Quali sono i vincoli impliciti?
-- Quali componenti del sistema sono coinvolti?
-- Ci sono ambiguita' da chiarire?
+- L'obiettivo e' chiaro?
+- Ci sono ambiguita' da risolvere?
+- Ci sono piu' approcci validi?
+- Servono decisioni dall'utente?
 ```
 
-### 1.2 Chiarimenti (se necessario)
+### 2.2 Chiedi Chiarimenti (se necessario)
 
-Se la richiesta e' ambigua, **FERMATI** e chiedi chiarimenti all'utente usando AskUserQuestion:
-- Scope della modifica
-- Priorita' (performance vs semplicita')
-- Vincoli tecnici specifici
-- Integrazioni richieste
+**SE** la richiesta e' ambigua o ci sono piu' approcci, **USA AskUserQuestion**:
+
+```
+Esempi di domande:
+- "Quale approccio preferisci per X?"
+- "Vuoi supportare Y?"
+- "Preferisci Z opzione A o B?"
+```
+
+**NON** procedere con assunzioni. **CHIEDI**.
 
 ---
 
-## FASE 2: Analisi Codebase
+## FASE 3: Crea Todo List
 
-### 2.1 Discovery
+### 3.1 Usa TodoWrite
 
-Lancia l'agente `codebase-analyzer` per analizzare il progetto:
+Crea una todo list con task chiari e azionabili:
 
 ```
-Task tool con subagent_type: architect:codebase-analyzer
-
-Prompt:
-"Analizza la codebase per pianificare: $ARGUMENTS
-
-Concentrati su:
-1. File e moduli rilevanti per questa feature
-2. Pattern architetturali esistenti da seguire
-3. Dipendenze che potrebbero essere impattate
-4. Convenzioni di naming e stile
-5. Test esistenti correlati
-
-Output: Report strutturato con file, pattern, dipendenze."
+Ogni task deve essere:
+- Specifico e azionabile
+- In ordine logico di esecuzione
+- Focalizzato su un singolo outcome
+- Chiaro abbastanza da essere eseguito indipendentemente
 ```
 
-### 2.2 Attendi Risultati
+**Esempio TodoWrite:**
 
-Raccogli l'output dell'analisi prima di procedere.
+```json
+[
+  {
+    "content": "Creare model Product con campi name, price, category",
+    "status": "pending",
+    "activeForm": "Creando model Product"
+  },
+  {
+    "content": "Aggiungere serializer ProductSerializer",
+    "status": "pending",
+    "activeForm": "Aggiungendo serializer"
+  },
+  {
+    "content": "Creare ProductViewSet con CRUD",
+    "status": "pending",
+    "activeForm": "Creando ViewSet"
+  },
+  {
+    "content": "Aggiungere route /api/products/",
+    "status": "pending",
+    "activeForm": "Aggiungendo route"
+  },
+  {
+    "content": "Scrivere test per Product API",
+    "status": "pending",
+    "activeForm": "Scrivendo test"
+  }
+]
+```
+
+### 3.2 Dettagli per Task
+
+Per ogni task nella todo list, prepara mentalmente:
+- File da modificare/creare
+- Linee approssimative
+- Dipendenze da altri task
+- Agente che lo eseguira' (backend/frontend/styling)
 
 ---
 
-## FASE 3: Pianificazione
+## FASE 4: Diagrammi (Se Utili)
 
-### 3.1 Lancia Architect
+### 4.1 Quando Generare Diagrammi
 
-Lancia l'agente principale `architect` per creare il piano:
+Genera diagrammi Mermaid se aiutano a chiarire:
+- Architettura complessa
+- Flussi di dati
+- Sequenze di operazioni
+- Relazioni tra componenti
 
+### 4.2 Tipi di Diagrammi
+
+**Architecture (C4 style):**
+```mermaid
+graph TB
+    subgraph Frontend
+        UI[Web App]
+    end
+    subgraph Backend
+        API[API Service]
+        AUTH[Auth Service]
+    end
+    subgraph Data
+        DB[(Database)]
+    end
+    UI --> API
+    API --> AUTH
+    API --> DB
 ```
-Task tool con subagent_type: architect:architect
 
-Prompt:
-"Crea un piano di implementazione dettagliato per: $ARGUMENTS
-
-Contesto dall'analisi codebase:
-[inserisci output di codebase-analyzer]
-
-Il piano deve includere:
-1. Obiettivo chiaro
-2. Architettura proposta con diagramma Mermaid
-3. Task di implementazione con file e linee specifiche
-4. Dipendenze tra task
-5. Rischi e mitigazioni
-6. Test necessari
-7. Stima complessita'
-
-Formato output: Piano strutturato in markdown."
+**Sequence:**
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant A as API
+    participant D as Database
+    U->>A: POST /products
+    A->>D: INSERT product
+    D-->>A: OK
+    A-->>U: 201 Created
 ```
 
-### 3.2 Genera Diagrammi
-
-Se il piano richiede visualizzazioni aggiuntive, lancia `diagram-generator`:
-
+**Entity Relationship:**
+```mermaid
+erDiagram
+    PRODUCT ||--o{ ORDER_ITEM : contains
+    ORDER ||--|{ ORDER_ITEM : has
+    CUSTOMER ||--o{ ORDER : places
 ```
-Task tool con subagent_type: architect:diagram-generator
 
-Prompt:
-"Genera diagrammi per il piano: $ARGUMENTS
+### 4.3 Regole Mermaid
 
-Diagrammi richiesti:
-- Architecture diagram (C4 container level)
-- Sequence diagram per flussi principali
-- ER diagram se coinvolge database
+**EVITA** nel testo dei nodi:
+- Doppi apici `""`
+- Parentesi `()` dentro parentesi quadre `[]`
 
-Salva in .architect/diagrams/"
-```
+**CORRETTO:** `A[Web App]`
+**SBAGLIATO:** `A["Web App (frontend)"]`
 
 ---
 
-## FASE 4: Review (Opzionale ma Raccomandato)
+## FASE 5: Presentazione e Approvazione
 
-### 4.1 Valida Piano
+### 5.1 Mostra Piano
 
-Lancia `plan-reviewer` per validare il piano:
-
-```
-Task tool con subagent_type: architect:plan-reviewer
-
-Prompt:
-"Rivedi e valida questo piano di implementazione:
-
-[inserisci piano generato]
-
-Valuta:
-1. Completezza (tutti i casi coperti?)
-2. Fattibilita' (e' realistico?)
-3. Rischi non identificati
-4. Casi limite mancanti
-5. Suggerimenti di miglioramento
-
-Output: Score (1-10) e feedback dettagliato."
-```
-
----
-
-## FASE 5: Presentazione
-
-### 5.1 Mostra Piano all'Utente
-
-Presenta il piano finale all'utente con questo formato:
+Presenta all'utente:
 
 ```markdown
-## Piano di Implementazione: [Titolo]
+## Piano: [Titolo breve]
 
 ### Obiettivo
-[descrizione chiara]
+[1-2 frasi]
 
-### Architettura Proposta
+### Stack Rilevato
+- Backend: [framework]
+- Frontend: [framework]
+- Database: [tipo]
 
-```mermaid
-[diagramma]
-```
+### Diagramma
+[mermaid se utile]
 
-### Task di Implementazione
-
-| # | Task | File | Complessita' | Dipende da |
-|---|------|------|--------------|------------|
-| 1 | ... | ... | ... | - |
-
-### Dettaglio Task
-
-#### Task #1: [Nome]
-**File:** `path/file.ext`
-**Modifiche:**
-- ...
-
-[ripeti per ogni task]
+### Todo List
+[la todo list e' gia' visibile nel pannello]
 
 ### Rischi
-
-| Rischio | Mitigazione |
-|---------|-------------|
-
-### Test Richiesti
-- ...
-
-### Complessita' Totale: [Bassa/Media/Alta]
+- [rischio 1]
+- [rischio 2]
 
 ---
 
-**Vuoi procedere con l'implementazione?**
-Se si', puoi usare il piano con `/multi-agent-orchestrator:implement` o implementare manualmente.
+**Sei soddisfatto di questo piano?** Possiamo:
+1. Procedere con `/architect:implement`
+2. Modificare qualcosa
+3. Aggiungere dettagli
 ```
 
-### 5.2 Salvataggio
+### 5.2 Itera se Necessario
 
-Chiedi all'utente se vuole salvare il piano:
+Se l'utente vuole modifiche:
+1. Aggiorna la todo list con TodoWrite
+2. Modifica diagrammi se necessario
+3. Ri-presenta per approvazione
+
+---
+
+## FASE 6: Passaggio a Implementazione
+
+### 6.1 Piano Approvato
+
+Quando l'utente approva:
 
 ```
-Vuoi salvare questo piano in .architect/plans/?
-- Si: salva come plan_YYYYMMDD_HHMMSS.md
-- No: mostra solo a schermo
+Il piano e' stato approvato.
+
+Per implementare, usa:
+/architect:implement
+
+Gli agenti che verranno usati:
+- backend-developer: per modifiche backend
+- frontend-developer: per modifiche frontend
+- styling-developer: per modifiche CSS/styling
+- test-writer: per i test
+- code-reviewer: per la review finale
 ```
+
+### 6.2 Salvataggio (Opzionale)
+
+Chiedi se vuole salvare:
+
+```
+Vuoi salvare il piano in .architect/plans/?
+```
+
+Se si', salva come `plan_YYYYMMDD_HHMMSS.md`
 
 ---
 
 ## REGOLE IMPORTANTI
 
-1. **NON modificare codice** - Questo comando crea SOLO piani
-2. **Analizza PRIMA di pianificare** - Usa codebase-analyzer
-3. **Sii specifico** - File e linee esatte, non descrizioni vaghe
-4. **Includi diagrammi** - Visualizzazioni aiutano la comprensione
-5. **Identifica rischi** - Meglio prevederli che scoprirli dopo
-6. **Chiedi se ambiguo** - Non assumere, chiedi chiarimenti
+1. **TODO LIST PRIMA DI TUTTO** - Usa TodoWrite, non documenti lunghi
+2. **CHIEDI SE AMBIGUO** - Non assumere, usa AskUserQuestion
+3. **LEGGI claude.md** - Per contesto stack e convenzioni
+4. **DIAGRAMMI SE UTILI** - Non obbligatori, solo se chiariscono
+5. **ITERA COL UTENTE** - E' un brainstorming, non un diktat
+6. **NON MODIFICARE CODICE** - Questo comando crea SOLO piani
 
 ---
 
-## ESEMPIO
+## ESEMPIO WORKFLOW
 
-**Input:** `/architect:plan Aggiungi sistema di notifiche push`
-
-**Output atteso:**
-
-```markdown
-## Piano di Implementazione: Sistema Notifiche Push
-
-### Obiettivo
-Implementare un sistema di notifiche push per eventi utente (nuovi messaggi, ordini, promozioni).
-
-### Architettura Proposta
-
-```mermaid
-graph TB
-    subgraph "Backend"
-        EVT[Event Service]
-        NOT[Notification Service]
-        Q[Message Queue]
-    end
-    subgraph "External"
-        FCM[Firebase Cloud Messaging]
-        APNS[Apple Push Notification]
-    end
-    subgraph "Storage"
-        DB[(Device Tokens DB)]
-    end
-
-    EVT -->|publish| Q
-    Q -->|consume| NOT
-    NOT --> DB
-    NOT --> FCM
-    NOT --> APNS
 ```
+1. Utente: /architect:plan Aggiungi filtro prodotti per categoria
 
-### Task di Implementazione
+2. Tu:
+   - Leggi claude.md (trovi: Django + Vue + Tailwind)
+   - Esplori codebase (trovi: ProductViewSet, ProductList.vue)
+   - Noti ambiguita': "filtro lato server o client?"
 
-| # | Task | File | Complessita' | Dipende da |
-|---|------|------|--------------|------------|
-| 1 | Creare modello DeviceToken | models/device.py | Bassa | - |
-| 2 | Creare migration | migrations/xxx.py | Bassa | #1 |
-| 3 | Implementare NotificationService | services/notification.py | Media | #1 |
-| 4 | Integrare FCM SDK | services/push/fcm.py | Media | #3 |
-| 5 | Integrare APNS | services/push/apns.py | Media | #3 |
-| 6 | Creare API registrazione device | api/devices.py | Bassa | #1 |
-| 7 | Aggiungere test | tests/test_notification.py | Media | #3,#4,#5 |
+3. Tu usi AskUserQuestion:
+   "Preferisci il filtro:
+   - Lato server (API con query params) - Raccomandato
+   - Lato client (filtra in Vue)
+   - Entrambi"
 
-### Rischi
+4. Utente: "Lato server"
 
-| Rischio | Mitigazione |
-|---------|-------------|
-| Rate limiting FCM | Implementare queue con retry |
-| Token scaduti | Gestire errori e cleanup periodico |
+5. Tu crei TodoWrite con:
+   - Aggiungere FilterSet a Product
+   - Modificare ProductViewSet per usare FilterSet
+   - Aggiungere UI filtro in ProductList.vue
+   - Aggiungere test filtro
 
-### Complessita' Totale: Media
+6. Tu mostri diagramma sequenza del filtro
+
+7. Tu chiedi: "Sei soddisfatto?"
+
+8. Utente: "Si"
+
+9. Tu: "Usa /architect:implement per eseguire"
 ```

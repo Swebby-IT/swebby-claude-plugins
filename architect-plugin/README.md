@@ -1,17 +1,17 @@
 # Architect Plugin
 
-Plugin completo per pianificazione architetturale e implementazione. Analizza codebase, crea piani dettagliati, genera diagrammi Mermaid/PlantUML, ed esegue con agenti specializzati per Django, Vue 3 e Tailwind CSS.
+Plugin per pianificazione architetturale e implementazione. Ispirato a Kilo Code Architect Mode.
+
+**Stack-agnostic:** Legge `claude.md` per adattarsi automaticamente al progetto.
 
 ## Caratteristiche
 
-- **Pianificazione**: Crea piani dettagliati con task, dipendenze, rischi
-- **Implementazione**: Esegue piani con agenti specializzati
+- **Pianificazione Interattiva**: TodoWrite come output principale
+- **Domande Chiarificatrici**: AskUserQuestion per disambiguare
+- **Stack Agnostic**: Supporta qualsiasi linguaggio/framework
 - **Memory Bank**: Directory `.architect/` per documentazione persistente
-- **Diagrammi Automatici**: Mermaid e PlantUML (C4, Sequence, ER, Class)
-- **Template Architetturali**: Microservices, Monolith, Serverless, MVC
-- **Review Automatica**: Validazione con scoring qualita'
-- **Stack Supportato**: Django, Vue 3, Tailwind CSS
-- **MCP Support**: Integrazione con code-search per ricerca semantica
+- **Diagrammi Mermaid**: Architettura, sequenze, ER
+- **Multi-Agent**: Backend, frontend, styling developers generici
 
 ## Comandi
 
@@ -19,7 +19,7 @@ Plugin completo per pianificazione architetturale e implementazione. Analizza co
 
 | Comando | Descrizione |
 |---------|-------------|
-| `/architect:plan <requisiti>` | Crea piano di implementazione |
+| `/architect:plan <requisiti>` | Crea piano con todo list |
 | `/architect:design <sistema>` | Design architetturale completo |
 | `/architect:review <piano\|recent>` | Review e validazione piano |
 | `/architect:diagram <componente>` | Genera diagrammi Mermaid |
@@ -44,45 +44,81 @@ Plugin completo per pianificazione architetturale e implementazione. Analizza co
 | `plan-reviewer` | Opus | Validazione piani |
 | `documentation-writer` | Sonnet | Documentazione tecnica |
 
-### Esecuzione
+### Esecuzione (Generici)
 
 | Agente | Modello | Ruolo |
 |--------|---------|-------|
-| `django-developer` | Sonnet | Backend Django (models, views, API) |
-| `vue-developer` | Sonnet | Frontend Vue 3 (components, stores) |
-| `tailwind-developer` | Sonnet | Styling Tailwind CSS |
-| `test-writer` | Sonnet | Test Django (pytest) e Vue (Vitest) |
+| `backend-developer` | Sonnet | Backend (Django, FastAPI, Express, etc.) |
+| `frontend-developer` | Sonnet | Frontend (Vue, React, Angular, etc.) |
+| `styling-developer` | Sonnet | Styling (Tailwind, Bootstrap, SCSS, etc.) |
+| `test-writer` | Sonnet | Test (pytest, jest, vitest, etc.) |
 | `code-reviewer` | Sonnet | Code review finale |
+
+## Stack Supportati
+
+### Backend
+- Django, FastAPI, Flask (Python)
+- Express, NestJS, Fastify (Node.js)
+- Laravel (PHP)
+- Rails (Ruby)
+- Spring Boot (Java)
+- Go (Gin, Echo)
+
+### Frontend
+- Vue 3 (Composition API, Pinia)
+- React (Hooks, Redux, Zustand)
+- Angular (NgRx)
+- Svelte (SvelteKit)
+- Vanilla JS / Web Components
+
+### Styling
+- Tailwind CSS
+- Bootstrap
+- Bulma
+- CSS Modules
+- Styled Components
+- SCSS/Sass
+
+## Come Funziona
+
+### 1. Legge claude.md
+
+Prima di ogni operazione, il plugin legge `claude.md` o `CLAUDE.md` nella root del progetto per identificare:
+- Stack tecnologico
+- Pattern architetturali
+- Convenzioni del progetto
+
+### 2. Pianificazione con TodoWrite
+
+```
+/architect:plan Aggiungi sistema di notifiche
+```
+
+Output:
+- Todo list interattiva (non documenti lunghi)
+- Diagrammi Mermaid se utili
+- Domande chiarificatrici se ambiguo
+
+### 3. Implementazione con Agenti
+
+```
+/architect:implement
+```
+
+Delega ai subagenti appropriati basandosi sullo stack rilevato:
+- `backend-developer` per codice server
+- `frontend-developer` per componenti UI
+- `styling-developer` per CSS/styling
+- `test-writer` per test
+- `code-reviewer` per review finale
 
 ## Workflow Consigliato
 
 ```
-1. /architect:plan <requisiti>     # Crea piano
-2. Approva il piano                # Review e approvazione
-3. /architect:implement            # Esegue con subagenti
-```
-
-## Cosa Viene Chiamato
-
-Quando usi `/architect:implement` su modifiche Django + Vue + Tailwind:
-
-```
-Piano approvato
-    │
-    ├── Task Django (models, views, serializers)
-    │   └── architect:django-developer
-    │
-    ├── Task Vue (components, stores)
-    │   └── architect:vue-developer
-    │
-    ├── Task Tailwind (stili)
-    │   └── architect:tailwind-developer
-    │
-    ├── Test
-    │   └── architect:test-writer
-    │
-    └── Review finale
-        └── architect:code-reviewer
+1. /architect:plan <requisiti>     # Crea piano con todo list
+2. Rispondi a domande             # Se ambiguita'
+3. Approva il piano               # Review e approvazione
+4. /architect:implement           # Esegue con subagenti
 ```
 
 ## Memory Bank
@@ -101,49 +137,32 @@ Piano approvato
 
 Inizializza con `/architect:init`.
 
-## Esempi
+## Differenze da Kilo Code
 
-### Pianifica e Implementa
+| Aspetto | Kilo Code | Nostro Plugin |
+|---------|-----------|---------------|
+| Output | Markdown lungo | TodoWrite (conciso) |
+| Domande | Limitate | AskUserQuestion attivo |
+| Stack | Generico | Generico + claude.md |
+| Agenti | N/A | Multi-agent delegation |
+| Review | Manuale | Automatica con scoring |
 
-```
-/architect:plan Aggiungi filtro prodotti per categoria con Vue e Tailwind
-```
-
-Output piano:
-- Task 1: Django FilterSet + ViewSet → `django-developer`
-- Task 2: FilterComponent.vue → `vue-developer`
-- Task 3: Stili filtro → `tailwind-developer`
-- Task 4: Test → `test-writer`
-
-Poi:
-```
-/architect:implement
-```
-
-Esegue tutti i task con i rispettivi agenti.
-
-### Solo Design
+## Esempio: Piano con TodoWrite
 
 ```
-/architect:design Sistema e-commerce completo
+/architect:plan Aggiungi filtro prodotti per categoria
 ```
 
-Output:
-- Architettura C4 con diagrammi
-- ADR per decisioni chiave
-- Schema database
-- API design
-- Piano implementazione fasi
-
-### Genera Diagrammi
-
-```
-/architect:diagram auth module
-```
-
-Output in `.architect/diagrams/`:
-- Component diagram
-- Sequence diagram login flow
+1. Legge claude.md → Django + Vue + Tailwind
+2. Chiede: "Filtro lato server o client?"
+3. Crea TodoWrite:
+   - Aggiungere FilterSet a Product
+   - Modificare ProductViewSet
+   - Creare FilterComponent.vue
+   - Aggiungere stili filtro
+   - Scrivere test
+4. Mostra diagramma sequenza
+5. Chiede approvazione
 
 ## Struttura Plugin
 
@@ -157,9 +176,9 @@ architect-plugin/
 │   ├── diagram-generator.md    # Diagrammi (Sonnet)
 │   ├── plan-reviewer.md        # Review piani (Opus)
 │   ├── documentation-writer.md # Docs (Sonnet)
-│   ├── django-developer.md     # Django (Sonnet)
-│   ├── vue-developer.md        # Vue 3 (Sonnet)
-│   ├── tailwind-developer.md   # Tailwind (Sonnet)
+│   ├── backend-developer.md    # Backend generico (Sonnet)
+│   ├── frontend-developer.md   # Frontend generico (Sonnet)
+│   ├── styling-developer.md    # Styling generico (Sonnet)
 │   ├── test-writer.md          # Test (Sonnet)
 │   └── code-reviewer.md        # Code review (Sonnet)
 ├── commands/
@@ -186,16 +205,25 @@ architect-plugin/
 └── README.md
 ```
 
-## MCP Supportati
-
-- `mcp__code-search__*` - Ricerca semantica (priorita' alta)
-- `mcp__qdrant__*` - Ricerca vettoriale
-
 ## Versione
 
-**1.1.0** - Aggiunta implementazione con agenti Django/Vue/Tailwind
+**2.0.0** - Refactoring completo: agenti generici, TodoWrite, AskUserQuestion
 
 ## Changelog
+
+### 2.0.0 (Breaking Change)
+- Agenti rinominati: django→backend, vue→frontend, tailwind→styling
+- Agenti leggono stack da claude.md
+- plan.md usa TodoWrite come output principale
+- Aggiunta fase domande chiarificatrici (AskUserQuestion)
+- Diagrammi Mermaid integrati nel flusso
+- Ispirato a Kilo Code Architect Mode
+
+### 1.1.2
+- Enforce agent delegation in implement
+
+### 1.1.1
+- Fix plugin.json manifest format
 
 ### 1.1.0
 - Aggiunto comando `/architect:implement`
