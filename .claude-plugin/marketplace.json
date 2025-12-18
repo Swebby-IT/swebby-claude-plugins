@@ -20,7 +20,7 @@
     },
     {
       "name": "multi-agent-orchestrator",
-      "description": "Orchestrazione con 58 agenti specializzati. Scelta modello (--model=sonnet|opus|haiku), dependency graph analysis, cost model integrato, shared context buffer.",
+      "description": "Orchestrazione con 58 agenti specializzati. Scelta modello (--model=sonnet|opus|haiku), dependency graph analysis, shared context buffer.",
       "source": "./multi-agent-orchestrator",
       "category": "development",
       "version": "1.4.0",

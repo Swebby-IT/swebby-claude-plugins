@@ -1,7 +1,7 @@
 {
   "name": "multi-agent-orchestrator",
   "version": "1.4.0",
-  "description": "Sistema di orchestrazione con 58 agenti specializzati. Scelta modello (Sonnet/Opus/Haiku), dependency graph, cost model, shared context.",
+  "description": "Sistema di orchestrazione con 58 agenti specializzati. Scelta modello (Sonnet/Opus/Haiku), dependency graph, shared context.",
   "author": {
     "name": "Maurizio Stabile",
     "email": "maurizio@swebby.it"

@@ -272,15 +272,6 @@ Mostra come cambierebbe con requisiti diversi:
 ### Modello Selezionato
 **[MODELLO_AGENTI]** (default: sonnet)
 
-### Stima Costi
-| Task | Agente | Modello | Complessità | Costo |
-|------|--------|---------|-------------|-------|
-| #1 | backend-1 | [MODELLO] | Media | ~$X.XX |
-| #2 | frontend-1 | [MODELLO] | Bassa | ~$X.XX |
-| **Totale** | | | | **~$X.XX** |
-
-*Costi: haiku=$0.01, sonnet=$0.05, opus=$0.25 × complessità (1x/2x/3x)*
-
 ### Strategia Esecuzione
 ```
 Gruppo A ─────┐

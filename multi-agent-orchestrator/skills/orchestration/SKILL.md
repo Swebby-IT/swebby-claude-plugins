@@ -313,49 +313,6 @@ File: handlers.py
 → 15 AGENTI (uno per file)
 ```
 
-### 4.5 STIMA COSTI
-
-Prima di chiedere approvazione, calcola il costo stimato:
-
-#### Tabella Costi Base
-
-| Modello | Costo per Task |
-|---------|----------------|
-| haiku   | ~$0.01         |
-| sonnet  | ~$0.05         |
-| opus    | ~$0.25         |
-
-#### Moltiplicatori Complessità
-
-| Complessità | Linee | Moltiplicatore |
-|-------------|-------|----------------|
-| Semplice    | 1-10  | 1x             |
-| Media       | 10-50 | 2x             |
-| Complessa   | 50+   | 3x             |
-
-#### Formula
-
-```
-costo_task = costo_base_modello × moltiplicatore_complessità
-costo_totale = Σ(costo_task per ogni agente)
-```
-
-#### Output nel Piano
-
-```markdown
-### Stima Costi
-| Task | Agente | Modello | Complessità | Costo |
-|------|--------|---------|-------------|-------|
-| #1 | backend-1 | sonnet | Media | ~$0.10 |
-| #2 | frontend-1 | sonnet | Semplice | ~$0.05 |
-| **Totale** | | | | **~$0.15** |
-```
-
-#### Warning Automatici
-
-- Costo > $0.50 → "⚠️ Costo elevato"
-- Costo > $1.00 → "⚠️⚠️ Molto elevato - considera --model=haiku"
-
 ### 5. FASE ESECUZIONE: Lancio Agenti
 
 #### 5.1 Preparazione Task per Agente

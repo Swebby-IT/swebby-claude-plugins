@@ -293,35 +293,7 @@ Se hai dubbi su:
 - **Sezioni totali:** M
 - **Agenti necessari:** X
 - **Esecuzione:** Parallela/Mista/Sequenziale
-
-### Stima Costi
-| Task | Agente | Modello | Complessità | Costo Stimato |
-|------|--------|---------|-------------|---------------|
-| #1 | backend-dev-1 | [MODELLO] | Media | ~$X.XX |
-| #2 | frontend-dev-1 | [MODELLO] | Bassa | ~$X.XX |
-| **TOTALE** | | | | **~$X.XX** |
 ```
-
-### 3.1.1 Calcolo Costi
-
-Usa questa tabella per stimare i costi:
-
-| Modello | Costo Base/Task |
-|---------|-----------------|
-| haiku   | ~$0.01          |
-| sonnet  | ~$0.05          |
-| opus    | ~$0.25          |
-
-**Moltiplicatori complessità:**
-- Semplice (1-10 linee): 1x
-- Media (10-50 linee): 2x
-- Complessa (50+ linee): 3x
-
-**Formula:** `costo_task = costo_base × moltiplicatore_complessità`
-
-**Warning automatici:**
-- Se costo totale > $0.50 → Mostra avviso: "⚠️ Costo stimato elevato"
-- Se costo totale > $1.00 → Mostra avviso: "⚠️⚠️ Costo molto elevato - considera --model=haiku per task semplici"
 
 ### 3.2 FERMATI E ASPETTA APPROVAZIONE
 

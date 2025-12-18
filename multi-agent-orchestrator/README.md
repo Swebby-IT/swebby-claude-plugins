@@ -8,7 +8,6 @@ Sistema di orchestrazione multi-agente generico con auto-scaling intelligente pe
 
 - **Scelta Modello Flessibile**: Scegli tra Sonnet (default), Opus o Haiku per gli agenti
 - **Dependency Graph Analysis**: Analizza le dipendenze tra file per evitare conflitti
-- **Cost Model Integrato**: Stima costi prima dell'esecuzione
 - **Shared Context Buffer**: Passa contesto tra agenti sequenziali per coerenza
 - **Discovery MCP Automatico**: Rileva automaticamente MCP semantici disponibili
 - **Ricerca Intelligente**: Prima ricerca semantica, poi verifica con grep
@@ -91,20 +90,7 @@ Prima di pianificare, il sistema costruisce un grafo delle dipendenze:
 - Ordina correttamente le modifiche (topological sort)
 - Rileva dipendenze circolari → stesso agente
 
-### 4. Stima Costi (Nuovo in v1.4.0)
-
-Prima dell'approvazione, mostra stima costi:
-
-```
-### Stima Costi
-| Task | Agente | Modello | Costo |
-|------|--------|---------|-------|
-| #1 | backend-1 | sonnet | ~$0.10 |
-| #2 | frontend-1 | sonnet | ~$0.05 |
-| **Totale** | | | **~$0.15** |
-```
-
-### 5. Shared Context (Nuovo in v1.4.0)
+### 4. Shared Context (Nuovo in v1.4.0)
 
 Per task sequenziali, passa contesto tra agenti:
 
@@ -114,7 +100,7 @@ Task #1 → crea UserSchema
 Task #2 → usa UserSchema correttamente
 ```
 
-### 6. Calcolo Automatico Agenti
+### 5. Calcolo Automatico Agenti
 
 **Regole di scaling:**
 
@@ -146,7 +132,7 @@ handlers.py linee 450-480
 handlers.py linee 600-630
 ```
 
-### 7. Workflow Completo
+### 6. Workflow Completo
 
 ```
 [Richiesta Utente]
