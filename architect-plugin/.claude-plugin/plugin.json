@@ -1,0 +1,31 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "architect",
+  "version": "1.1.0",
+  "description": "Plugin completo per pianificazione e implementazione. Analizza codebase, crea piani, genera diagrammi Mermaid/PlantUML. Esegue con agenti specializzati: Django, Vue 3, Tailwind CSS.",
+  "keywords": [
+    "architect",
+    "planning",
+    "design",
+    "diagrams",
+    "mermaid",
+    "architecture",
+    "documentation",
+    "ADR",
+    "django",
+    "vue",
+    "tailwind",
+    "implementation"
+  ],
+  "author": {
+    "name": "Maurizio Stabile"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swebby/swebby-claude-plugins"
+  },
+  "engines": {
+    "claude-code": ">=1.0.0"
+  }
+}

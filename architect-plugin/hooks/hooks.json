@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "ARCHITECT PLUGIN ATTIVO: Plugin completo per pianificazione e implementazione.\n\nCOMANDI PIANIFICAZIONE (read-only):\n- /architect:plan <requisiti> - Crea piano di implementazione\n- /architect:design <sistema> - Design architetturale completo\n- /architect:review <piano|recent> - Review piano esistente\n- /architect:diagram <componente> - Genera diagrammi Mermaid\n- /architect:init - Inizializza Memory Bank (.architect/)\n- /architect:export <formato> - Esporta (markdown|mermaid|json|plantuml)\n\nCOMANDO ESECUZIONE:\n- /architect:implement <piano|descrizione> - Esegue piano con subagenti\n\nSUBAGENTI DISPONIBILI:\n- architect:architect - Pianificatore principale (Opus)\n- architect:codebase-analyzer - Analisi codebase (Sonnet)\n- architect:diagram-generator - Genera diagrammi (Sonnet)\n- architect:plan-reviewer - Valida piani (Opus)\n- architect:documentation-writer - Documentazione (Sonnet)\n- architect:django-developer - Backend Django (Sonnet)\n- architect:vue-developer - Frontend Vue 3 (Sonnet)\n- architect:tailwind-developer - Stili Tailwind (Sonnet)\n- architect:test-writer - Test Django/Vue (Sonnet)\n- architect:code-reviewer - Code review (Sonnet)\n\nWORKFLOW CONSIGLIATO:\n1. /architect:plan per pianificare\n2. Approva il piano\n3. /architect:implement per eseguire\n\nMCP SUPPORTATI:\n- mcp__code-search__* - Ricerca semantica\n- mcp__qdrant__* - Ricerca vettoriale"
+          }
+        ]
+      }
+    ]
+  }
+}
