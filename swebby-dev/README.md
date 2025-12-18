@@ -155,7 +155,7 @@ Questi agenti NON prendono decisioni - eseguono istruzioni precise da Sensei.
 ```
 swebby-dev/
 ├── .claude-plugin/
-│   └── plugin.json      # Include definizione agenti
+│   └── plugin.json
 ├── commands/
 │   ├── sensei.md        # Orchestrazione multi-agente
 │   ├── architect.md
@@ -163,6 +163,10 @@ swebby-dev/
 │   ├── ask.md
 │   ├── orchestrator.md
 │   └── debug.md
+├── agents/              # Agenti Sonnet per Sensei
+│   ├── developer.md
+│   ├── tester.md
+│   └── reviewer.md
 └── README.md
 ```
 

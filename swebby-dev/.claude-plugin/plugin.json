@@ -17,22 +17,5 @@
     "sensei",
     "multi-agent"
   ],
-  "license": "MIT",
-  "agents": {
-    "developer": {
-      "description": "Sviluppatore esecutore (Sonnet). Esegue modifiche al codice seguendo istruzioni PRECISE da Sensei. NON prende decisioni.",
-      "model": "sonnet",
-      "tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
-    },
-    "tester": {
-      "description": "Tester esecutore (Sonnet). Scrive ed esegue test seguendo istruzioni PRECISE da Sensei. NON prende decisioni.",
-      "model": "sonnet",
-      "tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
-    },
-    "reviewer": {
-      "description": "Revisore codice (Sonnet). Analizza le modifiche implementate per qualita, sicurezza e best practices.",
-      "model": "sonnet",
-      "tools": ["Read", "Glob", "Grep", "Bash"]
-    }
-  }
+  "license": "MIT"
 }
