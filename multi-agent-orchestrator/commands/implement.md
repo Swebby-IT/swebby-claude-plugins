@@ -297,21 +297,51 @@ Se hai dubbi su:
 
 ### 3.2 FERMATI E ASPETTA APPROVAZIONE
 
-**NON procedere senza conferma esplicita dell'utente.**
+```
+╔═══════════════════════════════════════════════════════════════╗
+║  ⚠️  STOP OBBLIGATORIO - NON PROCEDERE SENZA APPROVAZIONE   ⚠️ ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  1. Mostra il piano completo all'utente                       ║
+║  2. USA AskUserQuestion per chiedere conferma                 ║
+║  3. ATTENDI risposta PRIMA di passare a FASE 4                ║
+║                                                               ║
+║  Se l'utente NON approva esplicitamente → NON procedere       ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+```
 
-Chiedi:
+Chiedi usando **AskUserQuestion**:
 > "Piano pronto con **X agenti**. Vuoi che proceda con l'implementazione?"
+
+Opzioni:
+- "Sì, procedi con l'implementazione"
+- "No, modifica il piano"
+- "Annulla"
 
 ---
 
 ## FASE 4: Esecuzione Multi-Agente
 
-### REGOLA CRITICA: USA SEMPRE IL TASK TOOL
+```
+╔═══════════════════════════════════════════════════════════════════════╗
+║  🚨 REGOLA INVIOLABILE: USA SEMPRE IL TASK TOOL CON SUBAGENT 🚨       ║
+╠═══════════════════════════════════════════════════════════════════════╣
+║                                                                       ║
+║  ❌ VIETATO: Edit, Write, Update diretto sui file                     ║
+║  ❌ VIETATO: Modificare codice senza Task tool                        ║
+║                                                                       ║
+║  ✅ OBBLIGATORIO: Task tool + subagent_type per OGNI modifica         ║
+║                                                                       ║
+║  Se NON usi Task tool → stai violando le regole del comando           ║
+║                                                                       ║
+╚═══════════════════════════════════════════════════════════════════════╝
+```
 
-**NON modificare MAI il codice direttamente.** Per OGNI modifica devi:
+**Per OGNI modifica devi:**
 1. Usare il **Task tool**
 2. Con `subagent_type` appropriato (vedi lista agenti sotto)
-3. Il subagent Sonnet eseguirà la modifica
+3. Il subagent eseguirà la modifica (NON tu direttamente)
 
 ### 4.1 Agenti Disponibili
 
@@ -651,10 +681,28 @@ Se ci sono conflitti tra modifiche:
 
 ## Regole Fondamentali
 
+```
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃  🚨 REGOLE INVIOLABILI - LEGGI PRIMA DI OGNI AZIONE 🚨                    ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃                                                                          ┃
+┃  1. ❌ MAI usare Edit/Write/Update direttamente                          ┃
+┃     ✅ USA SEMPRE Task tool con subagent_type                            ┃
+┃                                                                          ┃
+┃  2. ❌ MAI procedere senza approvazione del piano                        ┃
+┃     ✅ FERMATI alla FASE 3.2 e usa AskUserQuestion                       ┃
+┃                                                                          ┃
+┃  3. ❌ MAI saltare discovery MCP e analisi dipendenze                    ┃
+┃     ✅ ESEGUI SEMPRE FASE 1 e FASE 1.5                                   ┃
+┃                                                                          ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+```
+
+**Checklist comportamento corretto:**
 1. **MAI** modificare codice direttamente - USA SEMPRE Task tool con subagent_type
 2. **MAI** saltare la fase di discovery MCP
 3. **SEMPRE** verificare con grep anche dopo ricerca semantica
-4. **MAI** procedere senza piano approvato
-5. **SEMPRE** usare Task tool per delegare a subagenti Sonnet
+4. **MAI** procedere senza piano approvato dall'utente
+5. **SEMPRE** usare Task tool per delegare a subagenti
 6. **SEMPRE** verificare i risultati di ogni subagent
 7. **SEMPRE** lanciare in parallelo task indipendenti (multipli Task tool in un messaggio)
