@@ -1,6 +1,6 @@
 # SwebbyDev Plugin
 
-Plugin multi-modalita per sviluppo software ispirato a KiloCode. Sei modalita specializzate per diversi aspetti dello sviluppo.
+Plugin multi-modalita per sviluppo software con sette modalita specializzate.
 
 ## Modalita Disponibili
 
@@ -39,6 +39,37 @@ Plugin multi-modalita per sviluppo software ispirato a KiloCode. Sei modalita sp
 **Esempio:**
 ```bash
 /swebby-dev:sensei Aggiungi autenticazione JWT con refresh token
+```
+
+---
+
+### `/swebby-dev:supermode` - Massima Potenza
+
+**SUPERMODE = SENSEI ma con TUTTI gli agenti in Opus + ultrathink.**
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                   SUPERMODE = SENSEI + OPUS              │
+│  Sensei: Tu Opus, agenti Sonnet                          │
+│  Supermode: Tu Opus, agenti OPUS con ultrathink          │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Cosa fa:**
+- Come Sensei, ma lancia TUTTI gli agenti con `model: "opus"`
+- Ogni agente usa ragionamento ultra-approfondito
+- Qualita massima, velocita secondaria
+- Per i task piu critici e complessi
+
+**Quando usarla:**
+- Task mission-critical
+- Quando la qualita e piu importante della velocita
+- Problemi complessi che richiedono ragionamento profondo
+- Quando vuoi la massima potenza disponibile
+
+**Esempio:**
+```bash
+/swebby-dev:supermode Refactoring completo del sistema di autenticazione
 ```
 
 ---
@@ -158,12 +189,13 @@ swebby-dev/
 │   └── plugin.json
 ├── commands/
 │   ├── sensei.md        # Orchestrazione multi-agente
+│   ├── supermode.md     # Sensei con agenti Opus
 │   ├── architect.md
 │   ├── code.md
 │   ├── ask.md
 │   ├── orchestrator.md
 │   └── debug.md
-├── agents/              # Agenti Sonnet per Sensei
+├── agents/              # Agenti per Sensei/Supermode
 │   ├── developer.md
 │   ├── tester.md
 │   └── reviewer.md
@@ -182,8 +214,11 @@ claude --plugin swebby-dev
 ## Esempi di Utilizzo
 
 ```bash
-# NUOVO: Orchestrazione multi-agente (Opus + Sonnet)
+# Orchestrazione multi-agente (Opus + Sonnet)
 /swebby-dev:sensei Implementa sistema di notifiche push
+
+# Massima potenza (Opus + Opus con ultrathink)
+/swebby-dev:supermode Refactoring critico del sistema di pagamenti
 
 # Pianificare una nuova feature
 /swebby-dev:architect Voglio aggiungere autenticazione OAuth2
@@ -201,15 +236,17 @@ claude --plugin swebby-dev
 /swebby-dev:debug L'API restituisce 500 quando faccio POST su /users
 ```
 
-## Differenza tra Sensei e Orchestrator
+## Differenza tra Sensei, Supermode e Orchestrator
 
-| Orchestrator | Sensei |
-|--------------|--------|
-| Delega a modalita (stesso modello) | Delega ad agenti Sonnet |
-| Agenti decidono autonomamente | Agenti eseguono ordini precisi |
-| Istruzioni generiche | Istruzioni ultra-specifiche |
-| Piu veloce per task semplici | Piu controllo per task complessi |
+| Aspetto | Orchestrator | Sensei | Supermode |
+|---------|--------------|--------|-----------|
+| Delega a | Modalita (stesso modello) | Agenti Sonnet | Agenti Opus |
+| Autonomia agenti | Decidono autonomamente | Eseguono ordini | Eseguono ordini |
+| Istruzioni | Generiche | Ultra-specifiche | Ultra-specifiche |
+| Velocita | Alta | Media | Bassa |
+| Qualita | Buona | Ottima | Massima |
+| Uso ideale | Task semplici | Task complessi | Task critici |
 
 ## Versione
 
-0.4.3
+0.5.0

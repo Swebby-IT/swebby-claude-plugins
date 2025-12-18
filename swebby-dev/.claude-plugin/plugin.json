@@ -1,7 +1,7 @@
 {
   "name": "swebby-dev",
-  "version": "0.4.3",
-  "description": "Plugin multi-modalita per sviluppo software: Architect, Code, Ask, Orchestrator, Debug, Sensei",
+  "version": "0.5.0",
+  "description": "Plugin multi-modalita per sviluppo software: Architect, Code, Ask, Orchestrator, Debug, Sensei, Supermode",
   "author": {
     "name": "Maurizio Stabile",
     "email": "maurizio@swebby.it"
@@ -15,6 +15,7 @@
     "multi-mode",
     "planning",
     "sensei",
+    "supermode",
     "multi-agent"
   ],
   "license": "MIT"
