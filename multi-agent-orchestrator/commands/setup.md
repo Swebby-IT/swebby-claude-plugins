@@ -474,7 +474,69 @@ Aggiungi la configurazione del database a `~/.claude/settings.json` insieme a co
 
 ---
 
-## FASE 8: Crea Guida nel Progetto
+## FASE 8: Configurazione Memoria (mem0)
+
+### 8.1 Chiedi se Configurare Memoria
+
+Usa **AskUserQuestion**:
+
+```
+Vuoi configurare anche un MCP per la memoria di contesto?
+Questo permette a Claude di ricordare informazioni tra sessioni.
+
+- Sì, configura mem0 (Recommended) - Usa Qdrant già installato
+- No, solo code-search
+```
+
+### 8.2 Configurazione mem0
+
+Se l'utente accetta, configura mem0:
+
+```json
+{
+  "mcpServers": {
+    "memory": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mem0-mcp"],
+      "env": {
+        "MEM0_PROVIDER": "qdrant",
+        "QDRANT_URL": "http://127.0.0.1:6333",
+        "QDRANT_COLLECTION": "claude-memory",
+        "EMBEDDING_PROVIDER": "openai",
+        "EMBEDDING_BASE_URL": "https://openrouter.ai/api/v1",
+        "EMBEDDING_MODEL": "qwen/qwen3-embedding-8b",
+        "OPENAI_API_KEY": "[STESSA_API_KEY_DI_CODE_SEARCH]"
+      }
+    }
+  }
+}
+```
+
+**Nota:** Riutilizza la stessa API key di OpenRouter già configurata per code-search.
+
+### 8.3 Come Funziona mem0
+
+La memoria permette a Claude di:
+- **Ricordare** preferenze, decisioni, contesto tra sessioni
+- **Cercare** ricordi per similarità semantica
+- **Organizzare** automaticamente le informazioni
+
+**Comandi disponibili dopo setup:**
+```
+mcp__memory__add_memory      # Salva un ricordo
+mcp__memory__search_memory   # Cerca nei ricordi
+mcp__memory__get_all_memories # Lista tutti i ricordi
+mcp__memory__delete_memory   # Elimina un ricordo
+```
+
+### 8.4 Aggiungi a Settings
+
+Aggiungi la configurazione mem0 a `~/.claude/settings.json` insieme agli altri MCP.
+
+---
+
+## FASE 9: Crea Guida nel Progetto
 
 Crea il file `.claude/MCP-SETUP.md` nella root del progetto con le istruzioni:
 
@@ -554,6 +616,33 @@ Con l'MCP database puoi:
 - Eseguire query SQL
 - Analizzare tabelle
 
+## Memoria (mem0)
+
+La memoria permette a Claude di ricordare informazioni tra sessioni.
+
+### Comandi Memoria
+
+```bash
+# In Claude, puoi usare:
+mcp__memory__add_memory       # Salva informazione
+mcp__memory__search_memory    # Cerca nei ricordi
+mcp__memory__get_all_memories # Lista ricordi
+mcp__memory__delete_memory    # Elimina ricordo
+```
+
+### Cosa Viene Ricordato
+
+- Preferenze di sviluppo (naming, pattern)
+- Decisioni architetturali
+- Contesto del progetto
+- Informazioni utente
+
+### Configurazione
+
+- **Provider**: Qdrant (localhost:6333)
+- **Collection**: claude-memory
+- **Embedding**: qwen/qwen3-embedding-8b
+
 ## Troubleshooting
 
 ### Qdrant non risponde
@@ -591,7 +680,7 @@ mcp-index daemon /path
 
 ---
 
-## FASE 9: Report Finale Completo
+## FASE 10: Report Finale Completo
 
 ```markdown
 ## Setup Completato
@@ -600,6 +689,7 @@ mcp-index daemon /path
 | MCP | Stato | Endpoint |
 |-----|-------|----------|
 | code-search | ✅ Attivo | Qdrant localhost:6333 |
+| memory (mem0) | ✅ Attivo | Qdrant localhost:6333 |
 | [database] | ✅ Attivo | [connection] |
 
 ### File Creati

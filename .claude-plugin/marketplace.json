@@ -20,10 +20,10 @@
     },
     {
       "name": "multi-agent-orchestrator",
-      "description": "Orchestrazione con 58 agenti specializzati. Scelta modello, dependency graph, shared context, /setup per MCP code-search e database.",
+      "description": "Orchestrazione con 58 agenti specializzati. /setup configura MCP: code-search, mem0 (memoria), database PostgreSQL/MariaDB.",
       "source": "./multi-agent-orchestrator",
       "category": "development",
-      "version": "1.6.1",
+      "version": "1.7.0",
       "author": {
         "name": "Maurizio Stabile"
       }
