@@ -40,10 +40,10 @@
     },
     {
       "name": "swebby-dev",
-      "description": "Plugin multi-modalita per sviluppo software: /architect (pianifica), /code (implementa), /ask (domande), /orchestrator (coordina), /debug (troubleshooting)",
+      "description": "Plugin multi-modalita: /sensei (Opus orchestra agenti Sonnet), /architect, /code, /ask, /orchestrator, /debug",
       "source": "./swebby-dev",
       "category": "development",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "author": {
         "name": "Maurizio Stabile"
       }
