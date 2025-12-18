@@ -310,6 +310,157 @@ curl http://127.0.0.1:6333/collections
 
 ---
 
+## FASE 7: Rilevamento Database (Opzionale)
+
+### 7.1 Cerca Configurazione Database
+
+Cerca nei file di configurazione del progetto quale database viene usato:
+
+**File da analizzare:**
+```
+- settings.py, config.py (Django, Flask)
+- .env, .env.local, .env.production
+- docker-compose.yml, docker-compose.yaml
+- database.yml (Rails)
+- application.properties, application.yml (Spring)
+- config/database.php (Laravel)
+- prisma/schema.prisma (Prisma)
+- package.json (dipendenze)
+- requirements.txt, Pipfile (dipendenze Python)
+```
+
+**Pattern da cercare:**
+
+| Database | Pattern |
+|----------|---------|
+| PostgreSQL | `postgres://`, `postgresql://`, `psycopg2`, `pg_`, `POSTGRES_`, `5432` |
+| MariaDB | `mariadb://`, `mysql://`, `MARIADB_`, `MYSQL_`, `3306` |
+
+### 7.2 Analizza Risultati
+
+Usa Grep per cercare i pattern:
+
+```bash
+# PostgreSQL
+grep -r "postgres\|psycopg\|5432" --include="*.py" --include="*.env*" --include="*.yml" --include="*.yaml" .
+
+# MariaDB/MySQL
+grep -r "mariadb\|mysql\|3306" --include="*.py" --include="*.env*" --include="*.yml" .
+```
+
+### 7.3 Report Database Rilevati
+
+```markdown
+## Database Rilevati nel Progetto
+
+Ho analizzato i file di configurazione e ho trovato:
+
+| Database | File | Configurazione |
+|----------|------|----------------|
+| PostgreSQL | .env | DATABASE_URL=postgres://user:pass@localhost:5432/mydb |
+| MariaDB | docker-compose.yml | mariadb:3306 |
+```
+
+### 7.4 Chiedi Configurazione MCP Database
+
+Se rilevi un database, usa **AskUserQuestion**:
+
+```
+Ho rilevato che il progetto usa [DATABASE].
+Vuoi configurare anche un MCP per accedere al database?
+
+- Sì, configura MCP [database] (Recommended)
+- No, solo code-search
+```
+
+### 7.5 Configurazione MCP per Database
+
+#### PostgreSQL (mcp__postgres)
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_URL": "[CONNECTION_STRING]"
+      }
+    }
+  }
+}
+```
+
+**Chiedi all'utente:**
+- Connection string (es. `postgres://user:pass@localhost:5432/dbname`)
+- Oppure estrai da .env se presente
+
+#### MariaDB (mcp__mariadb)
+
+```json
+{
+  "mcpServers": {
+    "mariadb": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@benborber/mcp-server-mysql"],
+      "env": {
+        "MYSQL_HOST": "[HOST]",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "[USER]",
+        "MYSQL_PASSWORD": "[PASSWORD]",
+        "MYSQL_DATABASE": "[DATABASE]"
+      }
+    }
+  }
+}
+```
+
+**Chiedi all'utente:**
+- Host (es. `localhost` o `127.0.0.1`)
+- Porta (default: `3306`)
+- Utente
+- Password
+- Nome database
+- Oppure estrai da .env se presente
+
+### 7.6 Estrai Credenziali da .env
+
+Se trovi un file `.env`, prova a estrarre le credenziali:
+
+```bash
+# Cerca variabili database comuni
+grep -E "^(DATABASE_URL|POSTGRES_|MYSQL_|MARIADB_|DB_)" .env 2>/dev/null
+```
+
+**Chiedi conferma all'utente prima di usare le credenziali trovate.**
+
+### 7.7 Aggiungi MCP Database a Settings
+
+Aggiungi la configurazione del database a `~/.claude/settings.json` insieme a code-search.
+
+---
+
+## FASE 8: Report Finale Completo
+
+```markdown
+## Setup Completato
+
+### MCP Configurati
+| MCP | Stato | Endpoint |
+|-----|-------|----------|
+| code-search | ✅ Attivo | Qdrant localhost:6333 |
+| [database] | ✅ Attivo | [connection] |
+
+### Prossimi Passi
+1. **Riavvia Claude Code** per caricare i nuovi MCP
+2. Verifica con: "Quali MCP sono disponibili?"
+3. Usa `/implement` - ricerca semantica + accesso DB attivi
+```
+
+---
+
 ## Gestione Errori
 
 ### Se Docker non si installa
