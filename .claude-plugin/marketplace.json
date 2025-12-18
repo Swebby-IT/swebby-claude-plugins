@@ -43,7 +43,7 @@
       "description": "Plugin multi-modalita: /sensei (Opus orchestra agenti Sonnet), /architect, /code, /ask, /orchestrator, /debug",
       "source": "./swebby-dev",
       "category": "development",
-      "version": "0.4.2",
+      "version": "0.4.3",
       "author": {
         "name": "Maurizio Stabile"
       }

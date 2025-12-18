@@ -212,4 +212,4 @@ claude --plugin swebby-dev
 
 ## Versione
 
-0.4.2
+0.4.3
