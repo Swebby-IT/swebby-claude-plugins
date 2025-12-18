@@ -480,49 +480,73 @@ Task #3 (routes/user.py) → Riceve contesto completo da #1 e #2
 
 ### 4.5 Formato Prompt per Agente
 
-**REGOLA CRITICA:** I subagenti Sonnet NON hanno il contesto della conversazione.
-Devi fornire TUTTE le informazioni nel prompt. Se ometti dettagli, l'agente farà scelte arbitrarie.
+```
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║  REGOLA CRITICA: PASSA TUTTO IL CONTESTO - IL SUBAGENT NON DEVE RILEGGERE!   ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                               ║
+║  Tu (Opus) hai GIÀ LETTO i file. Il subagent NON deve rileggerli.            ║
+║  DEVI includere nel prompt:                                                   ║
+║                                                                               ║
+║  1. Il CODICE ATTUALE (copia-incolla dal tuo Read)                           ║
+║  2. Le RIGHE ESATTE da modificare (es. linee 45-60)                          ║
+║  3. La MODIFICA PRECISA (old_string → new_string)                            ║
+║  4. Il RISULTATO ATTESO (come deve apparire DOPO)                            ║
+║                                                                               ║
+║  Se il prompt è completo, il subagent può usare Edit DIRETTAMENTE            ║
+║  senza dover prima fare Read.                                                 ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+```
 
 **Campi OBBLIGATORI per ogni task:**
 
 ```markdown
 ## Task per [nome-agente]
 
+**⚠️ ISTRUZIONE: NON leggere i file - tutto il contesto è già fornito sotto.**
+
 **Obiettivo:** [descrizione COMPLETA di cosa deve fare]
 
-**Razionale:** [PERCHÉ questa modifica - aiuta l'agente a fare scelte informate]
+**Razionale:** [PERCHÉ questa modifica]
 
-**File da modificare:**
-- `path/file.py` linee X-Y
+**File e posizione ESATTA:**
+- File: `path/file.py`
+- Linee da modificare: 45-60
+- Funzione/classe: `login_view()` dentro classe `AuthController`
 
-**Istruzioni PASSO-PASSO:**
-1. [azione SPECIFICA con dettagli implementativi]
-2. [azione SPECIFICA con dettagli implementativi]
-3. [azione SPECIFICA con dettagli implementativi]
-
-**Contesto codice ATTUALE (SEMPRE INCLUDERE):**
+**CODICE ATTUALE (già letto, NON rileggere):**
 ```[linguaggio]
-[snippet del codice ESISTENTE che verrà modificato]
-[includere anche contesto circostante se rilevante]
+# path/file.py linee 45-60
+[COPIA-INCOLLA ESATTO del codice che hai letto con Read]
+[Includi numeri di riga se utile]
 ```
 
-**Pattern e convenzioni del progetto:**
-- Naming: [camelCase/snake_case/etc.]
-- Import style: [pattern usato]
-- Error handling: [come gestire errori]
+**MODIFICA DA APPLICARE:**
+```
+OLD (da sostituire):
+[codice esatto da cercare]
 
-**Output atteso:**
-```[linguaggio]
-[come dovrebbe apparire il codice DOPO la modifica]
+NEW (nuovo codice):
+[codice esatto da inserire]
 ```
 
-**NON modificare:**
-- [file/sezioni da non toccare]
-- [comportamenti da preservare]
+**RISULTATO FINALE ATTESO:**
+```[linguaggio]
+[come deve apparire il codice DOPO la modifica]
+```
 
-**Dipendenze:**
-- Dipende da: [Task #X / nessuno]
-- Bloccante per: [Task #Y / nessuno]
+**Pattern del progetto:**
+- Naming: [snake_case/camelCase]
+- Import: [stile usato nel file]
+- Error handling: [pattern usato]
+
+**NON toccare:**
+- [altre funzioni/sezioni]
+
+**Verifica finale:**
+- [ ] La modifica è sintatticamente corretta
+- [ ] Segue i pattern del progetto
 ```
 
 **ESEMPIO COMPLETO:**
@@ -530,83 +554,88 @@ Devi fornire TUTTE le informazioni nel prompt. Se ometti dettagli, l'agente far�
 ```markdown
 ## Task per backend-developer-1
 
+**⚠️ ISTRUZIONE: NON leggere i file - tutto il contesto è già fornito sotto.**
+
 **Obiettivo:** Aggiungere rate limiting all'endpoint /api/users/login
 
 **Razionale:** Prevenire attacchi brute-force. Attualmente non c'è limite ai tentativi
 di login, permettendo attacchi automatizzati.
 
-**File da modificare:**
-- `src/api/auth.py` linee 45-70
+**File e posizione ESATTA:**
+- File: `src/api/auth.py`
+- Linee da modificare: 1-15 (import e inizio file) + 17-28 (funzione login_view)
+- Funzione: `login_view(request)`
 
-**Istruzioni PASSO-PASSO:**
-1. Importare `from django.core.cache import cache` dopo gli altri import Django
-2. Creare costanti RATE_LIMIT_ATTEMPTS=5 e RATE_LIMIT_WINDOW=300 (5 min)
-3. Creare funzione `check_rate_limit(ip: str) -> bool` che usa cache
-4. In `login_view`, chiamare check_rate_limit PRIMA della validazione credenziali
-5. Se rate limit superato, restituire Response 429 con header Retry-After
-
-**Contesto codice ATTUALE (SEMPRE INCLUDERE):**
+**CODICE ATTUALE (già letto, NON rileggere):**
 ```python
-# src/api/auth.py
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.contrib.auth import authenticate
-
-@api_view(['POST'])
-def login_view(request):
-    """Endpoint di login."""
-    email = request.data.get('email')
-    password = request.data.get('password')
-
-    user = authenticate(email=email, password=password)
-    if user is None:
-        return Response({'error': 'Invalid credentials'}, status=401)
-
-    token = generate_token(user)
-    return Response({'token': token})
+# src/api/auth.py linee 1-28
+1  from rest_framework.decorators import api_view
+2  from rest_framework.response import Response
+3  from django.contrib.auth import authenticate
+4
+5  @api_view(['POST'])
+6  def login_view(request):
+7      """Endpoint di login."""
+8      email = request.data.get('email')
+9      password = request.data.get('password')
+10
+11     user = authenticate(email=email, password=password)
+12     if user is None:
+13         return Response({'error': 'Invalid credentials'}, status=401)
+14
+15     token = generate_token(user)
+16     return Response({'token': token})
 ```
 
-**Pattern e convenzioni del progetto:**
-- Naming: snake_case per funzioni, UPPER_CASE per costanti
-- Import: Django imports first, then rest_framework, then local
-- Error responses: sempre dict con key 'error'
-- Cache keys: prefix con nome modulo, es. 'auth:rate_limit:{ip}'
+**MODIFICA DA APPLICARE:**
 
-**Output atteso:**
-```python
-from django.core.cache import cache  # aggiunto
+Modifica 1 - Aggiungere import:
+```
+OLD:
+from django.contrib.auth import authenticate
+
+NEW:
+from django.contrib.auth import authenticate
+from django.core.cache import cache
 
 RATE_LIMIT_ATTEMPTS = 5
-RATE_LIMIT_WINDOW = 300  # 5 minuti
+RATE_LIMIT_WINDOW = 300
 
 def check_rate_limit(ip: str) -> bool:
-    """Verifica se IP ha superato rate limit."""
     key = f'auth:rate_limit:{ip}'
     attempts = cache.get(key, 0)
     return attempts < RATE_LIMIT_ATTEMPTS
+```
 
-@api_view(['POST'])
+Modifica 2 - Aggiornare login_view:
+```
+OLD:
+def login_view(request):
+    """Endpoint di login."""
+    email = request.data.get('email')
+
+NEW:
 def login_view(request):
     """Endpoint di login con rate limiting."""
     ip = request.META.get('REMOTE_ADDR')
-
     if not check_rate_limit(ip):
-        return Response(
-            {'error': 'Too many attempts'},
-            status=429,
-            headers={'Retry-After': str(RATE_LIMIT_WINDOW)}
-        )
-    # ... resto della logica
+        return Response({'error': 'Too many attempts'}, status=429)
+    email = request.data.get('email')
 ```
 
-**NON modificare:**
+**Pattern del progetto:**
+- Naming: snake_case per funzioni, UPPER_CASE per costanti
+- Import: Django first, then rest_framework
+- Error responses: dict con key 'error'
+
+**NON toccare:**
 - La logica di authenticate()
-- Il formato della response di successo
 - Altri endpoint nel file
 
-**Dipendenze:**
-- Dipende da: nessuno
-- Bloccante per: Task #4 (test rate limiting)
+**Verifica finale:**
+- [ ] Sintassi corretta
+- [ ] Import in ordine corretto
+- [ ] Rate limit applicato PRIMA di authenticate
 ```
 
 ### 4.6 CHECKLIST VALIDAZIONE PRE-LANCIO (OBBLIGATORIA)
@@ -614,52 +643,47 @@ def login_view(request):
 **PRIMA di lanciare OGNI agente**, verifica che il tuo prompt contenga TUTTI questi elementi:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  CHECKLIST VALIDAZIONE PROMPT - NON LANCIARE SE INCOMPLETO     │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  [ ] OBIETTIVO: Descrizione chiara e completa?                 │
-│      ❌ "Modifica il file" → troppo vago                        │
-│      ✅ "Aggiungi validazione email nella funzione X"          │
-│                                                                 │
-│  [ ] RAZIONALE: Spiegato PERCHÉ serve questa modifica?         │
-│      ❌ mancante                                                │
-│      ✅ "Per prevenire registrazioni con email malformate"     │
-│                                                                 │
-│  [ ] FILE + LINEE: Path esatto e range linee specifico?        │
-│      ❌ "modifica services.py"                                  │
-│      ✅ "src/users/services.py linee 45-60"                    │
-│                                                                 │
-│  [ ] CONTESTO CODICE: Hai incluso lo snippet ESISTENTE?        │
-│      ❌ mancante o "vedi file"                                  │
-│      ✅ Codice attuale copiato nel prompt                      │
-│                                                                 │
-│  [ ] ISTRUZIONI PASSO-PASSO: Azioni specifiche numerate?       │
-│      ❌ "implementa la validazione"                             │
-│      ✅ "1. Importa re  2. Crea funzione X  3. Chiama in Y"    │
-│                                                                 │
-│  [ ] PATTERN PROGETTO: Naming, import style, error handling?   │
-│      ❌ mancante                                                │
-│      ✅ "snake_case, import stdlib first, raise ValueError"    │
-│                                                                 │
-│  [ ] OUTPUT ATTESO: Esempio di come deve apparire il codice?   │
-│      ❌ mancante o descrizione testuale                         │
-│      ✅ Snippet di codice con risultato finale                 │
-│                                                                 │
-│  [ ] VINCOLI: Specificato cosa NON modificare?                 │
-│      ❌ mancante                                                │
-│      ✅ "NON modificare firma funzione, altri file"            │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│  CHECKLIST VALIDAZIONE PROMPT - NON LANCIARE SE INCOMPLETO           │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  [ ] ISTRUZIONE "NON LEGGERE": Presente all'inizio?                  │
+│      ❌ mancante                                                     │
+│      ✅ "⚠️ NON leggere i file - contesto già fornito"              │
+│                                                                      │
+│  [ ] OBIETTIVO: Descrizione chiara e completa?                       │
+│      ❌ "Modifica il file" → troppo vago                             │
+│      ✅ "Aggiungi validazione email nella funzione X"                │
+│                                                                      │
+│  [ ] FILE + LINEE + FUNZIONE: Posizione esatta?                      │
+│      ❌ "modifica services.py"                                       │
+│      ✅ "src/services.py linee 45-60, funzione validate_user()"     │
+│                                                                      │
+│  [ ] CODICE ATTUALE: Hai COPIATO il codice dal tuo Read?             │
+│      ❌ mancante o "leggi il file"                                   │
+│      ✅ Codice con numeri di riga copiato nel prompt                 │
+│                                                                      │
+│  [ ] MODIFICA ESATTA: Hai specificato OLD → NEW?                     │
+│      ❌ "aggiungi validazione"                                       │
+│      ✅ "OLD: [codice da sostituire]  NEW: [nuovo codice]"          │
+│                                                                      │
+│  [ ] PATTERN PROGETTO: Naming, import, error handling?               │
+│      ❌ mancante                                                     │
+│      ✅ "snake_case, Django imports first"                          │
+│                                                                      │
+│  [ ] VINCOLI: Specificato cosa NON modificare?                       │
+│      ❌ mancante                                                     │
+│      ✅ "NON toccare altre funzioni nel file"                       │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 **SE MANCA ANCHE UN SOLO ELEMENTO:**
 1. **NON lanciare l'agente**
-2. Prima raccogli l'informazione mancante (leggi il file, analizza il contesto)
-3. Completa il prompt
-4. Poi lancia
+2. TU completa le informazioni mancanti
+3. Poi lancia
 
-**RICORDA:** L'agente Sonnet NON ha il tuo contesto. Se il prompt è incompleto, farà scelte arbitrarie o fallirà.
+**OBIETTIVO:** Il subagent deve poter usare Edit DIRETTAMENTE senza fare Read.
 
 ---
 
