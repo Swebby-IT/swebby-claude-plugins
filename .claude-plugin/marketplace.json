@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "swebby-plugins",
-  "version": "1.3.0",
-  "description": "Plugin per orchestrazione multi-agente intelligente con auto-scaling e pianificazione architetturale",
+  "version": "1.5.0",
+  "description": "Plugin per orchestrazione multi-agente intelligente con auto-scaling",
   "owner": {
     "name": "Maurizio Stabile",
     "email": "maurizio@swebby.it"
@@ -39,11 +39,11 @@
       }
     },
     {
-      "name": "architect",
-      "description": "Plugin pianificazione + implementazione stack-agnostic. TodoWrite per piani, AskUserQuestion per chiarimenti. Legge claude.md, delega a backend/frontend/styling developers.",
-      "source": "./architect-plugin",
+      "name": "swebby-dev",
+      "description": "Plugin multi-modalita per sviluppo software: /architect (pianifica), /code (implementa), /ask (domande), /orchestrator (coordina), /debug (troubleshooting)",
+      "source": "./swebby-dev",
       "category": "development",
-      "version": "2.0.0",
+      "version": "0.1.0",
       "author": {
         "name": "Maurizio Stabile"
       }
