@@ -31,11 +31,10 @@ Cerca tra i tool disponibili:
 Ho rilevato che hai già un MCP per la ricerca semantica configurato:
 - **MCP trovato:** [nome]
 
-Non è necessaria alcuna configurazione aggiuntiva.
-Il plugin multi-agent-orchestrator utilizzerà automaticamente questo MCP.
+✅ Code-search OK - Salto alla verifica database...
 ```
 
-**STOP** - Non procedere oltre se MCP già configurato.
+**SALTA a FASE 7** - Procedi con rilevamento database.
 
 ---
 
@@ -310,7 +309,9 @@ curl http://127.0.0.1:6333/collections
 
 ---
 
-## FASE 7: Rilevamento Database (Opzionale)
+## FASE 7: Rilevamento Database
+
+**ESEGUI SEMPRE questa fase**, sia dopo installazione code-search che se code-search era già configurato.
 
 ### 7.1 Cerca Configurazione Database
 
