@@ -40,10 +40,10 @@
     },
     {
       "name": "swebby-dev",
-      "description": "Plugin multi-modalita: /supermode (tutti Opus), /sensei (Opus + Sonnet), /architect, /code, /ask, /orchestrator, /debug",
+      "description": "Plugin multi-modalita: /ultramode (verifica massiva 6 fasi), /supermode (tutti Opus), /sensei (Opus + Sonnet), /architect, /code, /ask, /orchestrator, /debug",
       "source": "./swebby-dev",
       "category": "development",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "author": {
         "name": "Maurizio Stabile"
       }

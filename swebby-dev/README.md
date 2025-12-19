@@ -1,6 +1,6 @@
 # SwebbyDev Plugin
 
-Plugin multi-modalita per sviluppo software con sette modalita specializzate.
+Plugin multi-modalita per sviluppo software con otto modalita specializzate.
 
 ## Modalita Disponibili
 
@@ -70,6 +70,47 @@ Plugin multi-modalita per sviluppo software con sette modalita specializzate.
 **Esempio:**
 ```bash
 /swebby-dev:supermode Refactoring completo del sistema di autenticazione
+```
+
+---
+
+### `/swebby-dev:ultramode` - Verifica Massiva Multi-Livello
+
+**ULTRAMODE = SUPERMODE + MEGA-VERIFICA con loop correttivo.**
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                    ULTRAMODE = SUPERMODE + MEGA-VERIFICA            │
+│  Supermode: Tu Opus, agenti Opus eseguono                           │
+│  Ultramode: + 5 verificatori paralleli + loop correttivo (max 3)    │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+**Workflow 6 Fasi:**
+1. **ARCHITECT**: Analisi e piano dettagliato
+2. **EXECUTION SWARM**: N developer in parallelo (tutti Opus)
+3. **VERIFICATION SWARM**: 5 verificatori in parallelo (tutti Opus)
+4. **AGGREGATION**: Raccolta e prioritizzazione problemi
+5. **CORRECTION LOOP**: Fix iterativi (max 3 cicli)
+6. **FINAL VALIDATION**: Cross-validator per verdict finale
+
+**Verificatori:**
+- Inspector (sintassi, import, runtime)
+- Consistency Checker (naming, interfacce, tipi)
+- Completeness Checker (nulla saltato dal piano)
+- Tester (test automatici)
+- Reviewer (code review)
+- Cross-Validator (aggregazione finale e verdict)
+
+**Quando usarla:**
+- Quando serve verifica massiva e accuratezza totale
+- Per task dove NON possono esserci errori
+- Quando vuoi piu agenti che verificano incrociando i risultati
+- Per garantire coerenza e completezza
+
+**Esempio:**
+```bash
+/swebby-dev:ultramode Implementa sistema di pagamenti con validazione completa
 ```
 
 ---
@@ -169,17 +210,21 @@ Esperto debugger per diagnosi sistematica.
 
 ---
 
-## Agenti (usati da Sensei)
+## Agenti
 
-Il plugin include tre agenti Sonnet usati dalla modalita Sensei:
+Il plugin include 7 agenti usati dalle modalita Sensei, Supermode e Ultramode:
 
-| Agente | Ruolo |
-|--------|-------|
-| `swebby-dev:developer` | Esegue modifiche al codice |
-| `swebby-dev:tester` | Scrive ed esegue test |
-| `swebby-dev:reviewer` | Code review |
+| Agente | Ruolo | Usato da |
+|--------|-------|----------|
+| `swebby-dev:developer` | Esegue modifiche al codice | Sensei, Supermode, Ultramode |
+| `swebby-dev:tester` | Scrive ed esegue test | Sensei, Supermode, Ultramode |
+| `swebby-dev:reviewer` | Code review | Sensei, Supermode, Ultramode |
+| `swebby-dev:inspector` | Verifica funzionamento (sintassi, import, runtime) | Ultramode |
+| `swebby-dev:consistency-checker` | Verifica coerenza (naming, interfacce, tipi) | Ultramode |
+| `swebby-dev:completeness-checker` | Verifica completezza (nulla saltato) | Ultramode |
+| `swebby-dev:cross-validator` | Aggregazione finale e verdict | Ultramode |
 
-Questi agenti NON prendono decisioni - eseguono istruzioni precise da Sensei.
+Questi agenti NON prendono decisioni - eseguono istruzioni precise dall'orchestratore.
 
 ## Struttura Plugin
 
@@ -188,17 +233,22 @@ swebby-dev/
 ├── .claude-plugin/
 │   └── plugin.json
 ├── commands/
-│   ├── sensei.md        # Orchestrazione multi-agente
-│   ├── supermode.md     # Sensei con agenti Opus
+│   ├── sensei.md           # Orchestrazione multi-agente (Opus + Sonnet)
+│   ├── supermode.md        # Sensei con agenti Opus
+│   ├── ultramode.md        # Verifica massiva multi-livello
 │   ├── architect.md
 │   ├── code.md
 │   ├── ask.md
 │   ├── orchestrator.md
 │   └── debug.md
-├── agents/              # Agenti per Sensei/Supermode
-│   ├── developer.md
-│   ├── tester.md
-│   └── reviewer.md
+├── agents/
+│   ├── developer.md           # Esegue modifiche codice
+│   ├── tester.md              # Scrive/esegue test
+│   ├── reviewer.md            # Code review
+│   ├── inspector.md           # Verifica funzionamento
+│   ├── consistency-checker.md # Verifica coerenza
+│   ├── completeness-checker.md # Verifica completezza
+│   └── cross-validator.md     # Aggregazione e verdict
 └── README.md
 ```
 
@@ -220,6 +270,9 @@ claude --plugin swebby-dev
 # Massima potenza (Opus + Opus con ultrathink)
 /swebby-dev:supermode Refactoring critico del sistema di pagamenti
 
+# Verifica massiva multi-livello (6 fasi + loop correttivo)
+/swebby-dev:ultramode Implementa sistema di pagamenti con validazione completa
+
 # Pianificare una nuova feature
 /swebby-dev:architect Voglio aggiungere autenticazione OAuth2
 
@@ -236,17 +289,20 @@ claude --plugin swebby-dev
 /swebby-dev:debug L'API restituisce 500 quando faccio POST su /users
 ```
 
-## Differenza tra Sensei, Supermode e Orchestrator
+## Differenza tra le Modalita Multi-Agente
 
-| Aspetto | Orchestrator | Sensei | Supermode |
-|---------|--------------|--------|-----------|
-| Delega a | Modalita (stesso modello) | Agenti Sonnet | Agenti Opus |
-| Autonomia agenti | Decidono autonomamente | Eseguono ordini | Eseguono ordini |
-| Istruzioni | Generiche | Ultra-specifiche | Ultra-specifiche |
-| Velocita | Alta | Media | Bassa |
-| Qualita | Buona | Ottima | Massima |
-| Uso ideale | Task semplici | Task complessi | Task critici |
+| Aspetto | Orchestrator | Sensei | Supermode | Ultramode |
+|---------|--------------|--------|-----------|-----------|
+| Delega a | Modalita (stesso modello) | Agenti Sonnet | Agenti Opus | Agenti Opus |
+| Autonomia agenti | Decidono autonomamente | Eseguono ordini | Eseguono ordini | Eseguono ordini |
+| Istruzioni | Generiche | Ultra-specifiche | Ultra-specifiche | Ultra-specifiche |
+| Verificatori | 0 | 2 (tester, reviewer) | 2 (tester, reviewer) | 6 (+ 4 specializzati) |
+| Loop correttivo | No | No | No | Si (max 3) |
+| Cross-validation | No | No | No | Si |
+| Velocita | Alta | Media | Bassa | Molto bassa |
+| Qualita | Buona | Ottima | Massima | Massima + verificata |
+| Uso ideale | Task semplici | Task complessi | Task critici | Task che richiedono verifica totale |
 
 ## Versione
 
-0.5.0
+0.6.0
