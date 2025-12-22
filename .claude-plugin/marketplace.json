@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "swebby-plugins",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Plugin per orchestrazione multi-agente intelligente con auto-scaling",
   "owner": {
     "name": "Maurizio Stabile",
@@ -40,10 +40,10 @@
     },
     {
       "name": "swebby-dev",
-      "description": "Plugin multi-modalita: /ultramode (verifica massiva 6 fasi), /supermode (tutti Opus), /sensei (Opus + Sonnet), /architect, /code, /ask, /orchestrator, /debug",
+      "description": "Plugin multi-modalita: /ultra-coherence (coerenza totale + loop infinito), /ultramode (verifica massiva), /supermode (tutti Opus), /sensei, /architect, /code, /ask, /orchestrator, /debug",
       "source": "./swebby-dev",
       "category": "development",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "author": {
         "name": "Maurizio Stabile"
       }

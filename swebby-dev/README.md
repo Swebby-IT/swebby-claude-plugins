@@ -1,6 +1,6 @@
 # SwebbyDev Plugin
 
-Plugin multi-modalita per sviluppo software con otto modalita specializzate.
+Plugin multi-modalita per sviluppo software con nove modalita specializzate.
 
 ## Modalita Disponibili
 
@@ -115,6 +115,52 @@ Plugin multi-modalita per sviluppo software con otto modalita specializzate.
 
 ---
 
+### `/swebby-dev:ultra-coherence` - Coerenza Totale con Loop Infinito
+
+**ULTRA-COHERENCE = COERENZA TOTALE + LOOP INFINITO finche' PERFETTO.**
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    ULTRA-COHERENCE = COERENZA TOTALE                      │
+│                                                                           │
+│  - MCP ricerca semantica PRIORITARIA (code-search)                        │
+│  - 1-6 Researcher Opus: output ATOMICO e DETTAGLIATO                      │
+│  - Tu (Opus) elabori in ultrathink                                        │
+│  - 1-6 Developer Opus con ultrathink                                      │
+│  - 1-6 Coherence Verifier: coerenza con TUTTO il sistema                  │
+│  - Loop INFINITO: itera finche' PERFETTO (0 problemi critici/alti)        │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+**Workflow Loop Infinito:**
+1. **RICERCA**: MCP semantico (priorita) + 1-6 researcher Opus -> output ATOM
+2. **ELABORAZIONE**: Tu Opus elabori ATOM in ultrathink -> piano preciso
+3. **EXECUTION**: 1-6 developer Opus con istruzioni atomiche
+4. **VERIFICA**: 1-6 coherence-verifier Opus -> coerenza con TUTTO il sistema
+5. **DECISIONE**: Perfetto? -> Riepilogo | Problemi? -> Torna a 1
+
+**Differenza da Ultramode:**
+- Ultramode: 5 verificatori diversi + loop max 3
+- Ultra-Coherence: 1-6 verificatori COERENZA + loop INFINITO
+
+**Agenti:**
+- `researcher`: Ricerca con output ATOM (atomico e dettagliato)
+- `developer`: Esegue modifiche
+- `coherence-verifier`: Verifica coerenza con TUTTO il sistema
+
+**Quando usarla:**
+- Quando la COERENZA con tutto il sistema e critica
+- Per modifiche che devono integrarsi perfettamente
+- Quando vuoi garanzia che tutto funzioni insieme
+- Task dove incoerenze causerebbero problemi gravi
+
+**Esempio:**
+```bash
+/swebby-dev:ultra-coherence Aggiungi nuovo modulo che si integra con tutto il sistema esistente
+```
+
+---
+
 ### `/swebby-dev:architect` - Pianificazione
 
 Leader tecnico per pianificare e progettare soluzioni prima dell'implementazione.
@@ -212,17 +258,19 @@ Esperto debugger per diagnosi sistematica.
 
 ## Agenti
 
-Il plugin include 7 agenti usati dalle modalita Sensei, Supermode e Ultramode:
+Il plugin include 9 agenti usati dalle modalita Sensei, Supermode, Ultramode e Ultra-Coherence:
 
 | Agente | Ruolo | Usato da |
 |--------|-------|----------|
-| `swebby-dev:developer` | Esegue modifiche al codice | Sensei, Supermode, Ultramode |
+| `swebby-dev:developer` | Esegue modifiche al codice | Sensei, Supermode, Ultramode, Ultra-Coherence |
 | `swebby-dev:tester` | Scrive ed esegue test | Sensei, Supermode, Ultramode |
 | `swebby-dev:reviewer` | Code review | Sensei, Supermode, Ultramode |
 | `swebby-dev:inspector` | Verifica funzionamento (sintassi, import, runtime) | Ultramode |
 | `swebby-dev:consistency-checker` | Verifica coerenza (naming, interfacce, tipi) | Ultramode |
 | `swebby-dev:completeness-checker` | Verifica completezza (nulla saltato) | Ultramode |
 | `swebby-dev:cross-validator` | Aggregazione finale e verdict | Ultramode |
+| `swebby-dev:researcher` | Ricerca atomica con MCP semantico prioritario | Ultra-Coherence |
+| `swebby-dev:coherence-verifier` | Verifica coerenza con TUTTO il sistema | Ultra-Coherence |
 
 Questi agenti NON prendono decisioni - eseguono istruzioni precise dall'orchestratore.
 
@@ -233,22 +281,25 @@ swebby-dev/
 ├── .claude-plugin/
 │   └── plugin.json
 ├── commands/
-│   ├── sensei.md           # Orchestrazione multi-agente (Opus + Sonnet)
-│   ├── supermode.md        # Sensei con agenti Opus
-│   ├── ultramode.md        # Verifica massiva multi-livello
+│   ├── sensei.md             # Orchestrazione multi-agente (Opus + Sonnet)
+│   ├── supermode.md          # Sensei con agenti Opus
+│   ├── ultramode.md          # Verifica massiva multi-livello
+│   ├── ultra-coherence.md    # Coerenza totale + loop infinito
 │   ├── architect.md
 │   ├── code.md
 │   ├── ask.md
 │   ├── orchestrator.md
 │   └── debug.md
 ├── agents/
-│   ├── developer.md           # Esegue modifiche codice
-│   ├── tester.md              # Scrive/esegue test
-│   ├── reviewer.md            # Code review
-│   ├── inspector.md           # Verifica funzionamento
-│   ├── consistency-checker.md # Verifica coerenza
+│   ├── developer.md            # Esegue modifiche codice
+│   ├── tester.md               # Scrive/esegue test
+│   ├── reviewer.md             # Code review
+│   ├── inspector.md            # Verifica funzionamento
+│   ├── consistency-checker.md  # Verifica coerenza file
 │   ├── completeness-checker.md # Verifica completezza
-│   └── cross-validator.md     # Aggregazione e verdict
+│   ├── cross-validator.md      # Aggregazione e verdict
+│   ├── researcher.md           # Ricerca atomica (Ultra-Coherence)
+│   └── coherence-verifier.md   # Coerenza sistema (Ultra-Coherence)
 └── README.md
 ```
 
@@ -273,6 +324,9 @@ claude --plugin swebby-dev
 # Verifica massiva multi-livello (6 fasi + loop correttivo)
 /swebby-dev:ultramode Implementa sistema di pagamenti con validazione completa
 
+# Coerenza totale con loop infinito
+/swebby-dev:ultra-coherence Aggiungi modulo che deve integrarsi perfettamente col sistema
+
 # Pianificare una nuova feature
 /swebby-dev:architect Voglio aggiungere autenticazione OAuth2
 
@@ -291,18 +345,18 @@ claude --plugin swebby-dev
 
 ## Differenza tra le Modalita Multi-Agente
 
-| Aspetto | Orchestrator | Sensei | Supermode | Ultramode |
-|---------|--------------|--------|-----------|-----------|
-| Delega a | Modalita (stesso modello) | Agenti Sonnet | Agenti Opus | Agenti Opus |
-| Autonomia agenti | Decidono autonomamente | Eseguono ordini | Eseguono ordini | Eseguono ordini |
-| Istruzioni | Generiche | Ultra-specifiche | Ultra-specifiche | Ultra-specifiche |
-| Verificatori | 0 | 2 (tester, reviewer) | 2 (tester, reviewer) | 6 (+ 4 specializzati) |
-| Loop correttivo | No | No | No | Si (max 3) |
-| Cross-validation | No | No | No | Si |
-| Velocita | Alta | Media | Bassa | Molto bassa |
-| Qualita | Buona | Ottima | Massima | Massima + verificata |
-| Uso ideale | Task semplici | Task complessi | Task critici | Task che richiedono verifica totale |
+| Aspetto | Orchestrator | Sensei | Supermode | Ultramode | Ultra-Coherence |
+|---------|--------------|--------|-----------|-----------|-----------------|
+| Delega a | Modalita | Agenti Sonnet | Agenti Opus | Agenti Opus | Agenti Opus |
+| Autonomia agenti | Decidono | Eseguono | Eseguono | Eseguono | Eseguono |
+| MCP semantico | No | Opzionale | Opzionale | Opzionale | PRIORITARIO |
+| Ricercatori | No | No | No | No | 1-6 (ATOM) |
+| Verificatori | 0 | 2 | 2 | 6 | 1-6 (coerenza) |
+| Loop correttivo | No | No | No | max 3 | INFINITO |
+| Focus | Velocita | Qualita | Potenza | Verifica | COERENZA |
+| Termina quando | Task fatto | Task fatto | Task fatto | max 3 iter | PERFETTO |
+| Uso ideale | Semplici | Complessi | Critici | Verifica totale | Integrazione sistema |
 
 ## Versione
 
-0.6.0
+0.7.0
