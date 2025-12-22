@@ -43,7 +43,7 @@
       "description": "Plugin multi-modalita: /ultra-coherence (coerenza totale + loop infinito), /ultramode (verifica massiva), /supermode (tutti Opus), /sensei, /architect, /code, /ask, /orchestrator, /debug",
       "source": "./swebby-dev",
       "category": "development",
-      "version": "0.7.0",
+      "version": "0.7.1",
       "author": {
         "name": "Maurizio Stabile"
       }
