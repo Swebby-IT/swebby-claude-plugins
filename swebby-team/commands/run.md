@@ -44,6 +44,7 @@ Teammate({
   operation: "spawn",
   team_name: "swebby-[nome]",
   name: "researcher-1",
+  model: "sonnet",
   prompt: "Sei un RESEARCHER teammate nel team swebby-[nome]. Nome: researcher-1.\n\n### Brief\n**Missione**: [cosa fare]\n**Input**: [dove cercare]\n**Output atteso**: [formato]\n**Vincoli**: [limiti]\n\n### Comunicazione\n- Claim task: TaskUpdate({ taskId: 'N', owner: 'researcher-1', status: 'in_progress' })\n- Risultati al lead: Teammate({ operation: 'write', target_agent_id: 'team-lead', message: 'RISULTATO: ...' })\n- Completa task: TaskUpdate({ taskId: 'N', status: 'completed' })\n- Se serve info da altro teammate: Teammate({ operation: 'write', target_agent_id: '[nome]', message: '...' })\n\nFormato risposta: 1. RISULTATO 2. PROBLEMI (max 3 righe) 3. SUGGERIMENTI (max 2 righe)",
   run_in_background: true
 })
@@ -55,12 +56,13 @@ Teammate({
   operation: "spawn",
   team_name: "swebby-[nome]",
   name: "dev-1",
+  model: "sonnet",
   prompt: "Sei un DEVELOPER teammate nel team swebby-[nome]. Nome: dev-1.\n\n### Brief\n**Missione**: [cosa implementare]\n**Contesto**: [decisioni, vincoli]\n**Input**: [file da modificare]\n**Output atteso**: [file creati/modificati]\n**Vincoli**: [pattern, cose da NON fare]\n\n### Comunicazione\n- Claim task: TaskUpdate({ taskId: 'N', owner: 'dev-1', status: 'in_progress' })\n- Risultati al lead: Teammate({ operation: 'write', target_agent_id: 'team-lead', message: 'RISULTATO: ...' })\n- Completa task: TaskUpdate({ taskId: 'N', status: 'completed' })\n- Leggi inbox: Teammate({ operation: 'read' })\n- Scrivi ad altro teammate: Teammate({ operation: 'write', target_agent_id: '[nome]', message: '...' })\n\nFormato risposta: 1. RISULTATO 2. PROBLEMI (max 3 righe) 3. SUGGERIMENTI (max 2 righe)",
   run_in_background: true
 })
 ```
 
-**Per task critici (sicurezza, architettura), aggiungi `model: "opus"` nello spawn.**
+**Default: `model: "sonnet"`. Per task critici (sicurezza, architettura), usa `model: "opus"`.**
 
 ### Step 4: Monitora e Coordina
 
