@@ -1,3 +1,8 @@
+---
+description: "Review e verifica orchestrata: Opus coordina Researcher per analisi qualita, test, sicurezza."
+argument-hint: "<cosa verificare>"
+---
+
 # /review — Lancia una fase di verifica e review
 
 Devi orchestrare una review del lavoro svolto. NON fare review tu stesso.

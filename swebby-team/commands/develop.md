@@ -1,3 +1,8 @@
+---
+description: "Fase di sviluppo orchestrata: Opus delega a Developer Sonnet/Opus. Zero codice diretto."
+argument-hint: "<cosa sviluppare>"
+---
+
 # /develop — Lancia una fase di sviluppo
 
 Devi orchestrare una fase di sviluppo. NON scrivere codice tu stesso.

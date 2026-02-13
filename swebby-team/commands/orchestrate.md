@@ -1,3 +1,8 @@
+---
+description: "Orchestrazione completa multi-agente: analisi, sviluppo, review. Opus coordina, Sonnet esegue."
+argument-hint: "<descrizione del task>"
+---
+
 # /orchestrate — Avvia l'orchestratore
 
 Hai ricevuto un task dall'utente. Attiva il protocollo di orchestrazione completo.

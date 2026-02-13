@@ -1,3 +1,8 @@
+---
+description: "Genera Piano di Esecuzione senza lanciare agenti. Dry-run per validare l'approccio."
+argument-hint: "<task da pianificare>"
+---
+
 # /plan — Genera solo il Piano di Esecuzione
 
 Analizza il task e produci SOLO il piano di esecuzione, senza lanciare nessun agente. Utile per validare l'approccio con l'utente prima di procedere.

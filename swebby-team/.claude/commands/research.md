@@ -1,3 +1,8 @@
+---
+description: "Fase di ricerca orchestrata: Opus delega a Researcher Sonnet. Zero analisi diretta."
+argument-hint: "<cosa ricercare>"
+---
+
 # /research — Lancia una fase di ricerca
 
 Devi orchestrare una fase di sola ricerca. NON fare ricerca tu stesso.
