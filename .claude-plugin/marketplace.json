@@ -50,7 +50,7 @@
     },
     {
       "name": "swebby-team",
-      "description": "Orchestratore Senior multi-agente (Opus 4.6): pianifica, delega, coordina e verifica. Zero lavoro diretto. /orchestrate, /research, /develop, /review, /plan",
+      "description": "Orchestratore Senior multi-agente (Opus 4.6): pianifica, delega, coordina e verifica. Zero lavoro diretto. /run",
       "source": "./swebby-team",
       "category": "development",
       "version": "1.0.0",
