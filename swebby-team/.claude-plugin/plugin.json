@@ -1,0 +1,22 @@
+{
+  "name": "swebby-team",
+  "version": "1.0.0",
+  "description": "Orchestratore Senior multi-agente (Opus 4.6): pianifica, delega, coordina e verifica. Zero lavoro diretto. /orchestrate, /research, /develop, /review, /plan",
+  "author": {
+    "name": "Maurizio Stabile",
+    "email": "maurizio@swebby.it"
+  },
+  "keywords": [
+    "orchestrator",
+    "multi-agent",
+    "team",
+    "planning",
+    "delegation",
+    "coordination",
+    "research",
+    "development",
+    "review",
+    "opus"
+  ],
+  "license": "MIT"
+}
