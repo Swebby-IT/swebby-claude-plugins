@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ═══════════════════════════════════════════
-#  🎯 Swebby Team — Installer
-#  Orchestratore multi-agente per Claude Code
+#  🎯 Swebby Team v2 — Installer
+#  Orchestratore multi-agente con Agent Teams
 # ═══════════════════════════════════════════
 
 set -e
@@ -11,8 +11,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TARGET_DIR="${1:-.}"
 
 echo ""
-echo "🎯 Swebby Team — Installer"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🎯 Swebby Team v2 — Installer (Agent Teams)"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "📁 Progetto target: $(cd "$TARGET_DIR" && pwd)"
 echo ""
@@ -30,7 +30,19 @@ if [ -f "$TARGET_DIR/.claude/settings.json" ]; then
     echo "⚠️  settings.json esistente → backup creato (.bak)"
 fi
 cp "$SCRIPT_DIR/settings.json" "$TARGET_DIR/.claude/settings.json"
-echo "✅ Settings installati"
+echo "✅ Settings installati (con CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1)"
+
+# Verifica/abilita Agent Teams anche globalmente
+GLOBAL_SETTINGS="$HOME/.claude/settings.json"
+if [ -f "$GLOBAL_SETTINGS" ]; then
+    if ! grep -q "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS" "$GLOBAL_SETTINGS" 2>/dev/null; then
+        echo "⚠️  Agent Teams non trovato in settings globali."
+        echo "    Per abilitare globalmente, esegui:"
+        echo "    claude settings set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1"
+    else
+        echo "✅ Agent Teams già abilitato globalmente"
+    fi
+fi
 
 # Gestione CLAUDE.md (append se esiste, crea se no)
 if [ -f "$TARGET_DIR/CLAUDE.md" ]; then
@@ -45,13 +57,12 @@ else
 fi
 
 echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🎉 Swebby Team installato!"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🎉 Swebby Team v2 installato!"
 echo ""
 echo "Comandi disponibili in Claude Code:"
-echo "  /orchestrate  — Task completo (research → develop → review)"
-echo "  /research     — Solo fase di ricerca"
-echo "  /develop      — Solo fase di sviluppo"
-echo "  /review       — Solo verifica e code review"
-echo "  /plan         — Genera piano senza eseguire"
+echo "  /run  — Lancia l'orchestratore con Agent Teams"
+echo ""
+echo "⚠️  IMPORTANTE: Assicurati che Agent Teams sia attivo:"
+echo "  claude settings set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1"
 echo ""

@@ -1,7 +1,7 @@
 {
   "name": "swebby-team",
-  "version": "1.2.0",
-  "description": "Orchestratore Senior multi-agente (Opus 4.6): pianifica, delega, coordina e verifica. Zero lavoro diretto. /run",
+  "version": "2.0.0",
+  "description": "Orchestratore Senior multi-agente con Agent Teams (TeammateTool): Opus 4.6 come team lead, teammate Sonnet/Opus che comunicano tra loro. /run",
   "author": {
     "name": "Maurizio Stabile",
     "email": "maurizio@swebby.it"
@@ -9,6 +9,8 @@
   "keywords": [
     "orchestrator",
     "multi-agent",
+    "agent-teams",
+    "teammate-tool",
     "team",
     "planning",
     "delegation",

@@ -1,81 +1,92 @@
-# 🎯 Swebby Team
+# 🎯 Swebby Team v2 — Agent Teams
 
-Orchestratore multi-agente per Claude Code. Opus 4.6 come team leader che orchestra Researcher (Sonnet) e Developer (Sonnet/Opus) senza mai fare lavoro diretto.
+Orchestratore multi-agente per Claude Code con **Agent Teams (TeammateTool)**. Opus 4.6 come team leader che orchestra teammate Researcher e Developer che **comunicano tra loro** via inbox.
 
 ```
-┌─────────────────────────────────────┐
-│     ORCHESTRATORE (Opus 4.6)        │
-│   Pianifica · Delega · Coordina     │
-│       ⛔ Zero lavoro diretto        │
-└──────────┬──────────┬───────────────┘
-           │          │
-    ┌──────▼──┐  ┌────▼─────┐
-    │RESEARCHER│  │DEVELOPER │
-    │ (Sonnet) │  │(Sonnet/  │
-    │          │  │  Opus)   │
-    │• Analisi │  │• Codice  │
-    │• Ricerca │  │• Fix     │
-    │• Review  │  │• Feature │
-    │• Test    │  │• Arch.   │
-    └──────────┘  └──────────┘
+┌─────────────────────────────────────────────────┐
+│        TEAM LEAD (Opus 4.6)                      │
+│   Pianifica · Spawna · Coordina · Verifica       │
+│      ⛔ Zero lavoro diretto                      │
+│      ✅ Usa TeammateTool (NON Task)              │
+└──────────┬──────────┬───────────┬───────────────┘
+           │          │           │
+    ┌──────▼──┐  ┌────▼─────┐  ┌─▼──────────┐
+    │RESEARCHER│  │DEVELOPER │  │DEVELOPER   │
+    │(teammate)│◄►│(teammate)│◄►│(teammate)  │
+    │          │  │          │  │            │
+    │• Analisi │  │• Codice  │  │• Codice    │
+    │• Ricerca │  │• Fix     │  │• Feature   │
+    │• Review  │  │• Feature │  │• Arch.     │
+    └──────────┘  └──────────┘  └────────────┘
+         ◄──── comunicano via inbox ────►
+```
+
+## Differenza dalla v1
+
+| Aspetto | v1 (Task/Subagent) | v2 (Agent Teams) |
+|---------|-------------------|------------------|
+| Tool | `Task()` | `Teammate()` / `TeammateTool` |
+| Comunicazione | Solo verso orchestratore | Tra TUTTI i teammate |
+| Task list | Nessuna condivisa | `TaskCreate/TaskUpdate/TaskList` |
+| Coordinamento | Sequenziale tramite lead | Peer-to-peer via inbox |
+| Shutdown | Automatico | Controllato (`requestShutdown` + `cleanup`) |
+
+## Prerequisiti
+
+- Claude Code
+- Accesso ai modelli Opus 4.6 e Sonnet
+- **Agent Teams abilitato**:
+
+```bash
+claude settings set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
 ```
 
 ## Installazione
 
-Aggiungi Swebby Team al tuo progetto come custom instructions da GitHub:
+### Da GitHub (plugin marketplace)
 
 ```bash
-claude install github:YOUR_USERNAME/swebby-team
+/plugin marketplace add Swebby-IT/swebby-claude-plugins
+/plugin install swebby-team
 ```
 
-Oppure aggiungilo manualmente nei settings di Claude Code:
+### Manuale
 
 ```bash
-claude config add customInstructions "$(curl -s https://raw.githubusercontent.com/YOUR_USERNAME/swebby-team/main/CLAUDE.md)"
+git clone https://github.com/Swebby-IT/swebby-claude-plugins.git
+cd swebby-claude-plugins/swebby-team
+bash install.sh /path/to/your/project
 ```
 
 ## Comandi
 
 | Comando | Uso | Esempio |
 |---------|-----|---------|
-| `/orchestrate` | Task completo multi-fase | `/orchestrate Aggiungi autenticazione OAuth2` |
-| `/research` | Solo ricerca/analisi | `/research Analizza le API di pagamento` |
-| `/develop` | Solo sviluppo codice | `/develop Implementa UserProfile component` |
-| `/review` | Verifica e code review | `/review Controlla le modifiche all'auth` |
-| `/plan` | Piano senza eseguire (dry-run) | `/plan Migrazione da REST a GraphQL` |
+| `/run` | Task completo con Agent Team | `/run Aggiungi autenticazione OAuth2` |
 
 ## Come Funziona
 
-1. **Tu dai un task** → L'orchestratore analizza e scompone
-2. **Piano di esecuzione** → Mostra fasi, agenti, modelli, dipendenze
-3. **Conferma** → Chiede ok prima di lanciare
-4. **Dispatch** → Lancia agenti con brief atomici strutturati
-5. **Coordinamento** → Sintetizza output, passa info tra fasi
-6. **Verifica** → Review automatica del risultato
-7. **Report** → Riassunto finale
+1. **Tu dai un task** → Il team lead analizza e scompone
+2. **Piano di esecuzione** → Mostra fasi, teammate, modelli, dipendenze
+3. **Conferma** → Chiede ok prima di creare il team
+4. **`spawnTeam`** → Crea il team
+5. **`TaskCreate`** → Crea task list condivisa
+6. **`spawn`** → Spawna teammate con brief e istruzioni di comunicazione
+7. **Teammate lavorano** → Si coordinano via inbox, aggiornano task list
+8. **Team lead monitora** → Legge inbox, valida, coordina
+9. **Verifica** → Reviewer teammate controlla il tutto
+10. **`requestShutdown` + `cleanup`** → Chiude ordinatamente
+11. **Report finale**
 
 ## Regole Chiave
 
-- **Zero lavoro diretto**: l'orchestratore NON tocca mai file, codice, terminale
-- **Scaling automatico**: da 2 a 8 agenti in base alla complessità
+- **Zero lavoro diretto**: il team lead NON tocca mai file, codice, terminale
+- **TeammateTool ONLY**: NON usa mai il tool `Task`, SOLO `Teammate`
+- **Comunicazione reale**: i teammate comunicano tra loro via inbox
+- **Task list condivisa**: ogni teammate fa claim e aggiorna i task
+- **Scaling automatico**: da 2 a 8 teammate in base alla complessità
 - **Modello adattivo**: Sonnet per default, Opus per task critici
-- **Escalation**: se Sonnet fallisce 2x → promuove a Opus
-- **Comunicazione atomica**: brief strutturati in entrata, output con formato fisso in uscita
-
-## Scaling Agenti
-
-| Complessità | Researcher | Developer | Totale |
-|------------|------------|-----------|--------|
-| Semplice | 1 | 1 | 2 |
-| Media | 2 | 2 | 4 |
-| Complessa | 3 | 4 | 7 |
-| Max | - | - | 8 |
-
-## Requisiti
-
-- Claude Code
-- Accesso ai modelli Opus 4.6 e Sonnet
-- Piano Team o Enterprise (per multi-agent)
+- **Escalation**: se Sonnet fallisce 2x → shutdown e respawn con Opus
 
 ## Licenza
 
