@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp",
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)"
+    ]
+  },
+  "model": "claude-opus-4-6",
+  "preferences": {
+    "autoUpdaterStatus": "disabled"
+  }
+}
