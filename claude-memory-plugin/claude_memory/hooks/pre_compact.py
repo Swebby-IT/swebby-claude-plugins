@@ -1,15 +1,17 @@
 """
-Hook PreCompact: salva informazioni importanti prima della compaction del contesto.
+Hook PreCompact: salva checkpoint prima della compaction del contesto.
 
-Quando Claude sta per compattare il contesto (perché la context window è piena),
-questo hook salva lo stato corrente della sessione in file persistenti.
+NON genera session log completo — salva solo il checkpoint con timestamp
+del flush per non perdere il tracking dei file modificati.
+Il riassunto semantico viene fatto da /save-memory o dal comando Claude.
 """
 
 import json
 import sys
+from datetime import datetime
 
-from claude_memory.config import find_project_root, load_config
-from claude_memory.memory.flush import execute_flush
+from claude_memory.config import find_project_root
+from claude_memory.constants import CHECKPOINTS_DIR, SESSION_CHECKPOINT
 
 
 def main():
@@ -18,12 +20,21 @@ def main():
 
     cwd = hook_input.get("cwd", "")
     project_root = find_project_root(cwd if cwd else None)
-    config = load_config(project_root)
 
-    if not config.flush.enabled:
-        sys.exit(0)
+    # Salva timestamp del flush nel checkpoint
+    checkpoint_file = (
+        project_root / ".memory" / CHECKPOINTS_DIR / SESSION_CHECKPOINT
+    )
+    if checkpoint_file.exists():
+        with open(checkpoint_file) as f:
+            data = json.load(f)
+        data["last_flush"] = datetime.now().isoformat()
+        data["flush_trigger"] = "pre_compact"
+        with open(checkpoint_file, "w") as f:
+            json.dump(data, f, indent=2)
 
-    execute_flush(project_root, config, trigger="pre_compact")
+    # Stampa promemoria su stdout — Claude lo vede nel contesto
+    print("⚠️ Contesto in compattazione. Scrivi un riassunto di cosa hai fatto in questa sessione in .memory/sessions/ e aggiorna .memory/CONTEXT.md prima di continuare.")
 
     sys.exit(0)
 
