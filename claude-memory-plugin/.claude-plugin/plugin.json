@@ -1,0 +1,19 @@
+{
+  "name": "claude-memory",
+  "version": "0.2.0",
+  "description": "Memoria persistente tra sessioni Claude Code. File Markdown + Qdrant vector search + Ollama embeddings. Hook automatici: SessionStart, PreCompact, Stop, PostToolUse.",
+  "author": {
+    "name": "Vincenzo Vigorito"
+  },
+  "keywords": [
+    "memory",
+    "persistent",
+    "qdrant",
+    "ollama",
+    "embeddings",
+    "hooks",
+    "sessions",
+    "context"
+  ],
+  "license": "MIT"
+}
