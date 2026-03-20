@@ -1,7 +1,7 @@
 """
 Hook SessionStart: carica contesto della memoria all'avvio sessione.
 
-Viene invocato come: python -m claude_memory.hooks.session_start
+Viene invocato come: python3 -m claude_memory.hooks.session_start
 Riceve JSON su stdin con informazioni della sessione.
 Stampa su stdout il contesto da iniettare nella conversazione.
 """

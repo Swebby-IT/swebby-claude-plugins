@@ -345,7 +345,7 @@ def _setup_hooks(project_root: Path) -> None:
             "hooks": [
                 {
                     "type": "command",
-                    "command": "python -m claude_memory.hooks.session_start",
+                    "command": "python3 -m claude_memory.hooks.session_start",
                 }
             ],
         },
@@ -354,7 +354,7 @@ def _setup_hooks(project_root: Path) -> None:
             "hooks": [
                 {
                     "type": "command",
-                    "command": "python -m claude_memory.hooks.pre_compact",
+                    "command": "python3 -m claude_memory.hooks.pre_compact",
                 }
             ],
         },
@@ -363,7 +363,7 @@ def _setup_hooks(project_root: Path) -> None:
             "hooks": [
                 {
                     "type": "command",
-                    "command": "python -m claude_memory.hooks.stop",
+                    "command": "python3 -m claude_memory.hooks.stop",
                 }
             ],
         },
@@ -372,7 +372,7 @@ def _setup_hooks(project_root: Path) -> None:
             "hooks": [
                 {
                     "type": "command",
-                    "command": "python -m claude_memory.hooks.post_tool_use",
+                    "command": "python3 -m claude_memory.hooks.post_tool_use",
                 }
             ],
         },
