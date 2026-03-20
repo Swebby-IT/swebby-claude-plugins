@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ═══════════════════════════════════════════
-#  claude-memory v0.3.6 — Installer
+#  claude-memory v0.3.7 — Installer
 #  Memoria persistente per Claude Code
 # ═══════════════════════════════════════════
 
@@ -11,7 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TARGET_DIR="${1:-.}"
 
 echo ""
-echo "claude-memory v0.3.6 — Installer"
+echo "claude-memory v0.3.7 — Installer"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Progetto target: $(cd "$TARGET_DIR" && pwd)"
