@@ -77,12 +77,13 @@ def _parse_dataclass(cls, data: dict):
     return cls(**filtered)
 
 
-def find_project_root() -> Path:
+def find_project_root(start_path: str | Path | None = None) -> Path:
     """
     Risali le directory fino a trovare .memory/ o .git/ o claude.md.
     Se nessuno trovato, usa la cwd.
+    start_path: directory di partenza (default: cwd).
     """
-    cwd = Path.cwd()
+    cwd = Path(start_path) if start_path else Path.cwd()
     for parent in [cwd, *cwd.parents]:
         if (parent / MEMORY_DIR).exists():
             return parent

@@ -16,9 +16,10 @@ from claude_memory.memory.context_builder import build_session_context
 def main():
     """Entry point dell'hook SessionStart."""
     stdin_data = sys.stdin.read().strip()
-    hook_input = json.loads(stdin_data) if stdin_data else {}  # noqa: F841
+    hook_input = json.loads(stdin_data) if stdin_data else {}
 
-    project_root = find_project_root()
+    cwd = hook_input.get("cwd", "")
+    project_root = find_project_root(cwd if cwd else None)
     config = load_config(project_root)
 
     context = build_session_context(project_root, config)

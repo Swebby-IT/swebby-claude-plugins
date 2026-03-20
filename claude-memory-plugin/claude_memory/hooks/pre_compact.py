@@ -14,9 +14,10 @@ from claude_memory.memory.flush import execute_flush
 
 def main():
     stdin_data = sys.stdin.read().strip()
-    hook_input = json.loads(stdin_data) if stdin_data else {}  # noqa: F841
+    hook_input = json.loads(stdin_data) if stdin_data else {}
 
-    project_root = find_project_root()
+    cwd = hook_input.get("cwd", "")
+    project_root = find_project_root(cwd if cwd else None)
     config = load_config(project_root)
 
     if not config.flush.enabled:

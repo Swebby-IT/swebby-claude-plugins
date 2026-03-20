@@ -8,7 +8,6 @@ Appende solo il path e timestamp a un file JSON di checkpoint.
 import json
 import sys
 import time
-from pathlib import Path
 
 from claude_memory.config import find_project_root
 
@@ -31,7 +30,9 @@ def main():
     if ".memory/" in file_path or ".memory\\" in file_path:
         sys.exit(0)
 
-    project_root = find_project_root()
+    # Usa cwd dal hook input per trovare la project root
+    cwd = hook_input.get("cwd", "")
+    project_root = find_project_root(cwd if cwd else None)
     checkpoint_dir = project_root / ".memory" / "checkpoints"
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
     checkpoint_file = checkpoint_dir / ".session.json"
