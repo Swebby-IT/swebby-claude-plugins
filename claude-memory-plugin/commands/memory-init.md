@@ -31,11 +31,11 @@ Con `-e` (editable) gli aggiornamenti dal marketplace si applicano automaticamen
 ## STEP 2: Esegui init
 
 ```bash
-claude-memory init --project-name "$(basename $(pwd))"
+claude-memory init
 ```
 
 Se l'utente ha passato `--no-index`, aggiungi `--no-index`.
-Se l'utente ha passato `--project-name`, usa quel valore.
+Se l'utente ha passato `--project-name`, aggiungi `--project-name <valore>` (default: nome directory corrente).
 
 ---
 
