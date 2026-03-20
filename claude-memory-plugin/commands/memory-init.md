@@ -13,17 +13,18 @@ $ARGUMENTS
 
 ---
 
-## STEP 1: Installa il pacchetto Python
+## STEP 1: Verifica pacchetto Python
 
-Verifica se `claude-memory` è già installato:
+Verifica se `claude-memory` è installato:
 ```bash
 claude-memory --help 2>&1 | head -3
 ```
 
-Se non trovato, cerca la directory del plugin e installa:
+Se non trovato, cerca la directory del plugin nel marketplace e installa una sola volta:
 ```bash
-pip3 install --break-system-packages -e /path/to/claude-memory-plugin
+pip3 install --break-system-packages -e ~/.claude/plugins/marketplaces/swebby-plugins/claude-memory-plugin
 ```
+Con `-e` (editable) gli aggiornamenti dal marketplace si applicano automaticamente senza reinstallare.
 
 ---
 
