@@ -63,7 +63,7 @@
       "description": "Memoria persistente tra sessioni Claude Code. File Markdown + Qdrant vector search + Ollama embeddings. Hook automatici: SessionStart, PreCompact, Stop, PostToolUse.",
       "source": "./claude-memory-plugin",
       "category": "development",
-      "version": "0.3.5",
+      "version": "0.3.6",
       "author": {
         "name": "Vincenzo Vigorito"
       }
