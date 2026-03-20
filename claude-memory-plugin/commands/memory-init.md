@@ -48,109 +48,73 @@ Se l'utente ha passato `--project-name`, usa quel valore.
 
 ## STEP 4: Rebuild CLAUDE.md (se --rebuild-claude)
 
-**Se l'utente ha passato `--rebuild-claude`**, rigenera l'intero CLAUDE.md analizzando il codebase. Altrimenti salta questo step.
+**Se l'utente ha passato `--rebuild-claude`**, rigenera il CLAUDE.md. Altrimenti salta questo step.
 
-### 4.1 Analisi del Codebase
+### REGOLA FONDAMENTALE
 
-Analizza il progetto raccogliendo informazioni da queste fonti (usa Agent in parallelo):
+Il CLAUDE.md **DEVE** contenere TUTTA la documentazione necessaria per lavorare sul progetto. Non è un riassuntino — è il documento di riferimento completo. Se il CLAUDE.md esistente contiene informazioni valide, **DEVI preservarle e migliorarle**, non buttarle via.
+
+### 4.1 Leggi PRIMA il CLAUDE.md esistente
+
+```bash
+cat CLAUDE.md
+```
+
+Questo è il punto di partenza. **Non partire mai da zero.** Analizza:
+- Quali sezioni sono ancora valide e accurate?
+- Quali mancano o sono obsolete?
+- Quali possono essere compattate senza perdere informazioni?
+
+### 4.2 Analisi del Codebase (per integrare/aggiornare)
+
+Analizza il progetto per verificare e completare il CLAUDE.md esistente:
 
 1. **Struttura**: `ls` root, app principali, directory chiave
 2. **Stack**: `requirements.txt` / `pyproject.toml` / `package.json`
 3. **Framework e pattern**: Django/Flask/Node, pattern architetturali
-4. **Database**: modelli, config DB
-5. **Frontend**: template, framework JS, CSS/design system
-6. **Config**: `settings.py` / `.env.example` / `docker-compose.yml`
-7. **Git**: convenzioni commit (`git log --oneline -20`)
-8. **Comandi**: `Makefile`, `scripts/`, `manage.py`
-9. **CLAUDE.md esistente**: preserva informazioni ancora valide
-10. **`.claude/rules/`**: regole esistenti per convenzioni specifiche
-11. **`.memory/DECISIONS.md`**: decisioni architetturali
-12. **`.memory/LEARNINGS.md`**: errori e pattern consolidati
-13. **Skill disponibili**: identifica skill installate
+4. **Frontend**: template, framework JS, CSS/design system
+5. **Config**: `settings.py` / `.env.example`
+6. **Git**: convenzioni commit (`git log --oneline -20`)
+7. **`.claude/rules/`**: regole esistenti
+8. **`.memory/DECISIONS.md`**: decisioni architetturali
+9. **`.memory/LEARNINGS.md`**: errori e pattern consolidati
+10. **Skill disponibili**: identifica skill installate
 
-### 4.2 Genera il nuovo CLAUDE.md
+### 4.3 Riscrivi il CLAUDE.md
 
-Scrivi seguendo questa struttura. **MAX 38.000 caratteri**. Tabelle > prose. Mai frasi superflue. Se un'info è in una skill o rule, punta lì.
+**Regole di scrittura:**
 
-```markdown
-# {Nome Progetto}
+1. **MAX 39.000 caratteri** — verifica con `wc -c CLAUDE.md`
+2. **Preserva TUTTO il contenuto valido** del CLAUDE.md esistente — regole critiche, mapping errori, tabelle componenti, convenzioni
+3. **Compatta la prosa**, mai il contenuto tecnico — le tabelle di mapping CSS, i componenti, le regole vanno mantenute integrali
+4. **Se una sezione del vecchio è troppo lunga**, sposta il dettaglio in un file separato (es. `.claude/rules/swcss-components.md`) e punta lì dal CLAUDE.md. NON cancellare l'informazione
+5. **Tabelle > prose** — converti paragrafi in tabelle dove possibile
+6. **Se l'info è in una skill o rule**, punta lì invece di duplicare
+7. **Ogni path, classe, comando citato deve esistere davvero** — verifica nel codebase
+8. **Aggiungi info mancanti** trovate nell'analisi del codebase
+9. **Rimuovi info obsolete** che non corrispondono più al codice attuale
 
-{1 riga: cosa fa il progetto}
+**Struttura del CLAUDE.md** (adatta al progetto, queste sono le sezioni tipiche):
 
-- **Versione**: {dove trovarla}
-- **Repo**: {nome repo}
+- Header progetto (nome, versione, repo)
+- Regole critiche / errori da non fare
+- Stack tecnologico + comandi principali
+- Convenzioni naming e pattern
+- App / Moduli (lista con descrizione)
+- Frontend / Design System (se presente — questa è spesso la sezione più grande e più importante, NON tagliarla)
+- Tool MCP
+- Versioning e Git
+- Regole per modulo (punta a `.claude/rules/`)
+- Sezione memory (tra i marker `claude-memory:start/end`)
 
----
+**In fondo al file**, mantieni la sezione memory tra i marker.
 
-## REGOLE CRITICHE
-
-{Errori frequenti, cose da NON fare MAI. Tabella mapping errori.
-Prendi da LEARNINGS.md e rules esistenti. Solo regole davvero importanti.}
-
----
-
-## Stack Tecnologico
-
-{Tabella o lista compatta: backend, frontend, DB, cache, servizi esterni.
-Comandi principali (dev, build, deploy, migrate).}
-
----
-
-## Convenzioni
-
-{Naming, pattern architetturali, struttura file.
-Solo quello che non è ovvio dal codice.}
-
----
-
-## App / Moduli
-
-{Lista app con 1 riga ciascuna.
-Se skill documentano i dettagli, menzionale.}
-
----
-
-## Frontend / Design System
-
-{Se esiste design system custom, documenta in modo compatto.
-Componenti principali, classi, pattern. Usa tabelle.
-Se molto grande, solo regole critiche + punta a file di riferimento.}
-
----
-
-## Tool MCP
-
-{Lista tool disponibili con 1 riga ciascuno.}
-
----
-
-## Versioning e Git
-
-{Regole commit, workflow, branch strategy.}
-
----
-
-## Regole per Modulo
-
-{Punta a `.claude/rules/` se esistono.}
-```
-
-In fondo al file, aggiungi:
-
-```markdown
-<!-- claude-memory:start -->
-## Memory System
-
-Memoria persistente in `.memory/`. **CONTEXT.md** (stato progetto), **DECISIONS.md** (decisioni architetturali), **LEARNINGS.md** (errori/pattern). Decisioni: `## YYYY-MM-DD: Titolo` + Contesto/Decisione/Motivo/File. Learnings: `### Titolo (scoperto: YYYY-MM-DD)` + Errore/Correzione/Regola. Aggiorna CONTEXT.md dopo obiettivi significativi. Non toccare `.memory/sessions/`.
-<!-- claude-memory:end -->
-```
-
-### 4.3 Scrivi e Verifica
+### 4.4 Scrivi e Verifica
 
 1. Scrivi il nuovo `CLAUDE.md` con Write
-2. Verifica: `wc -c CLAUDE.md` (deve essere < 40000)
-3. Se sfora, comprimi sezioni più lunghe (tipicamente Frontend/Design System)
-4. Mostra: dimensione finale, sezioni incluse, cosa tagliato vs vecchio
+2. Verifica: `wc -c CLAUDE.md` — deve essere < 40000
+3. Se sfora: sposta sezioni di dettaglio in `.claude/rules/*.md` (NON eliminarle)
+4. Mostra all'utente: dimensione finale, cosa è cambiato rispetto al vecchio, eventuali sezioni spostate in rules
 
 ---
 
@@ -160,5 +124,5 @@ Mostra all'utente:
 - Stato installazione
 - File creati / aggiornati
 - Hook configurati
-- Se CLAUDE.md è stato rigenerato (e dimensione)
+- Se CLAUDE.md è stato rigenerato (dimensione prima → dopo)
 - Se Qdrant/Ollama raggiungibili (non bloccante)
