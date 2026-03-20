@@ -69,6 +69,8 @@ def get_vector_size(config: Config) -> int:
         "text-embedding-3-small": 1536,
         "text-embedding-3-large": 3072,
         "text-embedding-ada-002": 1536,
+        # Qwen
+        "qwen/qwen3-embedding-8b": 4096,
     }
 
     if model in known_sizes:
