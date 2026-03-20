@@ -42,7 +42,7 @@ class SessionConfig:
     auto_session_log: bool = True
     include_git_diff: bool = True
     max_diff_length: int = 5000
-    slug_strategy: str = "git"  # "git" | "timestamp"
+    slug_strategy: str = "timestamp"  # "git" | "timestamp"
 
 
 @dataclass
