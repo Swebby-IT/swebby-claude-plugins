@@ -1,23 +1,18 @@
 ---
-description: "Rigenera CLAUDE.md: analizza codebase, preserva contenuto valido, compatta sotto 40k char"
+description: "Ristruttura CLAUDE.md: sposta dettaglio in .claude/rules/, ottimizza per lavorare con la memoria"
 argument-hint: ""
 ---
 
-# /memory-rebuild-claude — Rigenerazione CLAUDE.md
+# /memory-rebuild-claude — Ristrutturazione CLAUDE.md + Rules
 
-Equivalente a `/memory-init --rebuild-claude` ma senza il setup. Rigenera solo il CLAUDE.md.
+Equivalente a `/memory-init --rebuild-claude` ma senza il setup. Ristruttura solo CLAUDE.md e rules.
 
-## REGOLA FONDAMENTALE
+Vedi il STEP 4 di `/memory-init` per le istruzioni complete. In sintesi:
 
-Il CLAUDE.md **DEVE** contenere TUTTA la documentazione necessaria per lavorare sul progetto. Se il CLAUDE.md esistente contiene informazioni valide, **DEVI preservarle e migliorarle**, non buttarle via. Non partire MAI da zero.
-
-## Esecuzione
-
-1. **Leggi il CLAUDE.md esistente** — questo è il punto di partenza
-2. **Analizza il codebase** per verificare e completare (stack, rules, skills, memory, git log)
-3. **Riscrivi** preservando tutto il contenuto valido, compattando la prosa, aggiungendo info mancanti
-4. **MAX 39.000 char** — se sfora, sposta dettaglio in `.claude/rules/*.md` (NON eliminare)
-5. **Verifica** con `wc -c CLAUDE.md`
-6. **Mostra** dimensione prima/dopo e cosa è cambiato
-
-Vedi `/memory-init` STEP 4 per le regole complete di scrittura.
+1. **Leggi** CLAUDE.md esistente e `.claude/rules/`
+2. **Analizza** il codebase per verificare accuratezza
+3. **Sposta** tutto il dettaglio (design system, mapping CSS, tabelle grandi, pattern modulo) in `.claude/rules/*.md`
+4. **Riscrivi** CLAUDE.md con solo l'essenziale (regole critiche, stack, convenzioni, puntatori a rules)
+5. **Target**: CLAUDE.md 20-25k char (max 35k). Le rules non hanno limite.
+6. **Verifica**: `wc -c CLAUDE.md`
+7. **Mostra**: dimensione prima/dopo, rules create, cosa spostato
