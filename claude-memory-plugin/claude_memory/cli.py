@@ -381,15 +381,15 @@ def _setup_hooks(project_root: Path) -> None:
     for event_name, hook_def in hook_defs.items():
         existing_hooks = hooks.get(event_name, [])
 
-        # Controlla se il nostro hook è già presente
-        already_present = any(
-            any("claude_memory" in h.get("command", "") for h in entry.get("hooks", []))
-            for entry in existing_hooks
-        )
+        # Rimuovi hook claude_memory esistenti (per sovrascrivere sempre)
+        existing_hooks = [
+            entry for entry in existing_hooks
+            if not any("claude_memory" in h.get("command", "") for h in entry.get("hooks", []))
+        ]
 
-        if not already_present:
-            existing_hooks.append(hook_def)
-            hooks[event_name] = existing_hooks
+        # Aggiungi la versione aggiornata
+        existing_hooks.append(hook_def)
+        hooks[event_name] = existing_hooks
 
     settings["hooks"] = hooks
 
