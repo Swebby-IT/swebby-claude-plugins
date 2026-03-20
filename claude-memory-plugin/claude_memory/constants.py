@@ -1,0 +1,12 @@
+"""Path defaults, nomi file, costanti."""
+
+MEMORY_DIR = ".memory"
+CONFIG_FILE = "config.yaml"
+CONTEXT_FILE = "CONTEXT.md"
+DECISIONS_FILE = "DECISIONS.md"
+LEARNINGS_FILE = "LEARNINGS.md"
+SESSIONS_DIR = "sessions"
+CHECKPOINTS_DIR = "checkpoints"
+SESSION_CHECKPOINT = ".session.json"
+CLAUDE_MD_MARKER_START = "<!-- claude-memory:start -->"
+CLAUDE_MD_MARKER_END = "<!-- claude-memory:end -->"
