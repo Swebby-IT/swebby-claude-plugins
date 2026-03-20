@@ -16,9 +16,17 @@ class QdrantConfig:
 
 
 @dataclass
-class OllamaConfig:
-    host: str = "http://localhost:11434"
+class EmbeddingsConfig:
+    provider: str = "ollama"  # "ollama" | "openai" | "openrouter"
     model: str = "nomic-embed-text"
+    # Ollama
+    ollama_host: str = "http://localhost:11434"
+    # OpenAI
+    openai_api_key: str = ""  # or env OPENAI_API_KEY
+    openai_base_url: str = "https://api.openai.com/v1"
+    # OpenRouter
+    openrouter_api_key: str = ""  # or env OPENROUTER_API_KEY
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
 
 
 @dataclass
@@ -52,7 +60,7 @@ class GitConfig:
 @dataclass
 class Config:
     qdrant: QdrantConfig = field(default_factory=QdrantConfig)
-    ollama: OllamaConfig = field(default_factory=OllamaConfig)
+    embeddings: EmbeddingsConfig = field(default_factory=EmbeddingsConfig)
     memory: MemoryConfig = field(default_factory=MemoryConfig)
     session: SessionConfig = field(default_factory=SessionConfig)
     flush: FlushConfig = field(default_factory=FlushConfig)
@@ -103,7 +111,7 @@ def load_config(project_root: Path | None = None) -> Config:
 
     return Config(
         qdrant=_parse_dataclass(QdrantConfig, raw.get("qdrant")),
-        ollama=_parse_dataclass(OllamaConfig, raw.get("ollama")),
+        embeddings=_parse_dataclass(EmbeddingsConfig, raw.get("embeddings", raw.get("ollama"))),
         memory=_parse_dataclass(MemoryConfig, raw.get("memory")),
         session=_parse_dataclass(SessionConfig, raw.get("session")),
         flush=_parse_dataclass(FlushConfig, raw.get("flush")),

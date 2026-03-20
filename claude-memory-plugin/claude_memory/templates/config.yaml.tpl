@@ -7,10 +7,22 @@ qdrant:
   port: 6333
   collection: {collection_name}
 
-# Ollama per embedding locali
-ollama:
-  host: http://localhost:11434
-  model: nomic-embed-text       # 768 dimensioni
+# Embeddings — provider: ollama | openai | openrouter
+embeddings:
+  provider: ollama                 # cambia in "openai" o "openrouter" se preferisci
+  model: nomic-embed-text          # modello embedding
+
+  # Ollama (locale, gratuito)
+  ollama_host: http://localhost:11434
+
+  # OpenAI (richiede API key)
+  # openai_api_key: ""             # oppure export OPENAI_API_KEY
+  # openai_base_url: https://api.openai.com/v1
+  # model: text-embedding-3-small  # 1536 dim, economico
+
+  # OpenRouter (richiede API key)
+  # openrouter_api_key: ""         # oppure export OPENROUTER_API_KEY
+  # openrouter_base_url: https://openrouter.ai/api/v1
 
 # Comportamento memoria
 memory:

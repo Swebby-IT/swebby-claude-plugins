@@ -31,7 +31,7 @@ def cli():
 @click.option("--project-name", default=None, help="Nome del progetto (default: nome directory)")
 @click.option("--qdrant-host", default="localhost", help="Override host Qdrant")
 @click.option("--qdrant-port", default=6333, type=int, help="Override porta Qdrant")
-@click.option("--ollama-host", default="http://localhost:11434", help="Override host Ollama")
+@click.option("--ollama-host", default=None, help="Override host Ollama")
 @click.option("--no-index", is_flag=True, help="Skip indicizzazione iniziale")
 @click.option("--force", is_flag=True, help="Sovrascrive config esistente")
 def init(project_name, qdrant_host, qdrant_port, ollama_host, no_index, force):
@@ -108,7 +108,8 @@ def init(project_name, qdrant_host, qdrant_port, ollama_host, no_index, force):
             # Override config con parametri CLI
             config.qdrant.host = qdrant_host
             config.qdrant.port = qdrant_port
-            config.ollama.host = ollama_host
+            if ollama_host:
+                config.embeddings.ollama_host = ollama_host
 
             from claude_memory.indexing.indexer import (
                 ensure_collection,

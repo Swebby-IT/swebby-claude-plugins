@@ -21,7 +21,7 @@ from qdrant_client.models import (
 
 from claude_memory.config import Config
 from claude_memory.indexing.chunker import chunk_markdown
-from claude_memory.indexing.embeddings import get_embedding
+from claude_memory.indexing.embeddings import get_embedding, get_vector_size
 
 
 def get_qdrant_client(config: Config) -> QdrantClient:
@@ -32,8 +32,7 @@ def ensure_collection(client: QdrantClient, config: Config) -> None:
     """Crea la collection se non esiste."""
     collections = [c.name for c in client.get_collections().collections]
     if config.qdrant.collection not in collections:
-        # nomic-embed-text: 768, mxbai-embed-large: 1024, all-minilm: 384
-        vector_size = 768
+        vector_size = get_vector_size(config)
 
         client.create_collection(
             collection_name=config.qdrant.collection,
