@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "swebby-plugins",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Plugin per orchestrazione multi-agente intelligente con auto-scaling",
   "owner": {
     "name": "Maurizio Stabile",
@@ -63,7 +63,7 @@
       "description": "Memoria persistente tra sessioni Claude Code. File Markdown + Qdrant vector search + Ollama embeddings. Hook automatici: SessionStart, PreCompact, Stop, PostToolUse.",
       "source": "./claude-memory-plugin",
       "category": "development",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": {
         "name": "Vincenzo Vigorito"
       }
