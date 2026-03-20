@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ═══════════════════════════════════════════
-#  claude-memory v0.2.1 — Installer
+#  claude-memory v0.2.2 — Installer
 #  Memoria persistente per Claude Code
 # ═══════════════════════════════════════════
 
@@ -11,7 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TARGET_DIR="${1:-.}"
 
 echo ""
-echo "claude-memory v0.2.1 — Installer"
+echo "claude-memory v0.2.2 — Installer"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Progetto target: $(cd "$TARGET_DIR" && pwd)"
@@ -26,18 +26,19 @@ echo "Comandi installati in .claude/commands/"
 
 # Installa pacchetto Python
 echo "Installazione pacchetto Python..."
+PIP_FLAGS="--break-system-packages"
 if command -v pip3 &> /dev/null; then
-    pip3 install -e "$SCRIPT_DIR" 2>&1 || {
+    pip3 install $PIP_FLAGS -e "$SCRIPT_DIR" 2>&1 || {
         echo "pip3 install fallito, provo con python3 -m pip..."
-        python3 -m pip install -e "$SCRIPT_DIR" 2>&1 || {
+        python3 -m pip install $PIP_FLAGS -e "$SCRIPT_DIR" 2>&1 || {
             echo "ATTENZIONE: installazione Python fallita."
-            echo "Installa manualmente: pip install -e $SCRIPT_DIR"
+            echo "Installa manualmente: pip3 install --break-system-packages -e $SCRIPT_DIR"
         }
     }
 elif command -v pip &> /dev/null; then
-    pip install -e "$SCRIPT_DIR" 2>&1
+    pip install $PIP_FLAGS -e "$SCRIPT_DIR" 2>&1
 else
-    echo "ATTENZIONE: pip non trovato. Installa manualmente: pip install -e $SCRIPT_DIR"
+    echo "ATTENZIONE: pip non trovato. Installa manualmente: pip3 install --break-system-packages -e $SCRIPT_DIR"
 fi
 
 # Verifica installazione
