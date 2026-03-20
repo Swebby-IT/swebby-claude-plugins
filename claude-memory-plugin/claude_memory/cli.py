@@ -42,7 +42,9 @@ def init(project_name, qdrant_host, qdrant_port, ollama_host, no_index, force):
         project_name = project_root.name
 
     memory_dir = project_root / MEMORY_DIR
-    collection_name = f"memory_{project_name.replace('-', '_').replace(' ', '_')}"
+    import socket
+    hostname = socket.gethostname().replace('-', '_').replace('.', '_')
+    collection_name = f"memory_{hostname}_{project_name.replace('-', '_').replace(' ', '_')}"
 
     click.echo(f"Inizializzazione claude-memory per '{project_name}'...")
     click.echo(f"Project root: {project_root}")
